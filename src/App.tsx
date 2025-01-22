@@ -11,7 +11,13 @@ import TransactionsPage from "./pages/TransactionsPage";
 
 const App = () => {
   return (
-    <Stack direction="row">
+    <Stack
+      direction="row"
+      sx={{
+        padding: "0",
+        height: "100%",
+      }}
+    >
       <Router>
         <Navbar />
         <Routes>
