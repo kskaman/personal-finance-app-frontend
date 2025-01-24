@@ -49,31 +49,31 @@ const Navbar = () => {
       <Stack sx={{ width: "100%", height: "calc(100vh - 174px)" }}>
         <NavItem
           to="/"
-          icon={OverViewIcon}
+          Icon={OverViewIcon}
           text="Overview"
           isMinimized={isMinimized}
         />
         <NavItem
           to="/transactions"
-          icon={TransactionsIcon}
+          Icon={TransactionsIcon}
           text="Transactions"
           isMinimized={isMinimized}
         />
         <NavItem
           to="/budgets"
-          icon={BudgetsIcon}
+          Icon={BudgetsIcon}
           text="Budgets"
           isMinimized={isMinimized}
         />
         <NavItem
           to="/pots"
-          icon={PotsIcon}
+          Icon={PotsIcon}
           text="Pots"
           isMinimized={isMinimized}
         />
         <NavItem
           to="/bills"
-          icon={BillsIcon}
+          Icon={BillsIcon}
           text="Recurring Bills"
           isMinimized={isMinimized}
         />

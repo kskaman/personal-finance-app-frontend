@@ -4,13 +4,13 @@ import { NavLink } from "react-router";
 import theme from "../theme/theme";
 
 interface TabNavItemProps {
-  icon: React.FC<{ color: string }>;
+  Icon: React.FC<{ color: string }>;
   text: string;
   to: string;
   isMobile: boolean;
 }
 
-const TabNavItem = ({ to, icon, text, isMobile }: TabNavItemProps) => {
+const TabNavItem = ({ to, Icon, text, isMobile }: TabNavItemProps) => {
   return (
     <Stack
       component={NavLink}
@@ -33,16 +33,25 @@ const TabNavItem = ({ to, icon, text, isMobile }: TabNavItemProps) => {
           color: theme.palette.primary.main,
           borderTopRightRadius: "12px",
           borderTopLeftRadius: "12px",
+          borderBottom: `5px solid ${theme.palette.secondary.main}`,
+          ".iconClass": {
+            color: theme.palette.secondary.main,
+          },
         },
       }}
     >
       <Box
-        component={icon}
+        className="iconClass"
         sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           width: "24px",
           height: "24px",
         }}
-      />
+      >
+        <Icon color="inherit" />
+      </Box>
       {!isMobile && (
         <Typography
           sx={{

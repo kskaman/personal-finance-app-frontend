@@ -4,13 +4,13 @@ import { NavLink } from "react-router";
 import theme from "../theme/theme";
 
 interface NavItemProps {
-  icon: React.FC<{ color: string }>;
+  Icon: React.FC<{ color: string }>;
   text: string;
   to: string;
   isMinimized: boolean;
 }
 
-const NavItem = ({ to, icon, text, isMinimized }: NavItemProps) => {
+const NavItem = ({ to, Icon, text, isMinimized }: NavItemProps) => {
   return (
     <Stack
       component={NavLink}
@@ -34,16 +34,25 @@ const NavItem = ({ to, icon, text, isMinimized }: NavItemProps) => {
           color: theme.palette.primary.main,
           borderTopRightRadius: "12px",
           borderBottomRightRadius: "12px",
+          borderLeft: `5px solid ${theme.palette.secondary.main}`,
+          ".iconClass": {
+            color: theme.palette.secondary.main,
+          },
         },
       }}
     >
       <Box
-        component={icon}
+        className="iconClass"
         sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           width: "24px",
           height: "24px",
         }}
-      />
+      >
+        <Icon color="inherit" />
+      </Box>
       {!isMinimized && (
         <Typography
           sx={{

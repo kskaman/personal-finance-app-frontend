@@ -28,26 +28,26 @@ const TabNavBar = ({ isMobile }: TabNavBarProps) => {
     >
       <TabNavItem
         to="/"
-        icon={OverViewIcon}
+        Icon={OverViewIcon}
         text="Overview"
         isMobile={isMobile}
       />
       <TabNavItem
         to="/transactions"
-        icon={TransactionsIcon}
+        Icon={TransactionsIcon}
         text="Transactions"
         isMobile={isMobile}
       />
       <TabNavItem
         to="/budgets"
-        icon={BudgetsIcon}
+        Icon={BudgetsIcon}
         text="Budgets"
         isMobile={isMobile}
       />
-      <TabNavItem to="/pots" icon={PotsIcon} text="Pots" isMobile={isMobile} />
+      <TabNavItem to="/pots" Icon={PotsIcon} text="Pots" isMobile={isMobile} />
       <TabNavItem
         to="/bills"
-        icon={BillsIcon}
+        Icon={BillsIcon}
         text="Recurring Bills"
         isMobile={isMobile}
       />
