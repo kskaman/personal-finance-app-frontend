@@ -32,9 +32,12 @@ const MinimizeButton = ({ onClick, isMinimized }: MinimizeButtonProps) => {
             width: isMinimized ? "80px" : "276px",
             height: "56px",
             padding: "16px 32px",
-            color: theme.palette.secondary.contrastText,
+            color: theme.palette.background.paper,
             cursor: "pointer",
             textDecoration: "none",
+            ":hover": {
+              color: theme.palette.secondary.contrastText,
+            },
           }}
         >
           <Box
@@ -44,7 +47,7 @@ const MinimizeButton = ({ onClick, isMinimized }: MinimizeButtonProps) => {
               transform: isMinimized ? "rotate(180deg)" : "",
             }}
           >
-            <MinimizeIcon color={theme.palette.secondary.contrastText} />
+            <MinimizeIcon color="inherit" />
           </Box>
 
           {!isMinimized && (

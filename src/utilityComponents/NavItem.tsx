@@ -30,16 +30,11 @@ const NavItem = ({ to, icon, text, isMinimized }: NavItemProps) => {
           color: theme.palette.primary.main,
           borderTopRightRadius: "12px",
           borderBottomRightRadius: "12px",
-
-          ".nav-icon": {
-            fill: theme.palette.secondary.main,
-          },
         },
       }}
     >
       <Box
         component={icon}
-        className="nav-icon"
         sx={{
           width: "24px",
           height: "24px",
