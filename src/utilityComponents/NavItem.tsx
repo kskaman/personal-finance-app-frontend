@@ -1,46 +1,61 @@
 import { Typography, Box, Stack } from "@mui/material";
+import { NavLink } from "react-router";
 
 import theme from "../theme/theme";
-import { Link } from "react-router";
 
 interface NavItemProps {
-  icon: string;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
   text: string;
   to: string;
+  isMinimized: boolean;
 }
 
-const NavItem = ({ to, icon, text }: NavItemProps) => {
+const NavItem = ({ to, icon, text, isMinimized }: NavItemProps) => {
   return (
     <Stack
-      component={Link}
+      component={NavLink}
       to={to}
       direction="row"
       alignItems="center"
       spacing={2}
       sx={{
-        width: "276px",
+        width: isMinimized ? "80px" : "276px",
         height: "56px",
         padding: "16px 32px",
         color: theme.palette.background.paper,
         cursor: "pointer",
         textDecoration: "none",
+        "&.active": {
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.primary.main,
+          borderTopRightRadius: "12px",
+          borderBottomRightRadius: "12px",
+
+          ".nav-icon": {
+            fill: theme.palette.secondary.main,
+          },
+        },
       }}
     >
       <Box
-        component="img"
-        src={icon}
-        alt={`${text} icon`}
-        sx={{ width: "24px", height: "24px" }}
-      />
-      <Typography
+        component={icon}
+        className="nav-icon"
         sx={{
-          fontSize: "16px",
-          fontWeight: "bold",
-          textAlign: "left",
+          width: "24px",
+          height: "24px",
         }}
-      >
-        {text}
-      </Typography>
+      />
+      {!isMinimized && (
+        <Typography
+          sx={{
+            fontSize: "16px",
+            fontWeight: "bold",
+            textAlign: "left",
+          }}
+        >
+          {text}
+        </Typography>
+      )}
     </Stack>
   );
 };

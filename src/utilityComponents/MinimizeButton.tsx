@@ -2,14 +2,18 @@ import { Typography, Box, Stack } from "@mui/material";
 import Button from "@mui/material/Button";
 import theme from "../theme/theme";
 
+import MinimizeIcon from "../Icons/MinimizeIcon";
+
 interface MinimizeButtonProps {
-  icon: string;
+  onClick: () => void;
+  isMinimized: boolean;
 }
 
-const MinimizeButton = ({ icon }: MinimizeButtonProps) => {
+const MinimizeButton = ({ onClick, isMinimized }: MinimizeButtonProps) => {
   return (
     <>
       <Button
+        onClick={onClick}
         disableElevation={true}
         disableTouchRipple={true}
         variant="contained"
@@ -25,30 +29,36 @@ const MinimizeButton = ({ icon }: MinimizeButtonProps) => {
           alignItems="center"
           justifyContent="flex-start"
           sx={{
-            width: "276px",
+            width: isMinimized ? "80px" : "276px",
             height: "56px",
             padding: "16px 32px",
-            color: theme.palette.background.paper,
+            color: theme.palette.secondary.contrastText,
             cursor: "pointer",
             textDecoration: "none",
           }}
         >
           <Box
-            component="img"
-            src={icon}
-            alt={`minimize icon`}
-            sx={{ width: "24px", height: "24px" }}
-          />
-          <Typography
             sx={{
-              fontSize: "16px",
-              fontWeight: "bold",
-              textAlign: "left",
-              textTransform: "none",
+              width: "24px",
+              height: "24px",
+              transform: isMinimized ? "rotate(180deg)" : "",
             }}
           >
-            Minimize Menu
-          </Typography>
+            <MinimizeIcon color={theme.palette.secondary.contrastText} />
+          </Box>
+
+          {!isMinimized && (
+            <Typography
+              sx={{
+                fontSize: "16px",
+                fontWeight: "bold",
+                textAlign: "left",
+                textTransform: "none",
+              }}
+            >
+              Minimize Menu
+            </Typography>
+          )}
         </Stack>
       </Button>
     </>
