@@ -1,39 +1,38 @@
+// TabNavItem.tsx (unchanged from your snippet, except we confirm it’s imported in TabNavBar)
 import { Typography, Box, Stack } from "@mui/material";
 import { NavLink } from "react-router";
-
 import theme from "../theme/theme";
 
-interface NavItemProps {
+interface TabNavItemProps {
   icon: React.FC<{ color: string }>;
   text: string;
   to: string;
-  isMinimized: boolean;
+  isMobile: boolean;
 }
 
-const NavItem = ({ to, icon, text, isMinimized }: NavItemProps) => {
+const TabNavItem = ({ to, icon, text, isMobile }: TabNavItemProps) => {
   return (
     <Stack
       component={NavLink}
       to={to}
-      direction="row"
+      direction="column"
       alignItems="center"
-      spacing={2}
+      spacing={0}
       sx={{
-        width: isMinimized ? "80px" : "276px",
-        height: "56px",
-        padding: "16px 32px",
+        width: isMobile ? "68.6px" : "104px",
+        height: isMobile ? "44px" : "66px",
+        padding: isMobile ? "9px 0 15px 0" : "7px 0 13px 0",
         color: theme.palette.background.paper,
         cursor: "pointer",
         textDecoration: "none",
         ":hover": {
           color: theme.palette.secondary.contrastText,
         },
-        // this should be at end else hover properties show up
         "&.active": {
-          backgroundColor: theme.palette.background.default,
+          backgroundColor: theme.palette.secondary.contrastText,
           color: theme.palette.primary.main,
           borderTopRightRadius: "12px",
-          borderBottomRightRadius: "12px",
+          borderTopLeftRadius: "12px",
         },
       }}
     >
@@ -44,12 +43,14 @@ const NavItem = ({ to, icon, text, isMinimized }: NavItemProps) => {
           height: "24px",
         }}
       />
-      {!isMinimized && (
+      {!isMobile && (
         <Typography
           sx={{
-            fontSize: "16px",
+            height: "18px",
+            padding: "3px 0 3px 0",
+            fontSize: "12px",
             fontWeight: "bold",
-            textAlign: "left",
+            textAlign: "center",
           }}
         >
           {text}
@@ -59,4 +60,4 @@ const NavItem = ({ to, icon, text, isMinimized }: NavItemProps) => {
   );
 };
 
-export default NavItem;
+export default TabNavItem;
