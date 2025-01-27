@@ -2,14 +2,24 @@ import "@mui/material/styles";
 
 declare module "@mui/material/styles" {
   interface Palette {
-    others?: {
+    others: {
       [key: string]: string;
     };
   }
     
   interface PaletteOptions {
-    others?: {
-      [key: string]: string;
+    others: {
+      pink: string,
+    turquoise: string,
+    brown: string,
+    magenta: string,
+    blue: string,
+    navyGrey: string
+    armyGreen: string,
+    gold: string,
+    orange: string,
+    purple: string,
+    navy: string
     };
   }
 }
