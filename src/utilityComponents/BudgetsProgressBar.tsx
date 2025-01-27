@@ -39,7 +39,7 @@ const BudgetsProgressBar = ({
         }}
       >
         <Typography fontSize="14px" color={theme.palette.primary.light}>
-          Maximum of ${formatNumber(parseInt(total.toFixed(2)))}
+          Maximum of ${formatNumber(total)}
         </Typography>
       </Stack>
       <LinearProgress
@@ -79,7 +79,7 @@ const BudgetsProgressBar = ({
               fontWeight="bold"
               color={theme.palette.primary.light}
             >
-              ${value.toFixed(2)}
+              ${formatNumber(value)}
             </Typography>
           </Stack>
         </Stack>
@@ -99,8 +99,7 @@ const BudgetsProgressBar = ({
               fontWeight="bold"
               color={theme.palette.primary.light}
             >
-              {isOverBudget && "-"} $
-              {formatNumber(parseInt(remaining.toFixed(2)))}
+              {isOverBudget && "-"} ${formatNumber(remaining)}
             </Typography>
           </Stack>
         </Stack>

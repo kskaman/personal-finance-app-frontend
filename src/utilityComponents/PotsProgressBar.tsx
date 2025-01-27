@@ -38,7 +38,7 @@ const PotsProgressBar = ({
           Total Saved
         </Typography>
         <Typography fontSize="32px" color={theme.palette.primary.main}>
-          ${formatNumber(parseInt(value.toFixed(2)))}
+          ${formatNumber(value)}
         </Typography>
       </Stack>
       <LinearProgress
