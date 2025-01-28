@@ -23,7 +23,7 @@ const App = () => {
     **/}
 
       {isTabletOrMobile ? (
-        <Stack direction="column" sx={{ height: "100vh", width: "100vw" }}>
+        <Stack direction="column" sx={{ height: "100%", width: "100%" }}>
           <Box sx={{ flex: 1, overflow: "auto" }}>
             <Routes>
               <Route path="/" element={<OverViewPage />} />
@@ -36,7 +36,7 @@ const App = () => {
           <TabNavBar isMobile={isMobile} />
         </Stack>
       ) : (
-        <Stack direction="row" sx={{ height: "100vh", width: "100vw" }}>
+        <Stack direction="row" sx={{ height: "100%", width: "100%" }}>
           <Navbar />
           <Box sx={{ flex: 1, overflow: "auto" }}>
             <Routes>

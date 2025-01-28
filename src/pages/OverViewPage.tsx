@@ -2,6 +2,10 @@ import SetTitle from "../components/SetTitle";
 import { Box, Stack, Typography } from "@mui/material";
 import theme from "../theme/theme";
 import Balance from "../components/overviewComponents/Balance";
+import TransactionsOverview from "../components/overviewComponents/TransactionsOverview";
+import PotsOverview from "../components/overviewComponents/PotsOverview";
+import BudgetsOverview from "../components/overviewComponents/BudgetsOverview";
+import BillsOverview from "../components/overviewComponents/BillsOverview";
 
 const OverViewPage = () => {
   return (
@@ -28,6 +32,16 @@ const OverViewPage = () => {
           </Typography>
 
           <Balance />
+          <Stack direction="row" gap="24px">
+            <Stack direction="column" gap="24px">
+              <PotsOverview />
+              <TransactionsOverview />
+            </Stack>
+            <Stack direction="column" gap="24px">
+              <BudgetsOverview />
+              <BillsOverview />
+            </Stack>
+          </Stack>
         </Stack>
       </Box>
     </>

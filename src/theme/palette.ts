@@ -33,6 +33,10 @@ const palette: PaletteOptions = {
     orange: "#be6c49",     // orange
     purple: "#826cb0",     // purple
     navy: "#626070",       // navy
+    green: "#277c78",      // green
+    cyan: "#82c9d7",       // cyan
+    red: "#c94736",        // red
+    yellow: "#f2cdac",     // yellow
   },
 };
 
