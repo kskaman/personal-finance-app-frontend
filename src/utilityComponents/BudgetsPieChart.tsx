@@ -70,6 +70,12 @@ const BudgetsPieChart = ({
               cy: 115,
             },
           ]}
+          sx={{
+            "& .MuiPieArc-root": {
+              stroke: "none",
+              strokeWidth: 0,
+            },
+          }}
         />
       </Box>
 
@@ -92,6 +98,12 @@ const BudgetsPieChart = ({
               cy: 115,
             },
           ]}
+          sx={{
+            "& .MuiPieArc-root": {
+              stroke: "none",
+              strokeWidth: 0,
+            },
+          }}
         />
       </Box>
     </Box>

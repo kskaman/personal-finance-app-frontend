@@ -13,7 +13,7 @@ import TabNavBar from "./components/TabNavBar";
 const App = () => {
   const isMobile = useMediaQuery("(max-width:520px)");
 
-  const isTabletOrMobile = useMediaQuery("(max-width:768px)");
+  const isTabletOrMobile = useMediaQuery("(max-width:920px)");
 
   return (
     <Router>
@@ -22,33 +22,22 @@ const App = () => {
       If tablet/mobile => column layout with tab navbar 
     **/}
 
-      {isTabletOrMobile ? (
-        <Stack direction="column" sx={{ height: "100%", width: "100%" }}>
-          <Box sx={{ flex: 1, overflow: "auto" }}>
-            <Routes>
-              <Route path="/" element={<OverViewPage />} />
-              <Route path="/bills" element={<BillsPage />} />
-              <Route path="/budgets" element={<BudgetsPage />} />
-              <Route path="/pots" element={<PotsPage />} />
-              <Route path="/transactions" element={<TransactionsPage />} />
-            </Routes>
-          </Box>
-          <TabNavBar isMobile={isMobile} />
-        </Stack>
-      ) : (
-        <Stack direction="row" sx={{ height: "100%", width: "100%" }}>
-          <Navbar />
-          <Box sx={{ flex: 1, overflow: "auto" }}>
-            <Routes>
-              <Route path="/" element={<OverViewPage />} />
-              <Route path="/bills" element={<BillsPage />} />
-              <Route path="/budgets" element={<BudgetsPage />} />
-              <Route path="/pots" element={<PotsPage />} />
-              <Route path="/transactions" element={<TransactionsPage />} />
-            </Routes>
-          </Box>
-        </Stack>
-      )}
+      <Stack
+        direction={{ xs: "column", lg: "row" }}
+        sx={{ height: "100%", width: "100%" }}
+      >
+        {!isTabletOrMobile && <Navbar />}
+        <Box sx={{ flex: 1, overflow: "auto" }}>
+          <Routes>
+            <Route path="/" element={<OverViewPage />} />
+            <Route path="/bills" element={<BillsPage />} />
+            <Route path="/budgets" element={<BudgetsPage />} />
+            <Route path="/pots" element={<PotsPage />} />
+            <Route path="/transactions" element={<TransactionsPage />} />
+          </Routes>
+        </Box>
+        {isTabletOrMobile && <TabNavBar isMobile={isMobile} />}
+      </Stack>
     </Router>
   );
 };
