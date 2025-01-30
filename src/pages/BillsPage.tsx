@@ -1,20 +1,13 @@
-import { Stack, Typography, Box } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
+import PageDiv from "../utilityComponents/PageDiv";
 
 const BillsPage = () => {
   return (
     <>
       <SetTitle title="Recurring Bills" />
-      <Box
-        bgcolor={theme.palette.background.default}
-        height="100%"
-        width="100%"
-        sx={{
-          px: { xs: 2, sm: 5 },
-          py: 4,
-        }}
-      >
+      <PageDiv>
         <Stack direction="column" gap="32px">
           <Typography
             width="100%"
@@ -26,7 +19,7 @@ const BillsPage = () => {
             Recurring Bills
           </Typography>
         </Stack>
-      </Box>
+      </PageDiv>
     </>
   );
 };

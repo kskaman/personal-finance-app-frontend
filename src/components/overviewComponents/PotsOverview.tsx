@@ -1,10 +1,10 @@
 import { Box, Link, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import CaretRightIcon from "../../Icons/CaretRightIcon";
 import theme from "../../theme/theme";
 import { useContext } from "react";
 import { DataContext } from "../../context/DataContexts";
 import PotIcon from "../../Icons/PotIcon";
+import CaretRightIcon from "../../Icons/CaretRightIcon";
 import { formatNumber } from "../../utils/utilityFunctions";
 
 const PotsOverview = () => {

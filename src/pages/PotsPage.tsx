@@ -1,21 +1,14 @@
-import { Stack, Box, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PotsProgressBar from "../utilityComponents/PotsProgressBar";
+import PageDiv from "../utilityComponents/PageDiv";
 
 const PotsPage = () => {
   return (
     <>
       <SetTitle title="Pots" />
-      <Box
-        bgcolor={theme.palette.background.default}
-        height="100%"
-        width="100%"
-        sx={{
-          px: { xs: 2, sm: 5 },
-          py: 4,
-        }}
-      >
+      <PageDiv>
         <Stack direction="column" gap="32px">
           <Typography
             width="100%"
@@ -35,7 +28,7 @@ const PotsPage = () => {
             />
           </Stack>
         </Stack>
-      </Box>
+      </PageDiv>
     </>
   );
 };

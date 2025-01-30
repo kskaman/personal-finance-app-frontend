@@ -1,8 +1,9 @@
-import { Stack, Box, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import BudgetsPieChart from "../utilityComponents/BudgetsPieChart";
 import BudgetsProgressBar from "../utilityComponents/BudgetsProgressBar";
+import PageDiv from "../utilityComponents/PageDiv";
 
 const BudgetsPage = () => {
   const colors = [
@@ -14,15 +15,7 @@ const BudgetsPage = () => {
   return (
     <>
       <SetTitle title="Budgets" />
-      <Box
-        bgcolor={theme.palette.background.default}
-        height="100%"
-        width="100%"
-        sx={{
-          px: { xs: 2, sm: 5 },
-          py: 4,
-        }}
-      >
+      <PageDiv>
         <Stack direction="column" gap="32px">
           <Typography
             width="100%"
@@ -59,7 +52,7 @@ const BudgetsPage = () => {
             </Stack>
           </Stack>
         </Stack>
-      </Box>
+      </PageDiv>
     </>
   );
 };
