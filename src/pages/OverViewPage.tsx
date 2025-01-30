@@ -32,12 +32,24 @@ const OverViewPage = () => {
           </Typography>
 
           <Balance />
-          <Stack direction="row" gap="24px">
-            <Stack direction="column" gap="24px">
+          <Stack
+            direction={{ xs: "column", lg: "row" }}
+            gap="24px"
+            width="100%"
+          >
+            <Stack
+              direction="column"
+              gap="24px"
+              width={{ xs: "100%", lg: "50%" }}
+            >
               <PotsOverview />
               <TransactionsOverview />
             </Stack>
-            <Stack direction="column" gap="24px">
+            <Stack
+              direction="column"
+              gap="24px"
+              width={{ xs: "100%", lg: "50%" }}
+            >
               <BudgetsOverview />
               <BillsOverview />
             </Stack>

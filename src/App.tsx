@@ -13,7 +13,7 @@ import TabNavBar from "./components/TabNavBar";
 const App = () => {
   const isMobile = useMediaQuery("(max-width:520px)");
 
-  const isTabletOrMobile = useMediaQuery("(max-width:920px)");
+  const isTabletOrMobile = useMediaQuery("(max-width:900px)");
 
   return (
     <Router>
@@ -23,7 +23,7 @@ const App = () => {
     **/}
 
       <Stack
-        direction={{ xs: "column", lg: "row" }}
+        direction={{ xs: "column", md: "row" }}
         sx={{ height: "100%", width: "100%" }}
       >
         {!isTabletOrMobile && <Navbar />}

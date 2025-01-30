@@ -14,6 +14,7 @@ const Balance = () => {
       <Stack
         width="100%"
         direction={{ xs: "column", sm: "row" }}
+        flexWrap="wrap"
         gap="24px"
         justifyContent="flex-start"
         alignItems="center"

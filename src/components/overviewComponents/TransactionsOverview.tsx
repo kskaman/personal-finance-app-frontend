@@ -24,7 +24,7 @@ const TransactionsOverview = () => {
   return (
     <Stack
       bgcolor={theme.palette.primary.contrastText}
-      padding="32px"
+      padding={{ xs: "24px 20px", sm: "32px" }}
       borderRadius="12px"
       gap="32px"
     >
