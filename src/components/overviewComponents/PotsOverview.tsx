@@ -1,13 +1,24 @@
-import { Link, Stack, Typography } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import theme from "../../theme/theme";
+import { useContext } from "react";
+import { DataContext } from "../../context/DataContexts";
+import PotIcon from "../../Icons/PotIcon";
+import { formatNumber } from "../../utils/utilityFunctions";
 
 const PotsOverview = () => {
+  const pots = useContext(DataContext).pots;
+
+  const totalSaved = pots.reduce((sum, pot) => sum + pot.total, 0);
+
+  const fourPots = pots.slice(0, 4);
+
   return (
     <Stack
       direction="column"
       bgcolor={theme.palette.primary.contrastText}
-      padding="32px"
+      padding={{ xs: "24px 20px", sm: "32px" }}
       borderRadius="12px"
       gap="20px"
     >
@@ -17,7 +28,7 @@ const PotsOverview = () => {
           fontSize="20px"
           color={theme.palette.primary.main}
         >
-          Saving Pots
+          Pots
         </Typography>
         <Link
           href="/pots"
@@ -41,7 +52,70 @@ const PotsOverview = () => {
           <CaretRightIcon color={theme.palette.primary.light} />
         </Link>
       </Stack>
-      <Stack></Stack>
+      <Stack direction={{ xs: "column", sm: "row" }} gap="20px">
+        <Stack
+          flex={1}
+          direction="row"
+          padding="16px"
+          alignItems="center"
+          gap="16px"
+          height="110px"
+          bgcolor={theme.palette.background.default}
+          borderRadius="12px"
+        >
+          <PotIcon color={theme.palette.others.green} />
+          <Stack direction="column" justifyContent="space-between">
+            <Typography fontSize="14px" color={theme.palette.primary.light}>
+              Total Saved
+            </Typography>
+            <Typography fontSize="32px" color={theme.palette.primary.main}>
+              ${formatNumber(totalSaved)}
+            </Typography>
+          </Stack>
+        </Stack>
+        <Grid
+          container
+          flex={1}
+          rowSpacing="24px"
+          columnSpacing="24px"
+          columns={2}
+        >
+          {fourPots.map((pot, index) => (
+            <Grid
+              key={index}
+              size={1}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "16px",
+              }}
+            >
+              {/* Colored Bar */}
+              <Box
+                height="43px"
+                width="3px"
+                borderRadius="8px"
+                bgcolor={pot.theme}
+              />
+
+              {/* Pot Details */}
+              <Stack direction="column">
+                <Typography fontSize="12px" color={theme.palette.primary.light}>
+                  {pot.name}
+                </Typography>
+                <Typography
+                  fontSize="14px"
+                  fontWeight="bold"
+                  color={theme.palette.primary.main}
+                >
+                  ${formatNumber(pot.total)}
+                </Typography>
+              </Stack>
+            </Grid>
+          ))}
+        </Grid>
+      </Stack>
     </Stack>
   );
 };
