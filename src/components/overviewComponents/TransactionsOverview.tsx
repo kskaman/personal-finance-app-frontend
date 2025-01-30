@@ -17,17 +17,13 @@ import {
 } from "../../utils/utilityFunctions";
 import theme from "../../theme/theme";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
+import SubContainer from "../../utilityComponents/SubContainer";
 
 const TransactionsOverview = () => {
   const latestTransactions = useContext(DataContext).transactions.slice(0, 5);
 
   return (
-    <Stack
-      bgcolor={theme.palette.primary.contrastText}
-      padding={{ xs: "24px 20px", sm: "32px" }}
-      borderRadius="12px"
-      gap="32px"
-    >
+    <SubContainer gap="32px">
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography
           fontWeight="bold"
@@ -119,7 +115,7 @@ const TransactionsOverview = () => {
           </div>
         ))}
       </List>
-    </Stack>
+    </SubContainer>
   );
 };
 

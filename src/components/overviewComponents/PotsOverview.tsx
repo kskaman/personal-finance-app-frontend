@@ -6,6 +6,7 @@ import { DataContext } from "../../context/DataContexts";
 import PotIcon from "../../Icons/PotIcon";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import { formatNumber } from "../../utils/utilityFunctions";
+import SubContainer from "../../utilityComponents/SubContainer";
 
 const PotsOverview = () => {
   const pots = useContext(DataContext).pots;
@@ -15,13 +16,7 @@ const PotsOverview = () => {
   const fourPots = pots.slice(0, 4);
 
   return (
-    <Stack
-      direction="column"
-      bgcolor={theme.palette.primary.contrastText}
-      padding={{ xs: "24px 20px", sm: "32px" }}
-      borderRadius="12px"
-      gap="20px"
-    >
+    <SubContainer gap="20px">
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography
           fontWeight="bold"
@@ -116,7 +111,7 @@ const PotsOverview = () => {
           ))}
         </Grid>
       </Stack>
-    </Stack>
+    </SubContainer>
   );
 };
 

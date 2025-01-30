@@ -1,16 +1,11 @@
 import { Link, Stack, Typography } from "@mui/material";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import theme from "../../theme/theme";
+import SubContainer from "../../utilityComponents/SubContainer";
 
 const BillsOverview = () => {
   return (
-    <Stack
-      direction="column"
-      bgcolor={theme.palette.primary.contrastText}
-      padding="32px"
-      borderRadius="12px"
-      gap="20px"
-    >
+    <SubContainer gap="20px">
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography
           fontWeight="bold"
@@ -42,7 +37,7 @@ const BillsOverview = () => {
         </Link>
       </Stack>
       <Stack></Stack>
-    </Stack>
+    </SubContainer>
   );
 };
 
