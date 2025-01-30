@@ -5,13 +5,13 @@ import { Stack } from "@mui/material";
 interface SubContainerProps {
   children: ReactNode;
   padding?: object;
-  gap: string;
+  gap?: string;
 }
 
 const SubContainer = ({
   children,
   padding = { xs: "24px 20px", sm: "32px" },
-  gap,
+  gap = "20px",
 }: SubContainerProps) => {
   return (
     <Stack

@@ -5,7 +5,7 @@ import SubContainer from "../../utilityComponents/SubContainer";
 
 const BudgetsOverview = () => {
   return (
-    <SubContainer gap="20px">
+    <SubContainer>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography
           fontWeight="bold"
