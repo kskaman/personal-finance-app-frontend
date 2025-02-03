@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { DataType } from "../types/Data";
-
-import { DataContext, DataActionsContext } from "./DataContexts";
+import BalanceTransactionsProvider from "./BalanceTransactionsProvider";
+import BudgetsProvider from "./BudgetsProvider";
+import RecurringProvider from "./RecurringProvider";
+import { PotsProvider } from "./PotsProvider";
 
 interface DataProviderProps {
   children: React.ReactNode;
@@ -18,7 +20,11 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     transactions: [],
     budgets: [],
     pots: [],
+    recurringBills: [],
   }));
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Create an AbortController to cancel the request if the component unmounts
@@ -30,11 +36,14 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
           // pass the signal to axios
           signal: controller.signal,
         });
+        console.log("Data received : ", response.data);
         setData(response.data);
+        setLoading(false);
       } catch (error) {
         // Only log the error if it's not an axios cancel
         if (!axios.isCancel(error)) {
           console.error("Error fetching data:", error);
+          setError("Failed to load data");
         }
       }
     };
@@ -47,12 +56,47 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     };
   }, []);
 
+  if (error)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        Error: {error}
+      </div>
+    );
+
+  if (loading)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        Loading...
+      </div>
+    );
+
   return (
-    <DataContext.Provider value={data}>
-      <DataActionsContext.Provider value={setData}>
-        {children}
-      </DataActionsContext.Provider>
-    </DataContext.Provider>
+    <BalanceTransactionsProvider
+      balance={data.balance}
+      transactions={data.transactions}
+    >
+      <BudgetsProvider budgets={data.budgets}>
+        <RecurringProvider recurringBills={data.recurringBills}>
+          <PotsProvider pots={data.pots}>{children}</PotsProvider>
+        </RecurringProvider>
+      </BudgetsProvider>
+    </BalanceTransactionsProvider>
   );
 };
 

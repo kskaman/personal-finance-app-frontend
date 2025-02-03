@@ -451,5 +451,80 @@
             "total": 531.00,
             "theme": "#826CB0"
         }
+    ],
+    "recurringTransactions": [
+        {
+            "avatar": "./assets/images/avatars/pixel-playground.jpg",
+            "name": "Pixel Playground",
+            "category": "Entertainment",
+            "date": "2024-08-11T18:45:38Z",
+            "amount": -10.00,
+            "recurring": true,
+            "lastPaid": "2024-08-11T18:45:38Z"
+        },
+        {
+            "avatar": "./assets/images/avatars/elevate-education.jpg",
+            "name": "Elevate Education",
+            "category": "Education",
+            "date": "2024-08-04T11:15:22Z",
+            "amount": -50.00,
+            "recurring": true,
+            "lastPaid": "2024-08-04T11:15:22Z"
+        },
+        {
+            "avatar": "./assets/images/avatars/serenity-spa-and-wellness.jpg",
+            "name": "Serenity Spa & Wellness",
+            "category": "Personal Care",
+            "date": "2024-08-03T14:00:37Z",
+            "amount": -30.00,
+            "recurring": true,
+            "lastPaid": "2024-08-03T14:00:37Z"
+        },
+        {
+            "avatar": "./assets/images/avatars/spark-electric-solutions.jpg",
+            "name": "Spark Electric Solutions",
+            "category": "Bills",
+            "date": "2024-08-02T09:25:11Z",
+            "amount": -100.00,
+            "recurring": true,
+            "lastPaid": "2024-08-02T09:25:11Z"
+        },
+        {
+            "avatar": "./assets/images/avatars/aqua-flow-utilities.jpg",
+            "name": "Aqua Flow Utilities",
+            "category": "Bills",
+            "date": "2024-07-30T13:20:14Z",
+            "amount": -100.00,
+            "recurring": true,
+            "lastPaid": "2024-07-30T13:20:14Z"
+        },
+        {
+            "avatar": "./assets/images/avatars/ecofuel-energy.jpg",
+            "name": "EcoFuel Energy",
+            "category": "Bills",
+            "date": "2024-07-29T11:55:29Z",
+            "amount": -35.00,
+            "recurring": true,
+            "lastPaid": "2024-07-29T11:55:29Z"
+        },
+        {
+            "avatar": "./assets/images/avatars/bytewise.jpg",
+            "name": "ByteWise",
+            "category": "Lifestyle",
+            "date": "2024-07-23T09:35:14Z",
+            "amount": -49.99,
+            "recurring": true,
+            "lastPaid": "2024-07-23T09:35:14Z"
+        },
+        {
+            "avatar": "./assets/images/avatars/nimbus-data-storage.jpg",
+            "name": "Nimbus Data Storage",
+            "category": "Bills",
+            "date": "2024-07-21T10:05:42Z",
+            "amount": -9.99,
+            "recurring": true,
+            "lastPaid": "2024-07-21T10:05:42Z"
+        }
     ]
+            
 }

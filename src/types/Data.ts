@@ -13,6 +13,17 @@ export interface Transaction {
     recurring: boolean;
 }
 
+export interface RecurringBill extends Transaction {
+    lastPaid: string;
+    dueDate: string;
+}
+
+export interface RecurringSummary {
+    paid: { count: number; total: number };
+    unpaid: { count: number; total: number };
+    dueSoon: { count: number; total: number };
+}
+
 export interface Budget {
     category: string;
     maximum: number;
@@ -31,6 +42,7 @@ export interface DataType {
     transactions: Transaction[];
     budgets: Budget[];
     pots: Pot[];
+    recurringBills: RecurringBill[]; 
 }
   
   

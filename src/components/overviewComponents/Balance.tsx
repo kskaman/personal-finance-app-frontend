@@ -4,10 +4,10 @@ import theme from "../../theme/theme";
 
 import { formatNumber } from "../../utils/utilityFunctions";
 import { useContext } from "react";
-import { DataContext } from "../../context/DataContexts";
+import { BalanceTransactionsDataContext } from "../../context/BalanceTransactionsContext";
 
 const Balance = () => {
-  const balance = useContext(DataContext).balance;
+  const balance = useContext(BalanceTransactionsDataContext).balance;
 
   return (
     <>

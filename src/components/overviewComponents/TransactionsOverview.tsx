@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useContext } from "react";
-import { DataContext } from "../../context/DataContexts";
+
 import {
   formatDateToReadable,
   formatNumber,
@@ -18,9 +18,12 @@ import {
 import theme from "../../theme/theme";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import SubContainer from "../../utilityComponents/SubContainer";
+import { BalanceTransactionsDataContext } from "../../context/BalanceTransactionsContext";
 
 const TransactionsOverview = () => {
-  const latestTransactions = useContext(DataContext).transactions.slice(0, 5);
+  const latestTransactions = useContext(
+    BalanceTransactionsDataContext
+  ).transactions.slice(0, 5);
 
   return (
     <SubContainer gap="32px">

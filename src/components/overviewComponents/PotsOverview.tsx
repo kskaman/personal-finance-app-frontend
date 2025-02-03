@@ -2,14 +2,14 @@ import { Box, Link, Stack, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import theme from "../../theme/theme";
 import { useContext } from "react";
-import { DataContext } from "../../context/DataContexts";
 import PotIcon from "../../Icons/PotIcon";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import { formatNumber } from "../../utils/utilityFunctions";
 import SubContainer from "../../utilityComponents/SubContainer";
+import { PotsDataContext } from "../../context/PotsContext";
 
 const PotsOverview = () => {
-  const pots = useContext(DataContext).pots;
+  const pots = useContext(PotsDataContext).pots;
 
   const totalSaved = pots.reduce((sum, pot) => sum + pot.total, 0);
 
