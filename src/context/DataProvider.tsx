@@ -36,7 +36,6 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
           // pass the signal to axios
           signal: controller.signal,
         });
-        console.log("Data received : ", response.data);
         setData(response.data);
         setLoading(false);
       } catch (error) {

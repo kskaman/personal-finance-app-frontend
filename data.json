@@ -452,7 +452,7 @@
             "theme": "#826CB0"
         }
     ],
-    "recurringTransactions": [
+    "recurringBills": [
         {
             "avatar": "./assets/images/avatars/pixel-playground.jpg",
             "name": "Pixel Playground",
