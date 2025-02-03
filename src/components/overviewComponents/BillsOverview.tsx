@@ -2,8 +2,22 @@ import { Link, Stack, Typography } from "@mui/material";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import theme from "../../theme/theme";
 import SubContainer from "../../utilityComponents/SubContainer";
+import { useContext } from "react";
+import { RecurringDataContext } from "../../context/RecurringContext";
+import { formatNumber } from "../../utils/utilityFunctions";
 
 const BillsOverview = () => {
+  const { recurringSummary } = useContext(RecurringDataContext);
+
+  const summaryData = {
+    paid: { label: "Paid Bills", borderColor: theme.palette.others.green },
+    unpaid: {
+      label: "Total Upcoming",
+      borderColor: theme.palette.others.yellow,
+    },
+    dueSoon: { label: "Due Soon", borderColor: theme.palette.others.cyan },
+  };
+
   return (
     <SubContainer>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -36,7 +50,35 @@ const BillsOverview = () => {
           <CaretRightIcon color={theme.palette.primary.light} />
         </Link>
       </Stack>
-      <Stack></Stack>
+      <Stack gap="12px">
+        {Object.entries(recurringSummary).map(([key, summary]) => {
+          const typedKey = key as keyof typeof summaryData;
+
+          return (
+            <Stack
+              key={key}
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              padding="20px 16px"
+              borderRadius="8px"
+              borderLeft={`4px solid ${summaryData[typedKey].borderColor}`}
+              bgcolor={theme.palette.background.default}
+            >
+              <Typography fontSize="14px" color={theme.palette.primary.light}>
+                {summaryData[typedKey].label}
+              </Typography>
+              <Typography
+                fontSize="14px"
+                fontWeight="bold"
+                color={theme.palette.primary.main}
+              >
+                ${formatNumber(summary.total)}
+              </Typography>
+            </Stack>
+          );
+        })}
+      </Stack>
     </SubContainer>
   );
 };

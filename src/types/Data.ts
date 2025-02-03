@@ -14,9 +14,15 @@ export interface Transaction {
 }
 
 export interface RecurringBill extends Transaction {
+    avatar?: string;
+    name: string;
+    category: string;
+    amount: number;
+    recurring: boolean;
     lastPaid: string;
     dueDate: string;
 }
+
 
 export interface RecurringSummary {
     paid: { count: number; total: number };

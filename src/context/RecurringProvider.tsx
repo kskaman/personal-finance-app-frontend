@@ -28,7 +28,10 @@ function computeRecurringSummary(bills: RecurringBill[]): RecurringSummary {
 
     // Parse Dates
     const lastPaidDate = lastPaid ? new Date(lastPaid) : null;
-    const dueDateObj = dueDate ? new Date(dueDate) : null;
+    const dueDateObj =
+      dueDate && !isNaN(Number(dueDate))
+        ? new Date(now.getFullYear(), now.getMonth(), Number(dueDate))
+        : null;
 
     // 1) Determine if bills is "paid" for this cycle
     const isPaid = lastPaidDate && lastPaidDate >= startOfMonth;
@@ -60,7 +63,6 @@ function computeRecurringSummary(bills: RecurringBill[]): RecurringSummary {
 }
 
 const RecurringProvider = ({ children, recurringBills }: Props) => {
-  console.log(recurringBills);
   const [recurringState, setRecurringState] = useState<RecurringBill[]>(
     () => recurringBills
   );

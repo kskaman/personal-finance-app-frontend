@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, ReactNode } from "react";
+import { useState, useMemo, ReactNode } from "react";
 
 import {
   BalanceTransactionsDataContext,
@@ -20,10 +20,6 @@ const BalanceTransactionsProvider = ({
   const [balanceState, setBalanceState] = useState<Balance>(balance);
   const [transactionsState, setTransactionsState] =
     useState<Transaction[]>(transactions);
-
-  useEffect(() => {
-    console.log("Balance state changed : ", balanceState);
-  }, [balanceState]);
 
   const addTransaction = (newTx: Transaction) => {
     // function to add new transaction
