@@ -25,7 +25,7 @@ const App = () => {
 
       <Stack
         bgcolor={theme.palette.background.default}
-        direction={{ xs: "column", md: "row" }}
+        direction={isTabletOrMobile ? "column" : "row"}
         sx={{ height: "100%", width: "100%" }}
       >
         {!isTabletOrMobile && <Navbar />}
