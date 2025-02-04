@@ -41,7 +41,7 @@ const BalanceTransactionsProvider = ({
     });
   };
 
-  const monthlySpentByCategory = useMemo(() => {
+  const monthlySpentByCategory: Record<string, number> = useMemo(() => {
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();

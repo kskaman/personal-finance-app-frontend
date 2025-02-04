@@ -47,7 +47,10 @@ const PotsOverview = () => {
           <CaretRightIcon color={theme.palette.primary.light} />
         </Link>
       </Stack>
-      <Stack direction={{ xs: "column", sm: "row" }} gap="20px">
+      <Stack
+        direction={{ xs: "column", sm: "row", lg: "column", xl: "row" }}
+        gap="20px"
+      >
         <Stack
           flex={1}
           direction="row"
@@ -88,7 +91,7 @@ const PotsOverview = () => {
             >
               {/* Colored Bar */}
               <Box
-                height="43px"
+                height="100%"
                 width="3px"
                 borderRadius="8px"
                 bgcolor={pot.theme}
