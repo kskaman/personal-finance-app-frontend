@@ -9,6 +9,7 @@ import BudgetsPage from "./pages/BudgetsPage";
 import PotsPage from "./pages/PotsPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import TabNavBar from "./components/TabNavBar";
+import theme from "./theme/theme";
 
 const App = () => {
   const isMobile = useMediaQuery("(max-width:520px)");
@@ -23,6 +24,7 @@ const App = () => {
     **/}
 
       <Stack
+        bgcolor={theme.palette.background.default}
         direction={{ xs: "column", md: "row" }}
         sx={{ height: "100%", width: "100%" }}
       >
