@@ -8,6 +8,45 @@ import TransactionsTable from "../components/trasactionsComponents/TransactionsT
 import PageNav from "../components/trasactionsComponents/PageNav";
 import { useContext, useState } from "react";
 import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
+import { Transaction } from "../types/Data";
+
+const filterAndSortTransactions = (
+  transactions: Transaction[],
+  searchName: string,
+  category: string,
+  sortBy: string
+): Transaction[] => {
+  const filteredTx = transactions.filter((txn) => {
+    const matchesSearch = searchName
+      ? txn.name.toLowerCase().includes(searchName.toLowerCase().trim())
+      : true;
+
+    const matchesCategory =
+      category === "All Transactions" || txn.category === category;
+
+    return matchesSearch && matchesCategory;
+  });
+
+  // Sorting Logic
+  return filteredTx.sort((a, b) => {
+    switch (sortBy) {
+      case "Latest":
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      case "Oldest":
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      case "A to Z":
+        return a.name.localeCompare(b.name);
+      case "Z to A":
+        return b.name.localeCompare(a.name);
+      case "Highest":
+        return b.amount - a.amount;
+      case "Lowest":
+        return a.amount - b.amount;
+      default:
+        return 0;
+    }
+  });
+};
 
 const TransactionsPage = () => {
   const [pageNum, setPageNum] = useState<number>(() => 1);
@@ -23,8 +62,16 @@ const TransactionsPage = () => {
     }
   };
 
-  // Filter functionality . To be implemented
-  const filteredTx = transactions.map((transx) => transx);
+  const [searchName, setSearchName] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("Latest");
+  const [category, setCategory] = useState<string>("All Transactions");
+
+  const filteredTx: Transaction[] = filterAndSortTransactions(
+    transactions,
+    searchName,
+    category,
+    sortBy
+  );
 
   const i = pageNum * 10;
   const selectedTx = filteredTx.slice(i - 10, i);
@@ -44,7 +91,15 @@ const TransactionsPage = () => {
             Transactions
           </Typography>
           <SubContainer>
-            <Filter />
+            <Filter
+              searchName={searchName}
+              setSearchName={setSearchName}
+              category={category}
+              setCategory={setCategory}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+            />
+
             <TransactionsTable txns={selectedTx} />
 
             <PageNav

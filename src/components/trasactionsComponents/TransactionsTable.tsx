@@ -28,7 +28,7 @@ const TransactionsTable = ({ txns }: Props) => {
           <TableCell
             sx={{
               fontSize: "12px",
-              color: theme.palette.primary.main,
+              color: theme.palette.primary.light,
               textAlign: "left",
             }}
           >
@@ -37,7 +37,7 @@ const TransactionsTable = ({ txns }: Props) => {
           <TableCell
             sx={{
               fontSize: "12px",
-              color: theme.palette.primary.main,
+              color: theme.palette.primary.light,
               textAlign: "left",
             }}
           >
@@ -46,7 +46,7 @@ const TransactionsTable = ({ txns }: Props) => {
           <TableCell
             sx={{
               fontSize: "12px",
-              color: theme.palette.primary.main,
+              color: theme.palette.primary.light,
               textAlign: "left",
             }}
           >
@@ -55,7 +55,7 @@ const TransactionsTable = ({ txns }: Props) => {
           <TableCell
             sx={{
               fontSize: "12px",
-              color: theme.palette.primary.main,
+              color: theme.palette.primary.light,
               textAlign: "right",
             }}
           >
@@ -65,8 +65,7 @@ const TransactionsTable = ({ txns }: Props) => {
       </TableHead>
 
       <TableBody>
-        {txns.map((txn, index) => {
-          console.log(index === txns.length - 1);
+        {txns.map((txn) => {
           return (
             <TableRow
               key={txn.date}
