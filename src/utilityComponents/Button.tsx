@@ -43,7 +43,7 @@ const Button = ({
       onMouseEnter={(e) => {
         e.currentTarget.style.backgroundColor = hoverBgColor || "inherit";
         e.currentTarget.style.color = hoverColor;
-        e.currentTarget.style.borderColor = hoverColor;
+        e.currentTarget.style.borderColor = hoverBgColor;
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.backgroundColor = backgroundColor;
