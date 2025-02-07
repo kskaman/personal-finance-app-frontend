@@ -3,7 +3,7 @@ import { InputAdornment, TextField } from "@mui/material";
 interface Props {
   placeholder: string;
   value: string;
-  width: string;
+  width: object;
   Icon: React.FC<{ color: string }>;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }

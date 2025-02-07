@@ -1,8 +1,15 @@
-import { categories } from "../../categories";
-import { SelectChangeEvent, Stack, Typography } from "@mui/material";
+import { useState, useEffect, useRef } from "react";
+import { categories } from "../../data/categories";
+import {
+  SelectChangeEvent,
+  Stack,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import CustomInput from "../../utilityComponents/CustomInput";
 import CustomDropdown from "../../utilityComponents/CustomDropdown";
 import SearchIcon from "../../Icons/SearchIcon";
+import FilterIcon from "../../Icons/FilterIcon";
 import theme from "../../theme/theme";
 
 interface FilterProps {
@@ -23,6 +30,44 @@ const sortOptions = [
   "Lowest",
 ];
 
+const FilterOption = ({
+  label,
+  options,
+  value,
+  width,
+  justifyContent,
+  onChange,
+}: {
+  label: string;
+  options: string[];
+  value: string;
+  width: string;
+  justifyContent?: string;
+  onChange: (event: SelectChangeEvent) => void;
+}) => (
+  <Stack
+    width={width}
+    direction="row"
+    alignItems="center"
+    gap="8px"
+    justifyContent={justifyContent || "flex-start"}
+  >
+    <Typography
+      fontSize="14px"
+      color={theme.palette.primary.light}
+      whiteSpace="nowrap"
+    >
+      {label}
+    </Typography>
+    <CustomDropdown
+      color={theme.palette.primary.main}
+      options={options}
+      value={value}
+      onChange={onChange}
+    />
+  </Stack>
+);
+
 const Filter = ({
   searchName,
   setSearchName,
@@ -31,60 +76,85 @@ const Filter = ({
   sortBy,
   setSortBy,
 }: FilterProps) => {
-  return (
-    <Stack direction="row" height="45px">
-      <CustomInput
-        placeholder="Search Transaction"
-        value={searchName}
-        width="375px"
-        Icon={SearchIcon}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          setSearchName(event.target.value)
-        }
-      />
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [parentWidth, setParentWidth] = useState<number>(0);
 
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setParentWidth(entry.contentRect.width);
+      }
+    });
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  return (
+    <>
       <Stack
-        width="175px"
+        ref={containerRef}
         direction="row"
+        height="45px"
+        gap="24px"
         alignItems="center"
-        marginLeft="auto"
-        gap="8px"
+        justifyContent="space-between"
       >
-        <Typography
-          fontSize="14px"
-          color={theme.palette.primary.light}
-          width="48px"
-          whiteSpace="nowrap"
-        >
-          Sort By
-        </Typography>
-        <CustomDropdown
-          color={theme.palette.primary.main}
-          options={sortOptions}
-          value={sortBy}
-          onChange={(event: SelectChangeEvent) => setSortBy(event.target.value)}
-        />
-      </Stack>
-      <Stack
-        width="245px"
-        direction="row"
-        alignItems="center"
-        marginLeft="24px"
-        gap="8px"
-      >
-        <Typography fontSize="14px" color={theme.palette.primary.light}>
-          Category
-        </Typography>
-        <CustomDropdown
-          color={theme.palette.primary.main}
-          options={["All Transactions", ...categories]}
-          value={category}
-          onChange={(event: SelectChangeEvent) =>
-            setCategory(event.target.value)
+        <CustomInput
+          placeholder="Search Transaction"
+          value={searchName}
+          width={{ xs: "100%", sm: "375px" }}
+          Icon={SearchIcon}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchName(event.target.value)
           }
         />
+        {parentWidth < 800 ? (
+          <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+            <FilterIcon color={theme.palette.primary.main} />
+          </IconButton>
+        ) : (
+          <Stack direction="row" gap="24px" alignItems="center">
+            <FilterOption
+              width="177px"
+              label="Sort By"
+              options={sortOptions}
+              value={sortBy}
+              onChange={(event) => setSortBy(event.target.value)}
+            />
+            <FilterOption
+              width="245px"
+              label="Category"
+              options={["All Transactions", ...categories]}
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
+            />
+          </Stack>
+        )}
       </Stack>
-    </Stack>
+      {isFilterOpen && parentWidth < 800 && (
+        <Stack direction="column" gap="16px" marginTop="8px" width="100%">
+          <FilterOption
+            width={"100%"}
+            label="Sort By"
+            options={sortOptions}
+            value={sortBy}
+            justifyContent="space-between"
+            onChange={(event) => setSortBy(event.target.value)}
+          />
+          <FilterOption
+            width={"100%"}
+            label="Category"
+            options={["All Transactions", ...categories]}
+            value={category}
+            justifyContent="space-between"
+            onChange={(event) => setCategory(event.target.value)}
+          />
+        </Stack>
+      )}
+    </>
   );
 };
 

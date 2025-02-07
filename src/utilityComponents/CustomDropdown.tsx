@@ -5,6 +5,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
+import theme from "../theme/theme";
 
 interface Props {
   label?: string;
@@ -24,7 +25,7 @@ const CustomDropdown = ({
   onChange,
 }: Props) => {
   return (
-    <FormControl sx={{ width: width || "100%", height: "100%" }}>
+    <FormControl sx={{ width: width || "50%", height: "100%" }}>
       {label && <InputLabel>{label}</InputLabel>}
       <Select
         value={value}
@@ -35,13 +36,48 @@ const CustomDropdown = ({
           display: "flex",
           alignItems: "center",
           borderRadius: "8px",
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: theme.palette.primary.main,
+          },
+        }}
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              minHeight: "auto",
+              maxHeight: "250px",
+              overflowY: "auto",
+              mt: "8px", // gap between select and dropdown
+              borderRadius: "8px",
+              padding: "12px 20px",
+              minWidth: "60px",
+              maxWidth: "fit-content",
+            },
+          },
         }}
       >
         {options.map((option) => (
           <MenuItem
             key={option}
             value={option}
-            sx={{ fontSize: "14px", color: { color } }}
+            sx={{
+              fontSize: "14px",
+              fontWeight: value === option ? "bold" : "normal",
+              color: { color },
+              padding: "12px 0",
+              borderBottom: `1px solid ${theme.palette.secondary.contrastText}`,
+              "&:last-child": { borderBottom: "none" },
+              "&:hover": { backgroundColor: "transparent" }, // Remove hover background
+              "&.Mui-selected": {
+                backgroundColor: "transparent", // Remove active background
+                "&:hover": { backgroundColor: "transparent" },
+              },
+              // Remove background when navigating with keyboard
+              "&.Mui-focusVisible": { backgroundColor: "transparent" },
+              // Remove blue background when selected
+              "&.Mui-selected.Mui-focusVisible": {
+                backgroundColor: "transparent",
+              },
+            }}
           >
             {option}
           </MenuItem>
