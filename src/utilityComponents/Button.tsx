@@ -9,9 +9,11 @@ interface Props {
   onClick: () => void;
   hoverColor: string;
   hoverBgColor: string;
+  flex?: number;
 }
 
 const Button = ({
+  flex,
   height = "40px",
   padding = "16px",
   backgroundColor = "inherit",
@@ -26,6 +28,7 @@ const Button = ({
   return (
     <button
       style={{
+        flex,
         height,
         padding,
         backgroundColor,
@@ -34,6 +37,7 @@ const Button = ({
         flexDirection: "row",
         gap: "16px",
         alignItems: "center",
+        justifyContent: "center",
         borderRadius: "8px",
         border: `1px solid ${borderColor || backgroundColor}`,
         color,
