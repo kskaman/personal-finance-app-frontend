@@ -9,6 +9,7 @@ interface SubContainerProps {
   height?: string;
   flex?: number;
   bgColor?: string;
+  direction?: "row" | "column";
 }
 
 const SubContainer = ({
@@ -18,10 +19,11 @@ const SubContainer = ({
   flex,
   bgColor,
   height,
+  direction = "column",
 }: SubContainerProps) => {
   return (
     <Stack
-      direction="column"
+      direction={direction}
       flex={flex}
       height={height || "auto"}
       bgcolor={bgColor || theme.palette.primary.contrastText}

@@ -13,7 +13,8 @@ export interface Transaction {
     recurring: boolean;
 }
 
-export interface RecurringBill extends Transaction {
+export interface RecurringBill {
+    id: string;
     avatar?: string;
     name: string;
     category: string;

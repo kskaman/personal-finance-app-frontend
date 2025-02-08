@@ -454,6 +454,7 @@
     ],
     "recurringBills": [
     {
+        "id": "d3b63b24-5f2f-4dbd-a2bf-5d7ce2f2489b",
       "avatar": "./assets/images/avatars/pixel-playground.jpg",
       "name": "Pixel Playground",
       "category": "Entertainment",
@@ -463,6 +464,7 @@
       "dueDate": "11"
     },
     {
+        "id": "47d01dfd-bd69-4b5b-80a6-3dd3f22db9ae",
       "avatar": "./assets/images/avatars/elevate-education.jpg",
       "name": "Elevate Education",
       "category": "Education",
@@ -472,6 +474,7 @@
       "dueDate": "4"
     },
     {
+        "id": "84651b45-a051-4473-a288-573b19b7dd8c",
       "avatar": "./assets/images/avatars/serenity-spa-and-wellness.jpg",
       "name": "Serenity Spa & Wellness",
       "category": "Personal Care",
@@ -481,6 +484,7 @@
       "dueDate": "3"
     },
     {
+        "id": "f120c8e0-1772-4de5-80b0-e61a09ea2a32",
       "avatar": "./assets/images/avatars/spark-electric-solutions.jpg",
       "name": "Spark Electric Solutions",
       "category": "Bills",
@@ -490,6 +494,7 @@
       "dueDate": "2"
     },
     {
+        "id": "d919b174-ad23-4884-83d1-6505c815f1be",
       "avatar": "./assets/images/avatars/aqua-flow-utilities.jpg",
       "name": "Aqua Flow Utilities",
       "category": "Bills",
@@ -499,6 +504,7 @@
       "dueDate": "30"
     },
     {
+        "id": "5d377d7c-4fea-4290-9aaa-1ccd9f2f7e37",
       "avatar": "./assets/images/avatars/ecofuel-energy.jpg",
       "name": "EcoFuel Energy",
       "category": "Bills",
@@ -508,6 +514,7 @@
       "dueDate": "29"
     },
     {
+        "id": "5b3d1ae9-969b-4e42-8eeb-60b464b96ec4",
       "avatar": "./assets/images/avatars/bytewise.jpg",
       "name": "ByteWise",
       "category": "Lifestyle",
@@ -517,6 +524,7 @@
       "dueDate": "23"
     },
     {
+        "id": "20edc438-73c6-4498-8360-d96f9d38f2dc",
       "avatar": "./assets/images/avatars/nimbus-data-storage.jpg",
       "name": "Nimbus Data Storage",
       "category": "Bills",

@@ -51,7 +51,7 @@ const PotItem = ({ pot }: Props) => {
         bgColor={theme.palette.background.default}
       />
 
-      <Stack direction="row" gap="24px" height="53px">
+      <Stack direction="row" gap="16px" height="53px">
         <Button
           flex={1}
           height="100%"
