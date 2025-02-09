@@ -12,7 +12,7 @@ import {
 import { RecurringBill } from "../../types/Data";
 import theme from "../../theme/theme";
 import {
-  formatDate,
+  formatDateToReadable,
   formatNumber,
   getInitials,
   getRandomColor,
@@ -65,6 +65,7 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
             <TableRow
               key={bill.id}
               sx={{
+                "&:first-of-type td": { paddingTop: "24px" },
                 "&:last-child td": { border: 0 },
               }}
             >
@@ -108,7 +109,7 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
                   fontSize: "12px",
                 }}
               >
-                {formatDate(bill.dueDate)}
+                {formatDateToReadable(bill.lastPaid)}
               </TableCell>
               <TableCell
                 sx={{

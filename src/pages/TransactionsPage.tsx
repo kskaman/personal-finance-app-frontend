@@ -1,12 +1,12 @@
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import SubContainer from "../utilityComponents/SubContainer";
-import Filter from "../components/trasactionsComponents/Filter";
+import Filter from "../utilityComponents/Filter";
 import TransactionsTable from "../components/trasactionsComponents/TransactionsTable";
 import PageNav from "../components/trasactionsComponents/PageNav";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
 import { Transaction } from "../types/Data";
 
@@ -49,6 +49,21 @@ const filterAndSortTransactions = (
 };
 
 const TransactionsPage = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [parentWidth, setParentWidth] = useState<number>(0);
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setParentWidth(entry.contentRect.width);
+      }
+    });
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+    return () => resizeObserver.disconnect();
+  }, []);
+
   const [pageNum, setPageNum] = useState<number>(() => 1);
 
   const transactions = useContext(BalanceTransactionsDataContext).transactions;
@@ -79,37 +94,40 @@ const TransactionsPage = () => {
   return (
     <>
       <SetTitle title="Transactions" />
-      <PageDiv>
-        <Stack direction="column" gap="32px">
-          <Typography
-            width="100%"
-            height="56px"
-            fontSize="32px"
-            fontWeight="bold"
-            color={theme.palette.primary.main}
-          >
-            Transactions
-          </Typography>
-          <SubContainer>
-            <Filter
-              searchName={searchName}
-              setSearchName={setSearchName}
-              category={category}
-              setCategory={setCategory}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-            />
+      <Box ref={containerRef}>
+        <PageDiv>
+          <Stack direction="column" gap="32px">
+            <Typography
+              width="100%"
+              height="56px"
+              fontSize="32px"
+              fontWeight="bold"
+              color={theme.palette.primary.main}
+            >
+              Transactions
+            </Typography>
+            <SubContainer>
+              <Filter
+                parentWidth={parentWidth}
+                searchName={searchName}
+                setSearchName={setSearchName}
+                category={category}
+                setCategory={setCategory}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+              />
 
-            <TransactionsTable txns={selectedTx} />
+              <TransactionsTable txns={selectedTx} />
 
-            <PageNav
-              numbers={numbers}
-              selectedPage={pageNum}
-              handlePageSelect={handlePageChange}
-            />
-          </SubContainer>
-        </Stack>
-      </PageDiv>
+              <PageNav
+                numbers={numbers}
+                selectedPage={pageNum}
+                handlePageSelect={handlePageChange}
+              />
+            </SubContainer>
+          </Stack>
+        </PageDiv>
+      </Box>
     </>
   );
 };

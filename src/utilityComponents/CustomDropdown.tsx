@@ -25,7 +25,7 @@ const CustomDropdown = ({
   onChange,
 }: Props) => {
   return (
-    <FormControl sx={{ width: width || "50%", height: "100%" }}>
+    <FormControl sx={{ width: width, height: "100%" }}>
       {label && <InputLabel>{label}</InputLabel>}
       <Select
         value={value}

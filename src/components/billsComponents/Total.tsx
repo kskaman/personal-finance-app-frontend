@@ -12,7 +12,7 @@ interface TotalProps {
 const Total = ({ parentWidth, totalBill }: TotalProps) => {
   return (
     <SubContainer
-      direction={parentWidth < 500 ? "column" : "row"}
+      direction={parentWidth < 500 ? "row" : "column"}
       gap="32px"
       padding={{ xs: "24px" }}
       bgColor={theme.palette.primary.main}

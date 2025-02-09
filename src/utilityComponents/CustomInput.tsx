@@ -1,4 +1,5 @@
 import { InputAdornment, TextField } from "@mui/material";
+import theme from "../theme/theme";
 
 interface Props {
   placeholder: string;
@@ -19,6 +20,12 @@ const CustomInput = ({ placeholder, value, width, onChange, Icon }: Props) => {
         "& .MuiOutlinedInput-root": {
           borderRadius: "8px", // Apply border-radius to input
           height: "100%",
+          "&.Mui-focused": {
+            "& .MuiOutlinedInput-notchedOutline": {
+              // Apply to the fieldset border, on focus
+              borderColor: theme.palette.primary.main,
+            },
+          },
         },
         "& .MuiOutlinedInput-notchedOutline": {
           borderRadius: "8px", // Apply border-radius to fieldset (outline)

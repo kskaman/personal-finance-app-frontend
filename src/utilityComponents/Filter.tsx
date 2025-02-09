@@ -1,22 +1,23 @@
-import { useState, useEffect, useRef } from "react";
-import { categories } from "../../data/categories";
+import { useState } from "react";
+import { categories } from "../data/categories";
 import {
   SelectChangeEvent,
   Stack,
   Typography,
   IconButton,
 } from "@mui/material";
-import CustomInput from "../../utilityComponents/CustomInput";
-import CustomDropdown from "../../utilityComponents/CustomDropdown";
-import SearchIcon from "../../Icons/SearchIcon";
-import FilterIcon from "../../Icons/FilterIcon";
-import theme from "../../theme/theme";
+import CustomInput from "./CustomInput";
+import CustomDropdown from "./CustomDropdown";
+import SearchIcon from "../Icons/SearchIcon";
+import FilterIcon from "../Icons/FilterIcon";
+import theme from "../theme/theme";
 
 interface FilterProps {
+  parentWidth: number;
   searchName: string;
   setSearchName: React.Dispatch<React.SetStateAction<string>>;
-  category: string;
-  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  category?: string;
+  setCategory?: React.Dispatch<React.SetStateAction<string>>;
   sortBy: string;
   setSortBy: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -60,6 +61,7 @@ const FilterOption = ({
       {label}
     </Typography>
     <CustomDropdown
+      width="fit-content"
       color={theme.palette.primary.main}
       options={options}
       value={value}
@@ -69,6 +71,7 @@ const FilterOption = ({
 );
 
 const Filter = ({
+  parentWidth,
   searchName,
   setSearchName,
   category,
@@ -77,25 +80,10 @@ const Filter = ({
   setSortBy,
 }: FilterProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [parentWidth, setParentWidth] = useState<number>(0);
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setParentWidth(entry.contentRect.width);
-      }
-    });
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-    return () => resizeObserver.disconnect();
-  }, []);
 
   return (
     <>
       <Stack
-        ref={containerRef}
         direction="row"
         height="45px"
         gap="24px"
@@ -124,13 +112,15 @@ const Filter = ({
               value={sortBy}
               onChange={(event) => setSortBy(event.target.value)}
             />
-            <FilterOption
-              width="245px"
-              label="Category"
-              options={["All Transactions", ...categories]}
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
-            />
+            {category && setCategory && (
+              <FilterOption
+                width="245px"
+                label="Category"
+                options={["All Transactions", ...categories]}
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              />
+            )}
           </Stack>
         )}
       </Stack>
@@ -144,14 +134,16 @@ const Filter = ({
             justifyContent="space-between"
             onChange={(event) => setSortBy(event.target.value)}
           />
-          <FilterOption
-            width={"100%"}
-            label="Category"
-            options={["All Transactions", ...categories]}
-            value={category}
-            justifyContent="space-between"
-            onChange={(event) => setCategory(event.target.value)}
-          />
+          {category && setCategory && (
+            <FilterOption
+              width={"100%"}
+              label="Category"
+              options={["All Transactions", ...categories]}
+              value={category}
+              justifyContent="space-between"
+              onChange={(event) => setCategory(event.target.value)}
+            />
+          )}
         </Stack>
       )}
     </>
