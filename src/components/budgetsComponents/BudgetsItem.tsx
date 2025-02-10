@@ -18,7 +18,7 @@ import {
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import BudgetsProgressBar from "../../utilityComponents/BudgetsProgressBar";
 import { Budget, Transaction } from "../../types/Data";
-import Button from "../../utilityComponents/Button";
+import OptionsButton from "../modalComponents/OptionsButton";
 
 interface BudgetItemProps {
   budget: Budget;
@@ -48,19 +48,11 @@ const BudgetsItem = ({
         >
           {budget.category}
         </Typography>
-        <Box marginLeft="auto">
-          <Button
-            height="20px"
-            backgroundColor="inherit"
-            color={theme.palette.primary.light}
-            hoverBgColor={theme.palette.text.primary}
-            hoverColor="inherit"
-            onClick={() => console.log("clicked ...")}
-            borderColor={theme.palette.text.primary}
-          >
-            <Typography>...</Typography>
-          </Button>
-        </Box>
+        <OptionsButton
+          type="budget"
+          onEdit={() => console.log("Edit Modal")}
+          onDelete={() => console.log("Delete Modal")}
+        />
       </Stack>
       <BudgetsProgressBar
         value={monthlySpentForCategory}

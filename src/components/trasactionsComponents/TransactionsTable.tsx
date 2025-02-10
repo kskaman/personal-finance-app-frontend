@@ -16,7 +16,7 @@ import {
   formatNumber,
   getInitials,
 } from "../../utils/utilityFunctions";
-import Button from "../../utilityComponents/Button";
+import OptionsButton from "../modalComponents/OptionsButton";
 
 interface Props {
   txns: Transaction[];
@@ -30,13 +30,11 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
       <TableHead
         sx={{
           // Keep it in DOM but hide
-          visibility: parentWidth < 600 ? "hidden" : "visible",
-          // Ensure no layout shifts
-          height: parentWidth < 600 ? 0 : "auto",
+          display: parentWidth < 700 ? "none" : "table-header-group",
           // Smooth transition
-          opacity: parentWidth < 600 ? 0 : 1,
+          opacity: parentWidth < 700 ? 0 : 1,
           // Smooth fade-in effect
-          transition: "opacity 0.3s ease-in-out",
+          transition: "opacity 0.3s ease",
         }}
       >
         <TableRow>
@@ -85,12 +83,13 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
           <TableRow
             key={txn.id}
             sx={{
-              display: parentWidth < 600 ? "flex" : "table-row",
+              width: "100%",
+              display: parentWidth < 700 ? "flex" : "table-row",
               "&:last-child td": { border: 0 },
             }}
           >
             {/* MOBILE VIEW (Condensed layout for small screens) */}
-            {parentWidth < 600 && (
+            {parentWidth < 700 && (
               <TableCell
                 sx={{
                   display: "flex",
@@ -157,17 +156,11 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
                   </Typography>
 
                   {/* Action Button */}
-                  <Button
-                    height="20px"
-                    backgroundColor="inherit"
-                    color={theme.palette.primary.light}
-                    hoverBgColor={theme.palette.text.primary}
-                    hoverColor="inherit"
-                    onClick={() => console.log("clicked ...")}
-                    borderColor={theme.palette.text.primary}
-                  >
-                    <Typography>...</Typography>
-                  </Button>
+                  <OptionsButton
+                    type="transaction"
+                    onEdit={() => console.log("Edit Transaction")}
+                    onDelete={() => console.log("Delete Transaction")}
+                  />
                 </Stack>
 
                 {/* Category + Date (Below Name) */}
@@ -185,7 +178,7 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
             )}
 
             {/* DESKTOP VIEW (Regular Table Format) */}
-            {parentWidth >= 600 && (
+            {parentWidth >= 700 && (
               <>
                 <TableCell
                   sx={{
@@ -245,17 +238,11 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
                   {formatNumber(Math.abs(txn.amount))}
                 </TableCell>
                 <TableCell sx={{ textAlign: "right" }}>
-                  <Button
-                    height="20px"
-                    backgroundColor="inherit"
-                    color={theme.palette.primary.light}
-                    hoverBgColor={theme.palette.text.primary}
-                    hoverColor="inherit"
-                    onClick={() => console.log("clicked ...")}
-                    borderColor={theme.palette.text.primary}
-                  >
-                    <Typography>...</Typography>
-                  </Button>
+                  <OptionsButton
+                    type="transaction"
+                    onEdit={() => console.log("Edit Transaction")}
+                    onDelete={() => console.log("Delete Transaction")}
+                  />
                 </TableCell>
               </>
             )}

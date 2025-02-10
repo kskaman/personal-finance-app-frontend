@@ -6,7 +6,7 @@ interface Props {
   backgroundColor?: string;
   children: React.ReactNode;
   borderColor?: string;
-  onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   hoverColor: string;
   hoverBgColor: string;
   flex?: number;

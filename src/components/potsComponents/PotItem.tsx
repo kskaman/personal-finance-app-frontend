@@ -4,6 +4,7 @@ import SubContainer from "../../utilityComponents/SubContainer";
 import Button from "../../utilityComponents/Button";
 import theme from "../../theme/theme";
 import PotsProgressBar from "../../utilityComponents/PotsProgressBar";
+import OptionsButton from "../modalComponents/OptionsButton";
 
 interface Props {
   pot: Pot;
@@ -27,21 +28,11 @@ const PotItem = ({ pot }: Props) => {
         >
           {pot.name}
         </Typography>
-        <Box marginLeft="auto">
-          <Button
-            height="20px"
-            backgroundColor="inherit"
-            color={theme.palette.primary.light}
-            hoverBgColor={theme.palette.text.primary}
-            hoverColor="inherit"
-            onClick={() => console.log("clicked ...")}
-            borderColor={theme.palette.text.primary}
-          >
-            <Typography fontSize="16px" fontWeight="bold">
-              ...
-            </Typography>
-          </Button>
-        </Box>
+        <OptionsButton
+          type="pot"
+          onEdit={() => console.log("Edit Pot")}
+          onDelete={() => console.log("Delete Pot")}
+        />
       </Stack>
 
       <PotsProgressBar

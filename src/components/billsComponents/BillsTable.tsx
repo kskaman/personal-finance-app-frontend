@@ -16,9 +16,9 @@ import {
   formatNumber,
   getInitials,
 } from "../../utils/utilityFunctions";
-import Button from "../../utilityComponents/Button";
 import PaidIcon from "../../Icons/PaidIcon";
 import DueIcon from "../../Icons/DueIcon";
+import OptionsButton from "../modalComponents/OptionsButton";
 
 const getBillStatus = (lastPaid: string, dueDate: string) => {
   let status = "unpaid";
@@ -134,17 +134,11 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
                       {bill.name}
                     </Typography>
                   </Box>
-                  <Button
-                    height="20px"
-                    backgroundColor="inherit"
-                    color={theme.palette.primary.light}
-                    hoverBgColor={theme.palette.text.primary}
-                    hoverColor="inherit"
-                    onClick={() => console.log("clicked ...")}
-                    borderColor={theme.palette.text.primary}
-                  >
-                    <Typography>...</Typography>
-                  </Button>
+                  <OptionsButton
+                    type="bill"
+                    onEdit={() => console.log("Edit Bill")}
+                    onDelete={() => console.log("Delete Bill")}
+                  />
                 </Stack>
 
                 <Stack
@@ -276,17 +270,11 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
                   justifyContent="flex-end"
                   width="100%"
                 >
-                  <Button
-                    height="20px"
-                    backgroundColor="inherit"
-                    color={theme.palette.primary.light}
-                    hoverBgColor={theme.palette.text.primary}
-                    hoverColor="inherit"
-                    onClick={() => console.log("clicked ...")}
-                    borderColor={theme.palette.text.primary}
-                  >
-                    <Typography>...</Typography>
-                  </Button>
+                  <OptionsButton
+                    type="bill"
+                    onEdit={() => console.log("Edit Bill")}
+                    onDelete={() => console.log("Delete Bill")}
+                  />
                 </Stack>
               </TableCell>
             </TableRow>
