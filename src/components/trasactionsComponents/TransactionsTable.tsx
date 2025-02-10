@@ -1,11 +1,13 @@
 import {
   Avatar,
   Box,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { Transaction } from "../../types/Data";
 import theme from "../../theme/theme";
@@ -14,15 +16,29 @@ import {
   formatNumber,
   getInitials,
 } from "../../utils/utilityFunctions";
+import Button from "../../utilityComponents/Button";
 
 interface Props {
   txns: Transaction[];
+  parentWidth: number;
 }
 
-const TransactionsTable = ({ txns }: Props) => {
+const TransactionsTable = ({ txns, parentWidth }: Props) => {
   return (
     <Table>
-      <TableHead sx={{ display: { xs: "none", sm: "table-header-group" } }}>
+      {/* Table Head (Visible only on larger screens) */}
+      <TableHead
+        sx={{
+          // Keep it in DOM but hide
+          visibility: parentWidth < 600 ? "hidden" : "visible",
+          // Ensure no layout shifts
+          height: parentWidth < 600 ? 0 : "auto",
+          // Smooth transition
+          opacity: parentWidth < 600 ? 0 : 1,
+          // Smooth fade-in effect
+          transition: "opacity 0.3s ease-in-out",
+        }}
+      >
         <TableRow>
           <TableCell
             sx={{
@@ -60,85 +76,191 @@ const TransactionsTable = ({ txns }: Props) => {
           >
             Amount
           </TableCell>
+          <TableCell></TableCell>
         </TableRow>
       </TableHead>
 
       <TableBody>
-        {txns.map((txn) => {
-          return (
-            <TableRow
-              key={txn.id}
-              sx={{
-                "&:last-child td": { border: 0 },
-              }}
-            >
+        {txns.map((txn) => (
+          <TableRow
+            key={txn.id}
+            sx={{
+              display: parentWidth < 600 ? "flex" : "table-row",
+              "&:last-child td": { border: 0 },
+            }}
+          >
+            {/* MOBILE VIEW (Condensed layout for small screens) */}
+            {parentWidth < 600 && (
               <TableCell
                 sx={{
-                  height: "100%",
-                  textAlign: "left",
-                  color: theme.palette.primary.main,
-                  fontWeight: "bold",
-                  fontSize: "14px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
+                  width: "100%",
                 }}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
+                {/* Name + Avatar */}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  width="100%"
                 >
-                  <Avatar
+                  <Box
                     sx={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      color: theme.palette.primary.contrastText,
-                      backgroundColor: txn.theme,
-                      width: "40px",
-                      height: "40px",
-                      marginRight: "16px",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
                     }}
                   >
-                    {getInitials(txn.name)}
-                  </Avatar>
-                  {txn.name}
-                </Box>
+                    <Avatar
+                      sx={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.contrastText,
+                        backgroundColor: txn.theme,
+                        width: "32px",
+                        height: "32px",
+                        marginRight: "12px",
+                      }}
+                    >
+                      {getInitials(txn.name)}
+                    </Avatar>
+                    <Typography
+                      sx={{
+                        color: theme.palette.primary.main,
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {txn.name}
+                    </Typography>
+                  </Box>
+
+                  {/* Transaction Amount */}
+                  <Typography
+                    sx={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      color:
+                        txn.amount < 0
+                          ? theme.palette.primary.main
+                          : theme.palette.others.green,
+                      marginLeft: "auto",
+                      marginRight: "8px",
+                    }}
+                  >
+                    {txn.amount < 0 ? "-" : "+"}$
+                    {formatNumber(Math.abs(txn.amount))}
+                  </Typography>
+
+                  {/* Action Button */}
+                  <Button
+                    height="20px"
+                    backgroundColor="inherit"
+                    color={theme.palette.primary.light}
+                    hoverBgColor={theme.palette.text.primary}
+                    hoverColor="inherit"
+                    onClick={() => console.log("clicked ...")}
+                    borderColor={theme.palette.text.primary}
+                  >
+                    <Typography>...</Typography>
+                  </Button>
+                </Stack>
+
+                {/* Category + Date (Below Name) */}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  color={theme.palette.primary.light}
+                  fontSize="12px"
+                  width="100%"
+                >
+                  <Typography>{txn.category}</Typography>
+                  <Typography>{formatDate(txn.date)}</Typography>
+                </Stack>
               </TableCell>
-              <TableCell
-                sx={{
-                  textAlign: "left",
-                  color: theme.palette.primary.light,
-                  fontSize: "12px",
-                }}
-              >
-                {txn.category}
-              </TableCell>
-              <TableCell
-                sx={{
-                  textAlign: "left",
-                  color: theme.palette.primary.light,
-                  fontSize: "12px",
-                }}
-              >
-                {formatDate(txn.date)}
-              </TableCell>
-              <TableCell
-                sx={{
-                  textAlign: "right",
-                  color:
-                    txn.amount < 0
-                      ? theme.palette.primary.main
-                      : theme.palette.others.green,
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                }}
-              >
-                {txn.amount < 0 ? "-" : "+"}$
-                {formatNumber(Math.abs(txn.amount))}
-              </TableCell>
-            </TableRow>
-          );
-        })}
+            )}
+
+            {/* DESKTOP VIEW (Regular Table Format) */}
+            {parentWidth >= 600 && (
+              <>
+                <TableCell
+                  sx={{
+                    textAlign: "left",
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                    color: theme.palette.primary.main,
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Avatar
+                      sx={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        color: theme.palette.primary.contrastText,
+                        backgroundColor: txn.theme,
+                        width: "40px",
+                        height: "40px",
+                        marginRight: "16px",
+                      }}
+                    >
+                      {getInitials(txn.name)}
+                    </Avatar>
+                    {txn.name}
+                  </Box>
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "left",
+                    color: theme.palette.primary.light,
+                    fontSize: "12px",
+                  }}
+                >
+                  {txn.category}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "left",
+                    color: theme.palette.primary.light,
+                    fontSize: "12px",
+                  }}
+                >
+                  {formatDate(txn.date)}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    textAlign: "right",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    color:
+                      txn.amount < 0
+                        ? theme.palette.primary.main
+                        : theme.palette.others.green,
+                  }}
+                >
+                  {txn.amount < 0 ? "-" : "+"}$
+                  {formatNumber(Math.abs(txn.amount))}
+                </TableCell>
+                <TableCell sx={{ textAlign: "right" }}>
+                  <Button
+                    height="20px"
+                    backgroundColor="inherit"
+                    color={theme.palette.primary.light}
+                    hoverBgColor={theme.palette.text.primary}
+                    hoverColor="inherit"
+                    onClick={() => console.log("clicked ...")}
+                    borderColor={theme.palette.text.primary}
+                  >
+                    <Typography>...</Typography>
+                  </Button>
+                </TableCell>
+              </>
+            )}
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );
