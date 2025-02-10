@@ -13,7 +13,6 @@ import {
   formatDateToReadable,
   formatNumber,
   getInitials,
-  getRandomColor,
 } from "../../utils/utilityFunctions";
 import theme from "../../theme/theme";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
@@ -60,7 +59,7 @@ const TransactionsOverview = () => {
 
       <List>
         {latestTransactions.map((transaction, index) => (
-          <div key={transaction.date}>
+          <div key={transaction.id}>
             <ListItem
               sx={{
                 display: "flex",
@@ -74,7 +73,7 @@ const TransactionsOverview = () => {
                   fontSize: "12px",
                   fontWeight: "bold",
                   color: theme.palette.primary.contrastText,
-                  backgroundColor: getRandomColor(),
+                  backgroundColor: transaction.theme,
                   width: "40px",
                   height: "40px",
                   marginRight: "16px",

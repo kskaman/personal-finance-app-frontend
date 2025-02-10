@@ -27,17 +27,17 @@ const filterAndSortBills = (
   return filteredBill.sort((a, b) => {
     switch (sortBy) {
       case "Latest":
-        return new Date(b.lastPaid).getTime() - new Date(a.lastPaid).getTime();
+        return Number(a.dueDate) - Number(b.dueDate);
       case "Oldest":
-        return new Date(a.lastPaid).getTime() - new Date(b.lastPaid).getTime();
+        return Number(b.dueDate) - Number(a.dueDate);
       case "A to Z":
         return a.name.localeCompare(b.name);
       case "Z to A":
         return b.name.localeCompare(a.name);
       case "Highest":
-        return b.amount - a.amount;
-      case "Lowest":
         return a.amount - b.amount;
+      case "Lowest":
+        return b.amount - a.amount;
       default:
         return 0;
     }
@@ -90,6 +90,7 @@ const BillsPage = () => {
                 flex={1}
                 gap="24px"
                 width="100%"
+                minWidth="200px"
                 direction={
                   parentWidth > 900
                     ? "column"
@@ -98,12 +99,8 @@ const BillsPage = () => {
                     : "column"
                 }
               >
-                <Stack>
-                  <Total parentWidth={parentWidth} totalBill={totalBill} />
-                </Stack>
-                <Stack>
-                  <Summary />
-                </Stack>
+                <Total parentWidth={parentWidth} totalBill={totalBill} />
+                <Summary />
               </Stack>
               <SubContainer flex={2}>
                 <Stack gap="24px">

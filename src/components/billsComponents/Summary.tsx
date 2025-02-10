@@ -18,7 +18,7 @@ const Summary = () => {
 
   return (
     <>
-      <SubContainer gap="20px" padding={{ xs: "20px" }}>
+      <SubContainer gap="20px" width="100%" padding={{ xs: "20px" }}>
         <Typography
           fontSize="16px"
           fontWeight="bold"

@@ -5,12 +5,15 @@ export interface Balance {
 }
 
 export interface Transaction {
+    id: string;
     avatar?: string;
     name: string;
     category: string;
     date: string;
+    theme: string;
     amount: number;
     recurring: boolean;
+    recurringId?: true;
 }
 
 export interface RecurringBill {
@@ -22,6 +25,7 @@ export interface RecurringBill {
     recurring: boolean;
     lastPaid: string;
     dueDate: string;
+    theme: string;
 }
 
 

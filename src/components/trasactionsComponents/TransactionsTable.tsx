@@ -13,7 +13,6 @@ import {
   formatDate,
   formatNumber,
   getInitials,
-  getRandomColor,
 } from "../../utils/utilityFunctions";
 
 interface Props {
@@ -68,7 +67,7 @@ const TransactionsTable = ({ txns }: Props) => {
         {txns.map((txn) => {
           return (
             <TableRow
-              key={txn.date}
+              key={txn.id}
               sx={{
                 "&:last-child td": { border: 0 },
               }}
@@ -94,7 +93,7 @@ const TransactionsTable = ({ txns }: Props) => {
                       fontSize: "12px",
                       fontWeight: "bold",
                       color: theme.palette.primary.contrastText,
-                      backgroundColor: getRandomColor(),
+                      backgroundColor: txn.theme,
                       width: "40px",
                       height: "40px",
                       marginRight: "16px",

@@ -14,6 +14,7 @@ const Total = ({ parentWidth, totalBill }: TotalProps) => {
     <SubContainer
       direction={parentWidth < 500 ? "row" : "column"}
       gap="32px"
+      width="100%"
       padding={{ xs: "24px" }}
       bgColor={theme.palette.primary.main}
     >
