@@ -24,12 +24,14 @@ interface BudgetItemProps {
   budget: Budget;
   monthlySpentForCategory: number;
   transactionsForCategory: Transaction[];
+  setModalOpen: () => void;
 }
 
 const BudgetsItem = ({
   budget,
   monthlySpentForCategory,
   transactionsForCategory,
+  setModalOpen,
 }: BudgetItemProps) => {
   return (
     <SubContainer gap="20px">
@@ -50,8 +52,8 @@ const BudgetsItem = ({
         </Typography>
         <OptionsButton
           type="budget"
-          onEdit={() => console.log("Edit Modal")}
-          onDelete={() => console.log("Delete Modal")}
+          onEdit={setModalOpen}
+          onDelete={setModalOpen}
         />
       </Stack>
       <BudgetsProgressBar

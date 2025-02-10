@@ -5,13 +5,14 @@ import BudgetsPieChart from "../utilityComponents/BudgetsPieChart";
 
 import PageDiv from "../utilityComponents/PageDiv";
 import SubContainer from "../utilityComponents/SubContainer";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { BudgetsDataContext } from "../context/BudgetsContext";
 import { formatNumber } from "../utils/utilityFunctions";
 import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
 import { Transaction } from "../types/Data";
 import Button from "../utilityComponents/Button";
 import BudgetsItem from "../components/budgetsComponents/BudgetsItem";
+import ActionModal from "../components/modalComponents/ActionModal";
 
 const BudgetsPage = () => {
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
@@ -36,6 +37,8 @@ const BudgetsPage = () => {
     acc[category] = monthlySpentByCategory[category] || 0;
     return acc;
   }, {} as Record<string, number>);
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -153,6 +156,7 @@ const BudgetsPage = () => {
                 return (
                   <div key={budget.category}>
                     <BudgetsItem
+                      setModalOpen={() => setModalOpen(true)}
                       budget={budget}
                       monthlySpentForCategory={monthlySpent[budget.category]}
                       transactionsForCategory={
@@ -165,6 +169,9 @@ const BudgetsPage = () => {
             </Stack>
           </Stack>
         </Stack>
+
+        {/* Modal Component */}
+        <ActionModal open={modalOpen} onClose={() => setModalOpen(false)} />
       </PageDiv>
     </>
   );
