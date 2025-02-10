@@ -11,20 +11,19 @@ import SubContainer from "../utilityComponents/SubContainer";
 import Filter from "../utilityComponents/Filter";
 import { RecurringBill } from "../types/Data";
 
+// Function to filter & sort bills
 const filterAndSortBills = (
   bills: RecurringBill[],
   searchName: string,
   sortBy: string
 ): RecurringBill[] => {
-  const filteredBill = bills.filter((bill) => {
-    const matchesSearch = searchName
+  const filteredBills = bills.filter((bill) =>
+    searchName
       ? bill.name.toLowerCase().includes(searchName.toLowerCase().trim())
-      : true;
-    return matchesSearch;
-  });
+      : true
+  );
 
-  // Sorting Logic
-  return filteredBill.sort((a, b) => {
+  return filteredBills.sort((a, b) => {
     switch (sortBy) {
       case "Latest":
         return Number(a.dueDate) - Number(b.dueDate);
@@ -46,28 +45,35 @@ const filterAndSortBills = (
 
 const BillsPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [parentWidth, setParentWidth] = useState<number>(0);
+  const widthRef = useRef<number>(window.innerWidth);
+  const [parentWidth, setParentWidth] = useState<number>(window.innerWidth);
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        setParentWidth(entry.contentRect.width);
+        const newWidth = entry.contentRect.width;
+        if (newWidth !== widthRef.current) {
+          widthRef.current = newWidth;
+          setParentWidth(newWidth);
+        }
       }
     });
+
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
+
     return () => resizeObserver.disconnect();
   }, []);
 
-  const recurringBills = useContext(RecurringDataContext).recurringBills;
-  const totalBill = Math.abs(
-    recurringBills.reduce((sum, bill) => sum + bill.amount, 0)
-  );
+  const { recurringBills } = useContext(RecurringDataContext);
 
   const [searchName, setSearchName] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("Latest");
 
+  const totalBill = Math.abs(
+    recurringBills.reduce((sum, bill) => sum + bill.amount, 0)
+  );
   const filteredBills = filterAndSortBills(recurringBills, searchName, sortBy);
 
   return (
