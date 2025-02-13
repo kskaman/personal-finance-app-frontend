@@ -11,6 +11,7 @@ import CustomDropdown from "./CustomDropdown";
 import SearchIcon from "../Icons/SearchIcon";
 import FilterIcon from "../Icons/FilterIcon";
 import theme from "../theme/theme";
+import { MD_BREAK } from "../data/widthConstants";
 
 interface FilterProps {
   parentWidth: number;
@@ -81,6 +82,8 @@ const Filter = ({
 }: FilterProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const isParentMd = parentWidth < MD_BREAK;
+
   return (
     <>
       <Stack
@@ -99,7 +102,7 @@ const Filter = ({
             setSearchName(event.target.value)
           }
         />
-        {parentWidth < 800 ? (
+        {isParentMd ? (
           <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
             <FilterIcon color={theme.palette.primary.main} />
           </IconButton>
@@ -124,7 +127,7 @@ const Filter = ({
           </Stack>
         )}
       </Stack>
-      {isFilterOpen && parentWidth < 800 && (
+      {isFilterOpen && isParentMd && (
         <Stack direction="column" gap="16px" marginTop="8px" width="100%">
           <FilterOption
             width={"100%"}

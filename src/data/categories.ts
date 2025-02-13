@@ -8,6 +8,6 @@ export const categories : string[] = [
     "Personal Care",
     "Education",
     "Bills",
-    "Shopping"
-  ]
+    "Shopping",
+]
   

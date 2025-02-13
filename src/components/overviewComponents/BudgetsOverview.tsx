@@ -8,6 +8,7 @@ import { BalanceTransactionsDataContext } from "../../context/BalanceTransaction
 import { BudgetsDataContext } from "../../context/BudgetsContext";
 import BudgetsPieChart from "../../utilityComponents/BudgetsPieChart";
 import { formatNumber } from "../../utils/utilityFunctions";
+import useParentWidth from "../../customHooks/useParentWidth";
 
 const BudgetsOverview = () => {
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
@@ -29,93 +30,108 @@ const BudgetsOverview = () => {
 
   const monthlySpentValues = Object.values(monthlySpent);
 
+  const { containerRef, parentWidth } = useParentWidth();
+
+  const isParentWidth = parentWidth < 600;
+
   return (
     <SubContainer>
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography
-          fontWeight="bold"
-          fontSize="20px"
-          color={theme.palette.primary.main}
-        >
-          My Budgets
-        </Typography>
-        <Link
-          href="/budgets"
-          display="flex"
-          flexDirection="row"
+      <Box ref={containerRef}>
+        <Stack
+          direction="row"
           alignItems="center"
-          gap="12px"
-          underline="none"
+          justifyContent="space-between"
         >
           <Typography
-            fontSize="14px"
-            color={theme.palette.primary.light}
-            sx={{
-              ":hover": {
-                color: theme.palette.primary.main,
-              },
-            }}
+            fontWeight="bold"
+            fontSize="20px"
+            color={theme.palette.primary.main}
           >
-            See Details
+            My Budgets
           </Typography>
-          <CaretRightIcon color={theme.palette.primary.light} />
-        </Link>
-      </Stack>
-      <Stack
-        direction={{ xs: "column", sm: "row", lg: "column", xl: "row" }}
-        gap="32px"
-      >
-        <Stack alignItems="center" justifyContent="center">
-          <BudgetsPieChart
-            spendings={monthlySpentValues}
-            limit={budgetsTotal}
-            colors={colorsArr}
-          />
-        </Stack>
-
-        <Grid
-          container
-          flex={1}
-          rowSpacing="24px"
-          columnSpacing="24px"
-          columns={{ xs: 2, sm: 1, lg: 2, xl: 1 }}
-        >
-          {budgets.map((budget) => (
-            <Grid
-              key={budget.category}
-              size={1}
+          <Link
+            href="/budgets"
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap="12px"
+            underline="none"
+          >
+            <Typography
+              fontSize="14px"
+              color={theme.palette.primary.light}
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: "16px",
+                ":hover": {
+                  color: theme.palette.primary.main,
+                },
               }}
             >
-              {/* Colored Bar */}
-              <Box
-                height="100%"
-                width="3px"
-                borderRadius="8px"
-                bgcolor={budget.theme}
-              />
+              See Details
+            </Typography>
+            <CaretRightIcon color={theme.palette.primary.light} />
+          </Link>
+        </Stack>
+        <Stack
+          direction={isParentWidth ? "column" : "row"}
+          gap="32px"
+          justifyContent={isParentWidth ? "flex-start" : "space-evenly"}
+        >
+          <Stack alignItems="center" justifyContent="center">
+            <BudgetsPieChart
+              spendings={monthlySpentValues}
+              limit={budgetsTotal}
+              colors={colorsArr}
+            />
+          </Stack>
 
-              {/* Pot Details */}
-              <Stack direction="column">
-                <Typography fontSize="12px" color={theme.palette.primary.light}>
-                  {budget.category}
-                </Typography>
-                <Typography
-                  fontSize="14px"
-                  fontWeight="bold"
-                  color={theme.palette.primary.main}
-                >
-                  ${formatNumber(budget.maximum)}
-                </Typography>
-              </Stack>
-            </Grid>
-          ))}
-        </Grid>
-      </Stack>
+          <Grid
+            container
+            rowSpacing="24px"
+            columnSpacing="24px"
+            columns={isParentWidth ? 2 : 1}
+            width={isParentWidth ? "100%" : "40%"}
+          >
+            {budgets.map((budget) => (
+              <Grid
+                key={budget.category}
+                size={1}
+                maxHeight={isParentWidth ? "100%" : "20%"}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: "16px",
+                }}
+              >
+                {/* Colored Bar */}
+                <Box
+                  height="100%"
+                  width="3px"
+                  borderRadius="8px"
+                  bgcolor={budget.theme}
+                />
+
+                {/* Pot Details */}
+                <Stack direction="column">
+                  <Typography
+                    fontSize="12px"
+                    color={theme.palette.primary.light}
+                  >
+                    {budget.category}
+                  </Typography>
+                  <Typography
+                    fontSize="14px"
+                    fontWeight="bold"
+                    color={theme.palette.primary.main}
+                  >
+                    ${formatNumber(budget.maximum)}
+                  </Typography>
+                </Stack>
+              </Grid>
+            ))}
+          </Grid>
+        </Stack>
+      </Box>
     </SubContainer>
   );
 };

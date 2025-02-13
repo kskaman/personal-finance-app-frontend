@@ -19,6 +19,7 @@ import {
 import PaidIcon from "../../Icons/PaidIcon";
 import DueIcon from "../../Icons/DueIcon";
 import OptionsButton from "../modalComponents/OptionsButton";
+import { MD_SM_BREAK } from "../../data/widthConstants";
 
 const getBillStatus = (lastPaid: string, dueDate: string) => {
   let status = "unpaid";
@@ -43,14 +44,24 @@ const getBillStatus = (lastPaid: string, dueDate: string) => {
   return status;
 };
 
-const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
+const BillsTable = ({
+  bills,
+  parentWidth,
+}: {
+  bills: RecurringBill[];
+  parentWidth: number;
+}) => {
+  const isParentWidth = parentWidth < MD_SM_BREAK;
+
   return (
     <Table
       sx={{
         "& td, & th": { paddingX: "0" },
       }}
     >
-      <TableHead sx={{ display: { xs: "none", sm: "table-header-group" } }}>
+      <TableHead
+        sx={{ display: isParentWidth ? "none" : "table-header-group" }}
+      >
         <TableRow>
           <TableCell
             sx={{
@@ -93,16 +104,15 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
               sx={{
                 "&:first-of-type td": { paddingTop: "24px" },
                 "&:last-child td": { border: 0 },
-                display: { xs: "flex", sm: "table-row" }, // Flex for mobile, TableRow for larger screens
-                flexDirection: { xs: "column", sm: "row" }, // Column layout for mobile
-                alignItems: { xs: "start", sm: "center" }, // Align content in mobile view
+                display: isParentWidth ? "flex" : "table-row",
+                flexDirection: isParentWidth ? "column" : "row",
+                alignItems: isParentWidth ? "start" : "center",
               }}
             >
               {/* Mobile View: Compact format */}
               <TableCell
                 sx={{
-                  // Only show in mobile view
-                  display: { xs: "flex", sm: "none" },
+                  display: isParentWidth ? "flex" : "none",
                   flexDirection: "column",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -186,7 +196,7 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
               {/* Default Table Format for Tablet & PC */}
               <TableCell
                 sx={{
-                  display: { xs: "none", sm: "table-cell" },
+                  display: isParentWidth ? "none" : "table-cell",
                   textAlign: "left",
                   color: theme.palette.primary.main,
                   fontWeight: "bold",
@@ -219,7 +229,7 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
 
               <TableCell
                 sx={{
-                  display: { xs: "none", sm: "table-cell" },
+                  display: isParentWidth ? "none" : "table-cell",
                   textAlign: "left",
                   color: theme.palette.others.green,
                   fontSize: "12px",
@@ -246,7 +256,7 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
 
               <TableCell
                 sx={{
-                  display: { xs: "none", sm: "table-cell" },
+                  display: isParentWidth ? "none" : "table-cell",
                   textAlign: "right",
                   color:
                     status === "due"
@@ -261,7 +271,7 @@ const BillsTable = ({ bills }: { bills: RecurringBill[] }) => {
 
               <TableCell
                 sx={{
-                  display: { xs: "none", sm: "table-cell" },
+                  display: isParentWidth ? "none" : "table-cell",
                 }}
               >
                 <Stack

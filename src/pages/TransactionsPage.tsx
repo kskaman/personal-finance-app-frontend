@@ -4,11 +4,13 @@ import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import SubContainer from "../utilityComponents/SubContainer";
 import Filter from "../utilityComponents/Filter";
-import TransactionsTable from "../components/trasactionsComponents/TransactionsTable";
-import PageNav from "../components/trasactionsComponents/PageNav";
-import { useContext, useEffect, useRef, useState } from "react";
+import TransactionsTable from "../components/transactionsComponents/TransactionsTable";
+import PageNav from "../components/transactionsComponents/PageNav";
+import { useContext, useState } from "react";
 import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
 import { Transaction } from "../types/Data";
+import useParentWidth from "../customHooks/useParentWidth";
+import Button from "../utilityComponents/Button";
 
 const filterAndSortTransactions = (
   transactions: Transaction[],
@@ -49,27 +51,7 @@ const filterAndSortTransactions = (
 };
 
 const TransactionsPage = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widthRef = useRef<number>(window.innerWidth);
-  const [parentWidth, setParentWidth] = useState<number>(window.innerWidth);
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const newWidth = entry.contentRect.width;
-        if (newWidth !== widthRef.current) {
-          widthRef.current = newWidth;
-          setParentWidth(newWidth);
-        }
-      }
-    });
-
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, []);
+  const { containerRef, parentWidth } = useParentWidth();
 
   const [pageNum, setPageNum] = useState<number>(() => 1);
 
@@ -104,15 +86,30 @@ const TransactionsPage = () => {
       <Box ref={containerRef}>
         <PageDiv>
           <Stack direction="column" gap="32px">
-            <Typography
-              width="100%"
-              height="56px"
-              fontSize="32px"
-              fontWeight="bold"
-              color={theme.palette.primary.main}
-            >
-              Transactions
-            </Typography>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography
+                width="100%"
+                height="56px"
+                fontSize="32px"
+                fontWeight="bold"
+                color={theme.palette.primary.main}
+              >
+                Transactions
+              </Typography>
+              <Button
+                height="53px"
+                padding="16px"
+                backgroundColor={theme.palette.primary.main}
+                color={theme.palette.text.primary}
+                onClick={() => console.log("clicked Add New Transaction")}
+                hoverColor={theme.palette.text.primary}
+                hoverBgColor={theme.palette.primary.light}
+              >
+                <Typography noWrap fontSize="14px" fontWeight="bold">
+                  + Add New Transaction
+                </Typography>
+              </Button>
+            </Stack>
             <SubContainer>
               <Filter
                 parentWidth={parentWidth}
@@ -130,6 +127,7 @@ const TransactionsPage = () => {
                 numbers={numbers}
                 selectedPage={pageNum}
                 handlePageSelect={handlePageChange}
+                parentWidth={parentWidth}
               />
             </SubContainer>
           </Stack>

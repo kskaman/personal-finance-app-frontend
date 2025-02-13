@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { RecurringDataContext } from "../context/RecurringContext";
 import Total from "../components/billsComponents/Total";
 import Summary from "../components/billsComponents/Summary";
@@ -10,6 +10,8 @@ import BillsTable from "../components/billsComponents/BillsTable";
 import SubContainer from "../utilityComponents/SubContainer";
 import Filter from "../utilityComponents/Filter";
 import { RecurringBill } from "../types/Data";
+import useParentWidth from "../customHooks/useParentWidth";
+import { SM_BREAK, XL_BREAK } from "../data/widthConstants";
 
 // Function to filter & sort bills
 const filterAndSortBills = (
@@ -44,27 +46,7 @@ const filterAndSortBills = (
 };
 
 const BillsPage = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widthRef = useRef<number>(window.innerWidth);
-  const [parentWidth, setParentWidth] = useState<number>(window.innerWidth);
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const newWidth = entry.contentRect.width;
-        if (newWidth !== widthRef.current) {
-          widthRef.current = newWidth;
-          setParentWidth(newWidth);
-        }
-      }
-    });
-
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, []);
+  const { containerRef, parentWidth } = useParentWidth();
 
   const { recurringBills } = useContext(RecurringDataContext);
 
@@ -91,16 +73,19 @@ const BillsPage = () => {
             >
               Recurring Bills
             </Typography>
-            <Stack direction={parentWidth < 900 ? "column" : "row"} gap="24px">
+            <Stack
+              direction={parentWidth < XL_BREAK ? "column" : "row"}
+              gap="24px"
+            >
               <Stack
                 flex={1}
                 gap="24px"
                 width="100%"
                 minWidth="200px"
                 direction={
-                  parentWidth > 900
+                  parentWidth > XL_BREAK
                     ? "column"
-                    : parentWidth > 500
+                    : parentWidth > SM_BREAK
                     ? "row"
                     : "column"
                 }
@@ -117,7 +102,7 @@ const BillsPage = () => {
                     sortBy={sortBy}
                     setSortBy={setSortBy}
                   />
-                  <BillsTable bills={filteredBills} />
+                  <BillsTable parentWidth={parentWidth} bills={filteredBills} />
                 </Stack>
               </SubContainer>
             </Stack>

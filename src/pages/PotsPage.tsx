@@ -4,32 +4,14 @@ import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import { PotsDataContext } from "../context/PotsContext";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext } from "react";
 import PotItem from "../components/potsComponents/PotItem";
 import Button from "../utilityComponents/Button";
+import useParentWidth from "../customHooks/useParentWidth";
+import { MD_BREAK } from "../data/widthConstants";
 
 const PotsPage = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widthRef = useRef<number>(window.innerWidth);
-  const [parentWidth, setParentWidth] = useState<number>(window.innerWidth);
-
-  useEffect(() => {
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const newWidth = entry.contentRect.width;
-        if (newWidth !== widthRef.current) {
-          widthRef.current = newWidth;
-          setParentWidth(newWidth);
-        }
-      }
-    });
-
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, []);
+  const { containerRef, parentWidth } = useParentWidth();
 
   const pots = useContext(PotsDataContext).pots;
 
@@ -63,7 +45,11 @@ const PotsPage = () => {
                 </Typography>
               </Button>
             </Stack>
-            <Grid container spacing="24px" columns={parentWidth <= 800 ? 1 : 2}>
+            <Grid
+              container
+              spacing="24px"
+              columns={parentWidth <= MD_BREAK ? 1 : 2}
+            >
               {pots.map((pot) => {
                 return (
                   <Grid key={pot.name} size={1}>

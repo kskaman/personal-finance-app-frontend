@@ -1,17 +1,24 @@
-import { Stack, Typography, useMediaQuery } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import CaretLeftIcon from "../../Icons/CaretLeftIcon";
 import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
+import { SM_BREAK } from "../../data/widthConstants";
 
 interface Props {
   numbers: number[];
   selectedPage: number;
   handlePageSelect: (newPageNum: number) => void;
+  parentWidth: number;
 }
 
-const PageNav = ({ numbers, selectedPage, handlePageSelect }: Props) => {
-  const isMobile = useMediaQuery("(max-width:700px)");
+const PageNav = ({
+  numbers,
+  selectedPage,
+  handlePageSelect,
+  parentWidth,
+}: Props) => {
+  const isMobile = parentWidth < SM_BREAK;
   const lastIndex = numbers.length - 1;
 
   let displayedNumbers: (number | "...")[] = [];

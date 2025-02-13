@@ -17,6 +17,7 @@ import {
   getInitials,
 } from "../../utils/utilityFunctions";
 import OptionsButton from "../modalComponents/OptionsButton";
+import { MD_SM_BREAK } from "../../data/widthConstants";
 
 interface Props {
   txns: Transaction[];
@@ -24,15 +25,16 @@ interface Props {
 }
 
 const TransactionsTable = ({ txns, parentWidth }: Props) => {
+  const isParentWidth = parentWidth < MD_SM_BREAK;
   return (
     <Table>
       {/* Table Head (Visible only on larger screens) */}
       <TableHead
         sx={{
           // Keep it in DOM but hide
-          display: parentWidth < 700 ? "none" : "table-header-group",
+          display: isParentWidth ? "none" : "table-header-group",
           // Smooth transition
-          opacity: parentWidth < 700 ? 0 : 1,
+          opacity: isParentWidth ? 0 : 1,
           // Smooth fade-in effect
           transition: "opacity 0.3s ease",
         }}
@@ -84,12 +86,12 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
             key={txn.id}
             sx={{
               width: "100%",
-              display: parentWidth < 700 ? "flex" : "table-row",
+              display: isParentWidth ? "flex" : "table-row",
               "&:last-child td": { border: 0 },
             }}
           >
             {/* MOBILE VIEW (Condensed layout for small screens) */}
-            {parentWidth < 700 && (
+            {isParentWidth && (
               <TableCell
                 sx={{
                   display: "flex",
@@ -178,7 +180,7 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
             )}
 
             {/* DESKTOP VIEW (Regular Table Format) */}
-            {parentWidth >= 700 && (
+            {!isParentWidth && (
               <>
                 <TableCell
                   sx={{

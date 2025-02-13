@@ -3,6 +3,7 @@ import SubContainer from "../../utilityComponents/SubContainer";
 import theme from "../../theme/theme";
 import BillsIcon from "../../Icons/BillsIcon";
 import { formatNumber } from "../../utils/utilityFunctions";
+import { SM_BREAK } from "../../data/widthConstants";
 
 interface TotalProps {
   parentWidth: number;
@@ -12,7 +13,7 @@ interface TotalProps {
 const Total = ({ parentWidth, totalBill }: TotalProps) => {
   return (
     <SubContainer
-      direction={parentWidth < 500 ? "row" : "column"}
+      direction={parentWidth < SM_BREAK ? "row" : "column"}
       gap="32px"
       width="100%"
       padding={{ xs: "24px" }}

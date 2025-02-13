@@ -6,14 +6,14 @@ import { formatNumber } from "../../utils/utilityFunctions";
 import { useContext } from "react";
 import { BalanceTransactionsDataContext } from "../../context/BalanceTransactionsContext";
 
-const Balance = () => {
+const Balance = ({ isParentSm }: { isParentSm: boolean }) => {
   const balance = useContext(BalanceTransactionsDataContext).balance;
 
   return (
     <>
       <Stack
         width="100%"
-        direction={{ xs: "column", sm: "row" }}
+        direction={isParentSm ? "column" : "row"}
         flexWrap="wrap"
         gap="24px"
         justifyContent="flex-start"
