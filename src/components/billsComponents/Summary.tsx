@@ -12,9 +12,11 @@ const Summary = () => {
       label: "Total Upcoming",
     },
     dueSoon: { label: "Due Soon" },
+    due: { label: "Due" },
   };
 
   const recurringSummary = useContext(RecurringDataContext).recurringSummary;
+  const showDue = recurringSummary.due.count !== 0;
 
   return (
     <>
@@ -27,43 +29,51 @@ const Summary = () => {
           Summary
         </Typography>
         <List>
-          {Object.entries(recurringSummary).map(([key, summary], index) => {
-            const typedKey = key as keyof typeof summaryData;
-            return (
-              <div key={index}>
-                <ListItem
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    margin: "16px 0",
-                    padding: 0,
-                  }}
-                >
-                  <Typography
-                    fontSize="12px"
-                    color={theme.palette.primary.light}
+          {Object.entries(recurringSummary)
+            .filter(([key]) => key !== "due" || showDue)
+            .map(([key, summary], index) => {
+              const typedKey = key as keyof typeof summaryData;
+              const isDue = key === "due";
+              return (
+                <div key={index}>
+                  <ListItem
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      margin: "16px 0",
+                      padding: 0,
+                    }}
                   >
-                    {summaryData[typedKey].label}
-                  </Typography>
-                  <Typography
-                    fontSize="12px"
-                    fontWeight="bold"
-                    color={
-                      key === "dueSoon"
-                        ? theme.palette.others.red
-                        : theme.palette.primary.main
-                    }
-                  >
-                    {`${summary.count} ($${formatNumber(summary.total)})`}
-                  </Typography>
-                </ListItem>
+                    <Typography
+                      fontSize={isDue ? "14px" : "12px"}
+                      fontWeight={isDue ? "bold" : "normal"}
+                      color={
+                        isDue
+                          ? theme.palette.others.red
+                          : theme.palette.primary.light
+                      }
+                    >
+                      {summaryData[typedKey].label}
+                    </Typography>
+                    <Typography
+                      fontSize={isDue ? "14px" : "12px"}
+                      fontWeight="bold"
+                      color={
+                        key === "dueSoon" || isDue
+                          ? theme.palette.others.red
+                          : theme.palette.primary.main
+                      }
+                    >
+                      {`${summary.count} ($${formatNumber(summary.total)})`}
+                    </Typography>
+                  </ListItem>
 
-                {index < 2 && <Divider key={key} />}
-              </div>
-            );
-          })}
+                  {index < 3 && <Divider key={key} />}
+                </div>
+              );
+            })}
         </List>
       </SubContainer>
     </>

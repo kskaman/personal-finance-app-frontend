@@ -17,6 +17,8 @@ function computeRecurringSummary(bills: RecurringBill[]): RecurringSummary {
   let unpaidTotal = 0;
   let dueSoonCount = 0;
   let dueSoonTotal = 0;
+  let dueCount = 0;
+  let dueTotal = 0;
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -38,10 +40,15 @@ function computeRecurringSummary(bills: RecurringBill[]): RecurringSummary {
 
     // 2) If not paid, is it "due soon"?
     const diffDays =
-      dueDateObj &&
-      Math.ceil((dueDateObj.getTime() - now.getTime()) / (1000 * 3600 * 24));
+      dueDateObj && (dueDateObj.getTime() - now.getTime()) / (1000 * 3600 * 24);
     const isDueSoon =
-      dueDateObj && !isPaid && diffDays && diffDays <= DUE_SOON_THRESHOLD_DAYS;
+      dueDateObj &&
+      !isPaid &&
+      diffDays &&
+      diffDays > 0 &&
+      diffDays <= DUE_SOON_THRESHOLD_DAYS;
+
+    const isDue = dueDateObj && !isPaid && diffDays && diffDays <= 0;
 
     if (isPaid) {
       paidCount++;
@@ -49,6 +56,9 @@ function computeRecurringSummary(bills: RecurringBill[]): RecurringSummary {
     } else if (isDueSoon) {
       dueSoonCount++;
       dueSoonTotal += numericAmount;
+    } else if (isDue) {
+      dueCount++;
+      dueTotal += numericAmount;
     } else {
       unpaidCount++;
       unpaidTotal += numericAmount;
@@ -56,6 +66,7 @@ function computeRecurringSummary(bills: RecurringBill[]): RecurringSummary {
   });
 
   return {
+    due: { count: dueCount, total: dueTotal },
     paid: { count: paidCount, total: paidTotal },
     unpaid: { count: unpaidCount, total: unpaidTotal },
     dueSoon: { count: dueSoonCount, total: dueSoonTotal },

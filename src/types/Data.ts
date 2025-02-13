@@ -33,6 +33,7 @@ export interface RecurringSummary {
     paid: { count: number; total: number };
     unpaid: { count: number; total: number };
     dueSoon: { count: number; total: number };
+    due: { count: number; total: number };
 }
 
 export interface Budget {

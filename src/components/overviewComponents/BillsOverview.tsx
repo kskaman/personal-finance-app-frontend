@@ -16,7 +16,9 @@ const BillsOverview = () => {
       borderColor: theme.palette.others.yellow,
     },
     dueSoon: { label: "Due Soon", borderColor: theme.palette.others.cyan },
+    due: { label: "Due", borderColor: theme.palette.others.red },
   };
+  const showDue = recurringSummary.due.count !== 0;
 
   return (
     <SubContainer>
@@ -51,33 +53,49 @@ const BillsOverview = () => {
         </Link>
       </Stack>
       <Stack gap="12px">
-        {Object.entries(recurringSummary).map(([key, summary]) => {
-          const typedKey = key as keyof typeof summaryData;
+        {Object.entries(recurringSummary)
+          .filter(([key]) => key !== "due" || showDue)
+          .map(([key, summary]) => {
+            const typedKey = key as keyof typeof summaryData;
 
-          return (
-            <Stack
-              key={key}
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              padding="20px 16px"
-              borderRadius="8px"
-              borderLeft={`4px solid ${summaryData[typedKey].borderColor}`}
-              bgcolor={theme.palette.background.default}
-            >
-              <Typography fontSize="14px" color={theme.palette.primary.light}>
-                {summaryData[typedKey].label}
-              </Typography>
-              <Typography
-                fontSize="14px"
-                fontWeight="bold"
-                color={theme.palette.primary.main}
+            const isDue = typedKey === "due";
+
+            return (
+              <Stack
+                key={key}
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                padding="20px 16px"
+                borderRadius="8px"
+                borderLeft={`4px solid ${summaryData[typedKey].borderColor}`}
+                bgcolor={theme.palette.background.default}
               >
-                ${formatNumber(summary.total)}
-              </Typography>
-            </Stack>
-          );
-        })}
+                <Typography
+                  fontSize="14px"
+                  fontWeight={isDue ? "bold" : "normal"}
+                  color={
+                    isDue
+                      ? theme.palette.others.red
+                      : theme.palette.primary.light
+                  }
+                >
+                  {summaryData[typedKey].label}
+                </Typography>
+                <Typography
+                  fontSize="14px"
+                  fontWeight="bold"
+                  color={
+                    isDue
+                      ? theme.palette.others.red
+                      : theme.palette.primary.main
+                  }
+                >
+                  ${formatNumber(summary.total)}
+                </Typography>
+              </Stack>
+            );
+          })}
       </Stack>
     </SubContainer>
   );
