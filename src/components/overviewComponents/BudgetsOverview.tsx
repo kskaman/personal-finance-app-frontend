@@ -35,8 +35,8 @@ const BudgetsOverview = () => {
   const isParentWidth = parentWidth < 600;
 
   return (
-    <SubContainer>
-      <Box ref={containerRef}>
+    <Box ref={containerRef}>
+      <SubContainer>
         <Stack
           direction="row"
           alignItems="center"
@@ -131,8 +131,8 @@ const BudgetsOverview = () => {
             ))}
           </Grid>
         </Stack>
-      </Box>
-    </SubContainer>
+      </SubContainer>
+    </Box>
   );
 };
 

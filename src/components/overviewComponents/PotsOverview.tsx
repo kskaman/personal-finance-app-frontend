@@ -22,8 +22,8 @@ const PotsOverview = () => {
   const isParentWidth = parentWidth < SM_BREAK;
 
   return (
-    <SubContainer>
-      <Box ref={containerRef}>
+    <Box ref={containerRef}>
+      <SubContainer>
         <Stack
           direction="row"
           alignItems="center"
@@ -126,8 +126,8 @@ const PotsOverview = () => {
             ))}
           </Grid>
         </Stack>
-      </Box>
-    </SubContainer>
+      </SubContainer>
+    </Box>
   );
 };
 
