@@ -38,8 +38,10 @@ const getBillStatus = (lastPaid: string, dueDate: string) => {
     const diffDays =
       dueDateObj &&
       Math.ceil((dueDateObj.getTime() - now.getTime()) / (1000 * 3600 * 24));
-    const isDueSoon = dueDateObj && diffDays && diffDays <= 3;
-    if (isDueSoon) status = "due";
+    const isDueSoon = dueDateObj && diffDays && diffDays >= 0 && diffDays <= 3;
+    const isDue = dueDateObj && diffDays && diffDays < 0;
+    if (isDueSoon) status = "dueSoon";
+    if (isDue) status = "due";
   }
   return status;
 };
@@ -97,6 +99,8 @@ const BillsTable = ({
       <TableBody>
         {bills.map((bill) => {
           const status = getBillStatus(bill.lastPaid, bill.dueDate);
+          const isDue = status === "due";
+          const dueSoon = status === "dueSoon";
 
           return (
             <TableRow
@@ -140,7 +144,15 @@ const BillsTable = ({
                     >
                       {getInitials(bill.name)}
                     </Avatar>
-                    <Typography fontSize="14px" fontWeight="bold">
+                    <Typography
+                      fontSize={isDue ? "16px" : "14px"}
+                      fontWeight="bold"
+                      color={
+                        isDue
+                          ? theme.palette.others.red
+                          : theme.palette.primary.main
+                      }
+                    >
                       {bill.name}
                     </Typography>
                   </Box>
@@ -164,8 +176,13 @@ const BillsTable = ({
                     justifyContent="flex-start"
                   >
                     <Typography
-                      fontSize="12px"
-                      color={theme.palette.others.green}
+                      fontSize={isDue ? "14px" : "12px"}
+                      fontWeight={isDue ? "bold" : "normal"}
+                      color={
+                        isDue
+                          ? theme.palette.others.red
+                          : theme.palette.others.green
+                      }
                     >
                       {`Monthly~${bill.dueDate}${
                         dateSuffix[bill.dueDate as keyof typeof dateSuffix]
@@ -173,17 +190,17 @@ const BillsTable = ({
                     </Typography>
                     {status === "paid" ? (
                       <PaidIcon />
-                    ) : status === "due" ? (
+                    ) : isDue || dueSoon ? (
                       <DueIcon color={theme.palette.others.red} />
                     ) : (
                       ""
                     )}
                   </Stack>
                   <Typography
-                    fontSize="14px"
+                    fontSize={isDue ? "16px" : "14px"}
                     fontWeight="bold"
                     color={
-                      status === "due"
+                      isDue || dueSoon
                         ? theme.palette.others.red
                         : theme.palette.primary.main
                     }
@@ -198,9 +215,11 @@ const BillsTable = ({
                 sx={{
                   display: isParentWidth ? "none" : "table-cell",
                   textAlign: "left",
-                  color: theme.palette.primary.main,
+                  color: isDue
+                    ? theme.palette.others.red
+                    : theme.palette.primary.main,
                   fontWeight: "bold",
-                  fontSize: "14px",
+                  fontSize: isDue ? "16px" : "14px",
                 }}
               >
                 <Box
@@ -231,8 +250,10 @@ const BillsTable = ({
                 sx={{
                   display: isParentWidth ? "none" : "table-cell",
                   textAlign: "left",
-                  color: theme.palette.others.green,
-                  fontSize: "12px",
+                  color: isDue
+                    ? theme.palette.others.red
+                    : theme.palette.others.green,
+                  fontSize: isDue ? "14px" : "12px",
                 }}
               >
                 <Stack
@@ -246,7 +267,7 @@ const BillsTable = ({
                   }`}
                   {status === "paid" ? (
                     <PaidIcon />
-                  ) : status === "due" ? (
+                  ) : isDue || dueSoon ? (
                     <DueIcon color={theme.palette.others.red} />
                   ) : (
                     ""
@@ -259,10 +280,10 @@ const BillsTable = ({
                   display: isParentWidth ? "none" : "table-cell",
                   textAlign: "right",
                   color:
-                    status === "due"
+                    isDue || dueSoon
                       ? theme.palette.others.red
                       : theme.palette.primary.main,
-                  fontSize: "14px",
+                  fontSize: isDue ? "16px" : "14px",
                   fontWeight: "bold",
                 }}
               >
