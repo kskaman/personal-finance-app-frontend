@@ -31,6 +31,7 @@ const OptionsButton = ({
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.currentTarget.blur();
     setAnchorEl(event.currentTarget);
   };
 

@@ -42,6 +42,19 @@ export interface Budget {
     theme: string;
 }
 
+export interface MarkerTheme {
+    name: string;
+    colorCode: string;
+    usedInBudgets: boolean;
+    usedInPots: boolean;
+}
+
+export interface Category {
+    name: string;
+    id: number;
+    usedInBudgets: boolean;
+}
+
 export interface Pot {
     name: string;
     target: number;
@@ -55,6 +68,8 @@ export interface DataType {
     budgets: Budget[];
     pots: Pot[];
     recurringBills: RecurringBill[]; 
+    categories: Category[];
+    markerThemes: MarkerTheme[];
 }
   
   

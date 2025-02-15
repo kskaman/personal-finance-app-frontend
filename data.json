@@ -650,6 +650,150 @@
       "lastPaid": "2025-01-21T10:05:42Z",
       "dueDate": "21"
     }
+    ],
+    "categories": [
+    {
+      "name": "General",
+      "id": 1,
+      "usedInBudgets": false
+    },
+    {
+      "name": "Dining Out",
+      "id": 2,
+      "usedInBudgets": true
+    },
+    {
+      "name": "Groceries",
+      "id": 3,
+      "usedInBudgets": false
+    },
+    {
+      "name": "Entertainment",
+      "id": 4,
+      "usedInBudgets": true
+    },
+    {
+      "name": "Transportation",
+      "id": 5,
+      "usedInBudgets": false
+    },
+    {
+      "name": "Lifestyle",
+      "id": 6,
+      "usedInBudgets": false
+    },
+    {
+      "name": "Personal Care",
+      "id": 7,
+      "usedInBudgets": true
+    },
+    {
+      "name": "Education",
+      "id": 8,
+      "usedInBudgets": false
+    },
+    {
+      "name": "Bills",
+      "id": 9,
+      "usedInBudgets": true
+    },
+    {
+      "name": "Shopping",
+      "id": 10,
+      "usedInBudgets": false
+    }
+    ],
+    "markerThemes": [
+    {
+      "name": "Pink",
+      "colorCode": "#af81ba",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Turquoise",
+      "colorCode": "#597c7c",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Brown",
+      "colorCode": "#93674f",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Magenta",
+      "colorCode": "#934f6f",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Blue",
+      "colorCode": "#3f82b2",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Navy Grey",
+      "colorCode": "#97a0ac",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Army Green",
+      "colorCode": "#7f9161",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Gold",
+      "colorCode": "#cab361",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Orange",
+      "colorCode": "#be6c49",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Purple",
+      "colorCode": "#826cb0",
+      "usedInBudgets": false,
+      "usedInPots": true
+    },
+    {
+      "name": "Navy",
+      "colorCode": "#626070",
+      "usedInBudgets": true,
+      "usedInPots": true
+    },
+    {
+      "name": "Green",
+      "colorCode": "#277c78",
+      "usedInBudgets": true,
+      "usedInPots": true
+    },
+    {
+      "name": "Cyan",
+      "colorCode": "#82c9d7",
+      "usedInBudgets": true,
+      "usedInPots": true
+    },
+    {
+      "name": "Red",
+      "colorCode": "#c94736",
+      "usedInBudgets": false,
+      "usedInPots": false
+    },
+    {
+      "name": "Yellow",
+      "colorCode": "#f2cdac",
+      "usedInBudgets": true,
+      "usedInPots": true
+    }
   ]
 }
   
