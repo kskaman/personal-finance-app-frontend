@@ -82,13 +82,16 @@ const OptionsButton = ({
         }}
       >
         <MenuItem
-          onClick={() => {
+          disableRipple
+          onClick={(event) => {
+            // Remove focus from element
+            event.currentTarget.blur();
             onEdit();
             handleClose();
           }}
           sx={{
             fontSize: "14px",
-            color: { color },
+            color: theme.palette.primary.light,
             padding: "12px 0",
             borderBottom: `1px solid ${theme.palette.secondary.contrastText}`,
             "&:last-child": { borderBottom: "none" },
@@ -108,13 +111,15 @@ const OptionsButton = ({
           {`Edit ${optionType}`}
         </MenuItem>
         <MenuItem
-          onClick={() => {
+          disableRipple
+          onClick={(event) => {
+            event.currentTarget.blur();
             onDelete();
             handleClose();
           }}
           sx={{
             fontSize: "14px",
-            color: { color },
+            color: theme.palette.others.red,
             padding: "12px 0",
             borderBottom: `1px solid ${theme.palette.secondary.contrastText}`,
             "&:last-child": { borderBottom: "none" },

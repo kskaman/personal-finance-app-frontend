@@ -113,7 +113,9 @@ const Filter = ({
               label="Sort By"
               options={sortOptions}
               value={sortBy}
-              onChange={(event) => setSortBy(event.target.value)}
+              onChange={(event) => {
+                setSortBy(event.target.value);
+              }}
             />
             {category && setCategory && (
               <FilterOption

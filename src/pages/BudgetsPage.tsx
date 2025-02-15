@@ -12,9 +12,9 @@ import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsCo
 import { Transaction } from "../types/Data";
 import Button from "../utilityComponents/Button";
 import BudgetsItem from "../components/budgetsComponents/BudgetsItem";
-import ActionModal from "../components/modalComponents/ActionModal";
 import useParentWidth from "../customHooks/useParentWidth";
 import { LG_BREAK, MD_SM_BREAK } from "../data/widthConstants";
+import DeleteBudgetModal from "../components/modalComponents/DeleteBudgetModal";
 
 const BudgetsPage = () => {
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
@@ -40,8 +40,8 @@ const BudgetsPage = () => {
     return acc;
   }, {} as Record<string, number>);
 
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const [deleteLabel, setDeleteLabel] = useState<string>("");
   const { containerRef, parentWidth } = useParentWidth();
   const isParentLg = parentWidth < LG_BREAK;
 
@@ -175,7 +175,11 @@ const BudgetsPage = () => {
                   return (
                     <div key={budget.category}>
                       <BudgetsItem
-                        setModalOpen={() => setModalOpen(true)}
+                        setEditModalOpen={() => {}}
+                        setDeleteModalOpen={() => {
+                          setDeleteModalOpen(true);
+                          setDeleteLabel(budget.category);
+                        }}
                         budget={budget}
                         monthlySpentForCategory={monthlySpent[budget.category]}
                         transactionsForCategory={
@@ -190,7 +194,12 @@ const BudgetsPage = () => {
           </Stack>
 
           {/* Modal Component */}
-          <ActionModal open={modalOpen} onClose={() => setModalOpen(false)} />
+          <DeleteBudgetModal
+            open={deleteModalOpen}
+            onClose={() => setDeleteModalOpen(false)}
+            label={deleteLabel}
+            type="budget"
+          />
         </PageDiv>
       </Box>
     </>

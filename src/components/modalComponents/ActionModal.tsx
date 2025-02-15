@@ -6,9 +6,11 @@ import CloseModalIcon from "../../Icons/CloseModalIcon";
 interface Props {
   open: boolean;
   onClose: () => void;
+  children: React.ReactNode;
+  heading: string;
 }
 
-const ActionModal = ({ open, onClose }: Props) => {
+const ActionModal = ({ open, onClose, children, heading }: Props) => {
   return (
     <Modal open={open} onClose={onClose}>
       <Stack
@@ -30,7 +32,7 @@ const ActionModal = ({ open, onClose }: Props) => {
           alignItems="center"
         >
           <Typography fontSize="20px" fontWeight="bold">
-            Modal Heading
+            {heading}
           </Typography>
 
           <Button
@@ -43,6 +45,7 @@ const ActionModal = ({ open, onClose }: Props) => {
             <CloseModalIcon />
           </Button>
         </Stack>
+        {children}
       </Stack>
     </Modal>
   );

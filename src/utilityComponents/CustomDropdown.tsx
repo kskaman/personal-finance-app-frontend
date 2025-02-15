@@ -57,6 +57,7 @@ const CustomDropdown = ({
       >
         {options.map((option) => (
           <MenuItem
+            disableRipple
             key={option}
             value={option}
             sx={{

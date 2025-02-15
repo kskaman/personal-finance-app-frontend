@@ -107,3 +107,26 @@ export const dateSuffix = {
   "30": "th",
   "31": "st"
 };
+
+
+export function hexToRGBA(hex: string, alpha: number): string {
+  // Remove # if present
+  hex = hex.replace(/^#/, "");
+
+  // Convert shorthand hex (e.g., #FFF) to full hex (e.g., #FFFFFF)
+  if (hex.length === 3) {
+    hex = hex
+      .split("")
+      .map((char) => char + char)
+      .join("");
+  }
+
+  // Parse r, g, b values
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  // Return RGBA color with specified opacity
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
