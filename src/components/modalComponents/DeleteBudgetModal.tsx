@@ -7,14 +7,26 @@ import { hexToRGBA } from "../../utils/utilityFunctions";
 interface Props {
   open: boolean;
   onClose: () => void;
+  handleDelete: ({ category }: { category: string }) => void;
   label: string;
   type: string;
 }
 
-const DeleteBudgetModal = ({ open, onClose, label, type }: Props) => {
+const DeleteBudgetModal = ({
+  open,
+  onClose,
+  handleDelete,
+  label,
+  type,
+}: Props) => {
   const typedToken = label
     ? label.charAt(0).toUpperCase() + label.slice(1)
     : "";
+
+  const onDelete = () => {
+    handleDelete({ category: label });
+    onClose();
+  };
 
   return (
     <ActionModal
@@ -34,7 +46,7 @@ const DeleteBudgetModal = ({ open, onClose, label, type }: Props) => {
             height="53px"
             backgroundColor={theme.palette.others.red}
             color={theme.palette.text.primary}
-            onClick={() => console.log("confirmed delete budget")}
+            onClick={onDelete}
             hoverColor={theme.palette.text.primary}
             hoverBgColor={hexToRGBA(theme.palette.others.red, 0.8)}
           >

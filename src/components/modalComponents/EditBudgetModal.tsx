@@ -163,11 +163,6 @@ const EditBudgetModal = ({
    * 6. Submission handler. We can parse maxSpend to a number here.
    */
   const onSubmit = (data: FormValues) => {
-    console.log("Saved budget changes:", {
-      category: data.category,
-      maxSpend: data.maxSpend,
-      selectedTheme: data.selectedTheme,
-    });
     const selectedThemeCode =
       nameToColorCode.get(data.selectedTheme) || "#ffffff";
     updateBudget({

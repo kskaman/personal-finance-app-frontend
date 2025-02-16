@@ -56,7 +56,7 @@ const BudgetsPage = () => {
 
   const isParentMdSm = parentWidth < MD_SM_BREAK;
 
-  const handleEditSubmit = ({
+  const handleEditBudget = ({
     category,
     maxSpend,
     markerTheme,
@@ -71,6 +71,12 @@ const BudgetsPage = () => {
           ? { ...budget, maximum: parseFloat(maxSpend), theme: markerTheme }
           : budget
       )
+    );
+  };
+
+  const handleBudgetDelete = ({ category }: { category: string }) => {
+    setBudgets((prevBudgets) =>
+      prevBudgets.filter((budget) => budget.category !== category)
     );
   };
 
@@ -228,6 +234,7 @@ const BudgetsPage = () => {
           <DeleteBudgetModal
             open={deleteModalOpen}
             onClose={() => setDeleteModalOpen(false)}
+            handleDelete={handleBudgetDelete}
             label={deleteLabel}
             type="budget"
           />
@@ -239,7 +246,7 @@ const BudgetsPage = () => {
               setEditModalOpen(false);
               setSelectedBudget(null);
             }}
-            updateBudget={handleEditSubmit}
+            updateBudget={handleEditBudget}
             category={selectedBudget?.category || ""}
             maximumSpend={selectedBudget?.maximum || 0}
             markerTheme={selectedBudget?.theme || ""}
