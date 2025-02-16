@@ -9,7 +9,7 @@ interface Props {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const CustomInput = ({ placeholder, value, width, onChange, Icon }: Props) => {
+const SearchInput = ({ placeholder, value, width, onChange, Icon }: Props) => {
   return (
     <TextField
       variant="outlined"
@@ -46,4 +46,4 @@ const CustomInput = ({ placeholder, value, width, onChange, Icon }: Props) => {
   );
 };
 
-export default CustomInput;
+export default SearchInput;

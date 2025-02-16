@@ -6,18 +6,24 @@ import BudgetsPieChart from "../utilityComponents/BudgetsPieChart";
 import PageDiv from "../utilityComponents/PageDiv";
 import SubContainer from "../utilityComponents/SubContainer";
 import { useContext, useState } from "react";
-import { BudgetsDataContext } from "../context/BudgetsContext";
+import {
+  BudgetsActionContext,
+  BudgetsDataContext,
+} from "../context/BudgetsContext";
 import { formatNumber } from "../utils/utilityFunctions";
 import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
-import { Transaction } from "../types/Data";
+import { Budget, Transaction } from "../types/Data";
 import Button from "../utilityComponents/Button";
 import BudgetsItem from "../components/budgetsComponents/BudgetsItem";
 import useParentWidth from "../customHooks/useParentWidth";
 import { LG_BREAK, MD_SM_BREAK } from "../data/widthConstants";
 import DeleteBudgetModal from "../components/modalComponents/DeleteBudgetModal";
+import EditBudgetModal from "../components/modalComponents/EditBudgetModal";
 
 const BudgetsPage = () => {
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
+  const { setBudgets } = useContext(BudgetsActionContext);
+
   const budgetCategories = budgets.map((budget) => budget.category);
   const colors = budgets.map((budget) => budget.theme);
 
@@ -42,10 +48,32 @@ const BudgetsPage = () => {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [deleteLabel, setDeleteLabel] = useState<string>("");
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
+
   const { containerRef, parentWidth } = useParentWidth();
   const isParentLg = parentWidth < LG_BREAK;
 
   const isParentMdSm = parentWidth < MD_SM_BREAK;
+
+  const handleEditSubmit = ({
+    category,
+    maxSpend,
+    markerTheme,
+  }: {
+    category: string;
+    maxSpend: string;
+    markerTheme: string;
+  }) => {
+    setBudgets((prevBudgets) =>
+      prevBudgets.map((budget) =>
+        budget.category === category
+          ? { ...budget, maximum: parseFloat(maxSpend), theme: markerTheme }
+          : budget
+      )
+    );
+  };
+
   return (
     <>
       <SetTitle title="Budgets" />
@@ -175,10 +203,13 @@ const BudgetsPage = () => {
                   return (
                     <div key={budget.category}>
                       <BudgetsItem
-                        setEditModalOpen={() => {}}
+                        setEditModalOpen={() => {
+                          setSelectedBudget(budget);
+                          setTimeout(() => setEditModalOpen(true), 0);
+                        }}
                         setDeleteModalOpen={() => {
-                          setDeleteModalOpen(true);
                           setDeleteLabel(budget.category);
+                          setTimeout(() => setDeleteModalOpen(true));
                         }}
                         budget={budget}
                         monthlySpentForCategory={monthlySpent[budget.category]}
@@ -193,12 +224,25 @@ const BudgetsPage = () => {
             </Stack>
           </Stack>
 
-          {/* Modal Component */}
+          {/* Delete Modal Component */}
           <DeleteBudgetModal
             open={deleteModalOpen}
             onClose={() => setDeleteModalOpen(false)}
             label={deleteLabel}
             type="budget"
+          />
+
+          {/* Edit Modal Component */}
+          <EditBudgetModal
+            open={editModalOpen}
+            onClose={() => {
+              setEditModalOpen(false);
+              setSelectedBudget(null);
+            }}
+            updateBudget={handleEditSubmit}
+            category={selectedBudget?.category || ""}
+            maximumSpend={selectedBudget?.maximum || 0}
+            markerTheme={selectedBudget?.theme || ""}
           />
         </PageDiv>
       </Box>

@@ -1,4 +1,5 @@
 interface Props {
+  type?: "button" | "submit" | "reset";
   height?: string;
   width?: string;
   padding?: string;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const Button = ({
+  type = "button",
   flex,
   height = "40px",
   padding = "16px",
@@ -27,6 +29,7 @@ const Button = ({
 }: Props) => {
   return (
     <button
+      type={type}
       style={{
         flex,
         height,

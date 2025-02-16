@@ -13,7 +13,6 @@ import {
   formatDateToReadable,
   formatNumber,
   getInitials,
-  getRandomColor,
 } from "../../utils/utilityFunctions";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import BudgetsProgressBar from "../../utilityComponents/BudgetsProgressBar";
@@ -111,7 +110,7 @@ const BudgetsItem = ({
                       fontSize: "12px",
                       fontWeight: "bold",
                       color: theme.palette.primary.contrastText,
-                      backgroundColor: getRandomColor(),
+                      backgroundColor: transaction.theme,
                       width: "40px",
                       height: "40px",
                       marginRight: "16px",

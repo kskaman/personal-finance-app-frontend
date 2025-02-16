@@ -6,7 +6,7 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-import CustomInput from "./CustomInput";
+import SearchInput from "./SearchInput";
 import CustomDropdown from "./CustomDropdown";
 import SearchIcon from "../Icons/SearchIcon";
 import FilterIcon from "../Icons/FilterIcon";
@@ -93,7 +93,7 @@ const Filter = ({
         alignItems="center"
         justifyContent="space-between"
       >
-        <CustomInput
+        <SearchInput
           placeholder="Search Transaction"
           value={searchName}
           width={{ xs: "100%", sm: "375px" }}

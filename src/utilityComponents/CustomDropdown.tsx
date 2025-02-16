@@ -12,6 +12,7 @@ interface Props {
   options: string[];
   value: string;
   width?: string;
+  height?: string;
   color: string;
   onChange: (event: SelectChangeEvent) => void;
 }
@@ -21,11 +22,12 @@ const CustomDropdown = ({
   options,
   value,
   width,
+  height = "100%",
   color,
   onChange,
 }: Props) => {
   return (
-    <FormControl sx={{ width: width, height: "100%" }}>
+    <FormControl sx={{ width: width, height }}>
       {label && <InputLabel>{label}</InputLabel>}
       <Select
         value={value}
