@@ -50,6 +50,7 @@ const BudgetsPage = () => {
   const [deleteLabel, setDeleteLabel] = useState<string>("");
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
+  const [mode, setMode] = useState<"edit" | "add" | null>(null);
 
   const { containerRef, parentWidth } = useParentWidth();
   const isParentLg = parentWidth < LG_BREAK;
@@ -72,6 +73,25 @@ const BudgetsPage = () => {
           : budget
       )
     );
+  };
+
+  const handleAddBudget = ({
+    category,
+    maxSpend,
+    markerTheme,
+  }: {
+    category: string;
+    maxSpend: string;
+    markerTheme: string;
+  }) => {
+    setBudgets((prevBudgets) => [
+      ...prevBudgets,
+      {
+        category: category,
+        maximum: parseFloat(maxSpend), // Convert to number
+        theme: markerTheme,
+      },
+    ]);
   };
 
   const handleBudgetDelete = ({ category }: { category: string }) => {
@@ -106,7 +126,10 @@ const BudgetsPage = () => {
                 padding="16px"
                 backgroundColor={theme.palette.primary.main}
                 color={theme.palette.text.primary}
-                onClick={() => console.log("clicked Add New Button")}
+                onClick={() => {
+                  setTimeout(() => setMode("add"), 0);
+                  setTimeout(() => setEditModalOpen(true), 0);
+                }}
                 hoverColor={theme.palette.text.primary}
                 hoverBgColor={theme.palette.primary.light}
               >
@@ -211,6 +234,7 @@ const BudgetsPage = () => {
                       <BudgetsItem
                         setEditModalOpen={() => {
                           setSelectedBudget(budget);
+                          setTimeout(() => setMode("edit"), 0);
                           setTimeout(() => setEditModalOpen(true), 0);
                         }}
                         setDeleteModalOpen={() => {
@@ -229,29 +253,39 @@ const BudgetsPage = () => {
               </Stack>
             </Stack>
           </Stack>
-
-          {/* Delete Modal Component */}
-          <DeleteBudgetModal
-            open={deleteModalOpen}
-            onClose={() => setDeleteModalOpen(false)}
-            handleDelete={handleBudgetDelete}
-            label={deleteLabel}
-            type="budget"
-          />
-
-          {/* Edit Modal Component */}
-          <EditBudgetModal
-            open={editModalOpen}
-            onClose={() => {
-              setEditModalOpen(false);
-              setSelectedBudget(null);
-            }}
-            updateBudget={handleEditBudget}
-            category={selectedBudget?.category || ""}
-            maximumSpend={selectedBudget?.maximum || 0}
-            markerTheme={selectedBudget?.theme || ""}
-          />
         </PageDiv>
+
+        {/* Delete Modal Component */}
+        <DeleteBudgetModal
+          open={deleteModalOpen}
+          onClose={() => {
+            setDeleteModalOpen(false);
+            setDeleteLabel("");
+          }}
+          handleDelete={handleBudgetDelete}
+          label={deleteLabel}
+          type="budget"
+        />
+
+        {/* Edit Modal Component */}
+        <EditBudgetModal
+          mode={mode}
+          open={editModalOpen}
+          onClose={() => {
+            setEditModalOpen(false);
+            setSelectedBudget(null);
+          }}
+          updateBudget={
+            mode === "edit"
+              ? handleEditBudget
+              : mode === "add"
+              ? handleAddBudget
+              : () => {}
+          }
+          category={selectedBudget?.category || ""}
+          maximumSpend={selectedBudget?.maximum || 0}
+          markerTheme={selectedBudget?.theme || ""}
+        />
       </Box>
     </>
   );

@@ -14,7 +14,7 @@ import * as yup from "yup";
 import ActionModal from "../../components/modalComponents/ActionModal";
 import theme from "../../theme/theme";
 import CategoryMarkerContext from "../../context/CategoryMarkerContext";
-import { MarkerTheme } from "../../types/Data";
+import { Category, MarkerTheme } from "../../types/Data";
 import Button from "../../utilityComponents/Button"; // Custom button
 import { formatNumber, hexToRGBA } from "../../utils/utilityFunctions";
 
@@ -30,9 +30,10 @@ interface EditBudgetModalProps {
     maxSpend: string;
     markerTheme: string;
   }) => void;
-  category: string;
-  markerTheme: string;
-  maximumSpend: number;
+  category?: string;
+  markerTheme?: string;
+  maximumSpend?: number;
+  mode?: "edit" | "add" | null;
 }
 
 /**
@@ -81,12 +82,13 @@ const EditBudgetModal = ({
   category,
   markerTheme,
   maximumSpend,
+  mode = "edit",
 }: EditBudgetModalProps) => {
   /**
    * Access the markerThemes array from context.
    * markerThemes is typically an array of objects: { name: string; colorCode: string; usedInBudgets?: boolean; ... }
    */
-  const { markerThemes } = useContext(CategoryMarkerContext);
+  const { markerThemes, categories } = useContext(CategoryMarkerContext);
 
   // A map from markerName to colorCode:
   const nameToColorCode = new Map<string, string>(
@@ -99,7 +101,7 @@ const EditBudgetModal = ({
    */
   const getDefaultThemeName = useCallback(() => {
     const markerObj = markerThemes.find(
-      (m) => m.colorCode.toLowerCase() === markerTheme.toLowerCase()
+      (m) => m.colorCode.toLowerCase() === markerTheme?.toLowerCase()
     );
     return markerObj?.name || "";
   }, [markerTheme, markerThemes]);
@@ -113,9 +115,15 @@ const EditBudgetModal = ({
       .filter(
         (b: MarkerTheme) =>
           b.usedInBudgets &&
-          b.colorCode.toLowerCase() !== markerTheme.toLowerCase()
+          b.colorCode.toLowerCase() !== markerTheme?.toLowerCase()
       )
       .map((b) => b.colorCode.toLowerCase())
+  );
+
+  const UsedCategoriesNames = new Set(
+    categories
+      .filter((c: Category) => c.name !== category && c.usedInBudgets)
+      .map((c) => c.name)
   );
 
   /**
@@ -135,7 +143,7 @@ const EditBudgetModal = ({
     mode: "onBlur", // or "onSubmit", whichever you prefer
     defaultValues: {
       category: category,
-      maxSpend: formatNumber(maximumSpend).toString(),
+      maxSpend: maximumSpend ? formatNumber(maximumSpend).toString() : "0.00",
       selectedTheme: defaultThemeName,
     },
   });
@@ -147,7 +155,7 @@ const EditBudgetModal = ({
   useEffect(() => {
     reset({
       category: category,
-      maxSpend: formatNumber(maximumSpend).toString(),
+      maxSpend: maximumSpend ? formatNumber(maximumSpend).toString() : "0.00",
       selectedTheme: getDefaultThemeName(),
     });
   }, [
@@ -174,14 +182,20 @@ const EditBudgetModal = ({
   };
 
   return (
-    <ActionModal open={open} onClose={onClose} heading="Edit Budget">
+    <ActionModal
+      open={open}
+      onClose={onClose}
+      heading={`${mode === "edit" ? "Edit" : "Add New"} Budget`}
+    >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="20px">
           <Typography fontSize="14px" color={theme.palette.primary.light}>
-            As your budget changes, feel free to update your spending limits.
+            {mode === "edit"
+              ? "As your budget changes, feel free to update your spending limits."
+              : "Choose a category to set a spending budget. These categories can help you monitor spending."}
           </Typography>
 
-          {/* CATEGORY FIELD (disabled, but part of the form) */}
+          {/* CATEGORY FIELD (disabled for edit mode) */}
           <Controller
             name="category"
             control={control}
@@ -190,17 +204,79 @@ const EditBudgetModal = ({
                 <FieldHeading heading="Budget Category" />
                 <Select
                   {...field}
-                  disabled
+                  disabled={mode === "edit"}
                   fullWidth
+                  onChange={(event) => {
+                    field.onChange(event);
+                  }}
                   sx={{
-                    backgroundColor: theme.palette.grey[200],
-                    color: theme.palette.text.primary,
                     borderRadius: "8px",
                     height: "45px",
+                    display: "flex",
+                    alignItems: "center",
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: theme.palette.primary.main,
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        minHeight: "auto",
+                        maxHeight: "250px",
+                        overflowY: "auto",
+                        mt: "8px", // gap between select and dropdown
+                        borderRadius: "8px",
+                        padding: "12px 20px",
+                        minWidth: "60px",
+                        maxWidth: "fit-content",
+                      },
+                    },
                   }}
                   error={!!errors.category}
                 >
-                  <MenuItem value={category}>{category}</MenuItem>
+                  {categories.map((c) => {
+                    const isDisabled = UsedCategoriesNames.has(c.name);
+                    return (
+                      <MenuItem
+                        disableRipple
+                        key={c.name}
+                        value={c.name}
+                        disabled={isDisabled}
+                        sx={{
+                          fontSize: "14px",
+                          color: isDisabled
+                            ? theme.palette.primary.light
+                            : theme.palette.primary.main,
+                          padding: "12px 0",
+                          borderBottom: `1px solid ${theme.palette.secondary.contrastText}`,
+                          "&:last-child": { borderBottom: "none" },
+                          "&:hover": { backgroundColor: "transparent" },
+                          "&.Mui-selected": {
+                            backgroundColor: "transparent",
+                            "&:hover": { backgroundColor: "transparent" },
+                          },
+                          "&.Mui-focusVisible": {
+                            backgroundColor: "transparent",
+                          },
+                          "&.Mui-selected.Mui-focusVisible": {
+                            backgroundColor: "transparent",
+                          },
+                        }}
+                      >
+                        <Stack
+                          width="100%"
+                          direction="row"
+                          margin="0 8px"
+                          alignItems="center"
+                        >
+                          <Typography>{c.name}</Typography>
+                          <Typography marginLeft="auto">
+                            {isDisabled ? "(Already Used)" : ""}
+                          </Typography>
+                        </Stack>
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
               </Box>
             )}
@@ -264,6 +340,9 @@ const EditBudgetModal = ({
                   {...field}
                   fullWidth
                   displayEmpty
+                  onChange={(event) => {
+                    field.onChange(event);
+                  }}
                   sx={{
                     borderRadius: "8px",
                     height: "45px",
@@ -271,6 +350,20 @@ const EditBudgetModal = ({
                     alignItems: "center",
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                       borderColor: theme.palette.primary.main,
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        minHeight: "auto",
+                        maxHeight: "250px",
+                        overflowY: "auto",
+                        mt: "8px", // gap between select and dropdown
+                        borderRadius: "8px",
+                        padding: "12px 20px",
+                        minWidth: "60px",
+                        maxWidth: "fit-content",
+                      },
                     },
                   }}
                   error={!!errors.selectedTheme}
@@ -281,6 +374,7 @@ const EditBudgetModal = ({
                     const isDisabled = usedColorCodes.has(markerColorLower);
                     return (
                       <MenuItem
+                        disableRipple
                         key={marker.name}
                         value={marker.name}
                         disabled={isDisabled}

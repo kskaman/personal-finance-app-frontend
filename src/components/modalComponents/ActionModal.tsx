@@ -24,6 +24,12 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
           bgcolor: theme.palette.text.primary,
           padding: { xs: "20px 24px", sm: "32px" },
           borderRadius: "12px",
+          overflow: "auto",
+          outline: "none",
+          "&:focus": {
+            outline: "none",
+            border: "none",
+          },
         }}
       >
         <Stack
