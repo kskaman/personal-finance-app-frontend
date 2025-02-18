@@ -18,8 +18,8 @@ import CaretRightIcon from "../../Icons/CaretRightIcon";
 import BudgetsProgressBar from "../../utilityComponents/BudgetsProgressBar";
 import { Budget, Transaction } from "../../types/Data";
 import OptionsButton from "../modalComponents/OptionsButton";
-import { useState } from "react";
 import BudgetTransactionsModal from "../modalComponents/BudgetTransactionsModal";
+import useModal from "../../customHooks/useModal";
 
 interface BudgetItemProps {
   budget: Budget;
@@ -36,7 +36,11 @@ const BudgetsItem = ({
   setDeleteModalOpen,
   setEditModalOpen,
 }: BudgetItemProps) => {
-  const [showTransactions, setShowTransactions] = useState<boolean>(false);
+  const {
+    isOpen: isDetailOpen,
+    openModal: openDetails,
+    closeModal: closeDetails,
+  } = useModal();
 
   return (
     <>
@@ -81,9 +85,7 @@ const BudgetsItem = ({
               sx={{
                 cursor: "pointer",
               }}
-              onClick={() => {
-                setShowTransactions(true);
-              }}
+              onClick={openDetails}
             >
               <Typography
                 color={theme.palette.primary.light}
@@ -176,12 +178,10 @@ const BudgetsItem = ({
         </SubContainer>
       </SubContainer>
 
-      {showTransactions && (
+      {isDetailOpen && (
         <BudgetTransactionsModal
-          open={showTransactions}
-          onClose={() => {
-            setShowTransactions(false);
-          }}
+          open={isDetailOpen}
+          onClose={closeDetails}
           categoryLabel={budget.category}
           transactionsForCategory={transactionsForCategory}
         />

@@ -2,7 +2,7 @@ import { Box, Stack, Typography } from "@mui/material";
 import ActionModal from "./ActionModal";
 import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
-import { hexToRGBA } from "../../utils/utilityFunctions";
+import { capitalizeSentence, hexToRGBA } from "../../utils/utilityFunctions";
 
 interface Props {
   open: boolean;
@@ -12,16 +12,8 @@ interface Props {
   type: string;
 }
 
-const DeleteBudgetModal = ({
-  open,
-  onClose,
-  handleDelete,
-  label,
-  type,
-}: Props) => {
-  const typedToken = label
-    ? label.charAt(0).toUpperCase() + label.slice(1)
-    : "";
+const DeleteModal = ({ open, onClose, handleDelete, label, type }: Props) => {
+  const typedToken = capitalizeSentence(label);
 
   const onDelete = () => {
     handleDelete({ category: label });
@@ -46,7 +38,10 @@ const DeleteBudgetModal = ({
             height="53px"
             backgroundColor={theme.palette.others.red}
             color={theme.palette.text.primary}
-            onClick={onDelete}
+            onClick={() => {
+              onDelete();
+              onClose();
+            }}
             hoverColor={theme.palette.text.primary}
             hoverBgColor={hexToRGBA(theme.palette.others.red, 0.8)}
           >
@@ -74,4 +69,4 @@ const DeleteBudgetModal = ({
   );
 };
 
-export default DeleteBudgetModal;
+export default DeleteModal;

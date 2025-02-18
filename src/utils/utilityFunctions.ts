@@ -130,3 +130,20 @@ export function hexToRGBA(hex: string, alpha: number): string {
   // Return RGBA color with specified opacity
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
+
+
+
+
+// Function to capitalize the first letter of a single word
+export const capitalizeWord = (word: string): string => {
+  if (!word) return "";
+  return word.charAt(0).toUpperCase() + word.slice(1);
+};
+
+// Function to capitalize the first letter of each word in a sentence or phrase
+export const capitalizeSentence = (sentence: string): string => {
+  return sentence
+    .split(" ")
+    .map((word) => capitalizeWord(word))
+    .join(" ");
+};
