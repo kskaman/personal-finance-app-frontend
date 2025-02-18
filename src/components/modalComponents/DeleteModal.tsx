@@ -7,7 +7,7 @@ import { capitalizeSentence, hexToRGBA } from "../../utils/utilityFunctions";
 interface Props {
   open: boolean;
   onClose: () => void;
-  handleDelete: ({ category }: { category: string }) => void;
+  handleDelete: () => void;
   label: string;
   type: string;
 }
@@ -16,7 +16,7 @@ const DeleteModal = ({ open, onClose, handleDelete, label, type }: Props) => {
   const typedToken = capitalizeSentence(label);
 
   const onDelete = () => {
-    handleDelete({ category: label });
+    handleDelete();
     onClose();
   };
 

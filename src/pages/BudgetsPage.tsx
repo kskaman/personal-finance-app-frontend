@@ -102,10 +102,12 @@ const BudgetsPage = () => {
     ]);
   };
 
-  const handleBudgetDelete = ({ category }: { category: string }) => {
+  const handleBudgetDelete = (itemLabel: string) => {
+    if (itemLabel === "") return;
     setBudgets((prevBudgets) =>
-      prevBudgets.filter((budget) => budget.category !== category)
+      prevBudgets.filter((budget) => budget.category !== itemLabel)
     );
+    setSelectedBudget(null);
   };
 
   return (
@@ -263,7 +265,7 @@ const BudgetsPage = () => {
           open={isDeleteModalOpen}
           onClose={closeDeleteModal}
           handleDelete={() =>
-            handleBudgetDelete({ category: selectedBudget?.category || "" })
+            handleBudgetDelete(selectedBudget?.category || "")
           }
           label={selectedBudget?.category || ""}
           type="budget"
