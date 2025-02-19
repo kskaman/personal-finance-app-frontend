@@ -9,9 +9,10 @@ import OptionsButton from "../modalComponents/OptionsButton";
 interface Props {
   pot: Pot;
   setDeleteModalOpen: () => void;
+  setEditModalOpen: () => void;
 }
 
-const PotItem = ({ pot, setDeleteModalOpen }: Props) => {
+const PotItem = ({ pot, setDeleteModalOpen, setEditModalOpen }: Props) => {
   return (
     <SubContainer gap="32px">
       <Stack direction="row" alignItems="center" gap="24px">
@@ -31,7 +32,7 @@ const PotItem = ({ pot, setDeleteModalOpen }: Props) => {
         </Typography>
         <OptionsButton
           type="pot"
-          onEdit={() => console.log("Edit Pot")}
+          onEdit={setEditModalOpen}
           onDelete={setDeleteModalOpen}
         />
       </Stack>

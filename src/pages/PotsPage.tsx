@@ -12,6 +12,7 @@ import { MD_BREAK } from "../data/widthConstants";
 import useModal from "../customHooks/useModal";
 import { Pot } from "../types/Data";
 import DeleteModal from "../components/modalComponents/DeleteModal";
+import AddEditPotModal from "../components/modalComponents/AddEditPotModal";
 
 const PotsPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
@@ -19,19 +20,71 @@ const PotsPage = () => {
   const { pots } = useContext(PotsDataContext);
   const { setPots } = useContext(PotsActionContext);
 
+  const potNamesUsed = pots.map((pot) => pot.name);
+
   const {
     isOpen: isDeleteModal,
     openModal: openDeleteModal,
     closeModal: closeDeleteModal,
   } = useModal();
 
+  const {
+    isOpen: isAddEditModalOpen,
+    openModal: openAddEditModal,
+    closeModal: closeAddEditModal,
+  } = useModal();
+
   const [selectedPot, setSelectedPot] = useState<Pot | null>(null);
+  const [mode, setMode] = useState<"add" | "edit" | null>(null);
 
   const handlePotDelete = (potName: string | null) => {
     if (selectedPot === null) return;
 
     setPots((prevPots) => prevPots.filter((pot) => pot.name !== potName));
     setSelectedPot(null);
+  };
+
+  const handleAddPot = ({
+    potName,
+    target,
+    markerTheme,
+  }: {
+    potName: string;
+    target: string;
+    markerTheme: string;
+  }) => {
+    setPots((prevPots) => [
+      ...prevPots,
+      {
+        name: potName,
+        target: parseFloat(target),
+        total: 0,
+        theme: markerTheme,
+      },
+    ]);
+  };
+
+  const handleEditPot = ({
+    potName,
+    target,
+    markerTheme,
+  }: {
+    potName: string;
+    target: string;
+    markerTheme: string;
+  }) => {
+    setPots((prevPots) =>
+      prevPots.map((pot) =>
+        pot.name === potName
+          ? {
+              name: potName,
+              target: parseFloat(target),
+              total: 0,
+              theme: markerTheme,
+            }
+          : pot
+      )
+    );
   };
 
   return (
@@ -55,7 +108,10 @@ const PotsPage = () => {
                 padding="16px"
                 backgroundColor={theme.palette.primary.main}
                 color={theme.palette.text.primary}
-                onClick={() => console.log("clicked Add New Button")}
+                onClick={() => {
+                  setMode("add");
+                  openAddEditModal();
+                }}
                 hoverColor={theme.palette.text.primary}
                 hoverBgColor={theme.palette.primary.light}
               >
@@ -78,6 +134,11 @@ const PotsPage = () => {
                         setSelectedPot(pot);
                         openDeleteModal();
                       }}
+                      setEditModalOpen={() => {
+                        setSelectedPot(pot);
+                        setMode("edit");
+                        openAddEditModal();
+                      }}
                     />
                   </Grid>
                 );
@@ -88,10 +149,36 @@ const PotsPage = () => {
 
         <DeleteModal
           open={isDeleteModal}
-          onClose={closeDeleteModal}
+          onClose={() => {
+            setSelectedPot(null);
+            closeDeleteModal();
+          }}
           handleDelete={() => handlePotDelete(selectedPot?.name || null)}
           label={selectedPot?.name || ""}
           type={"pot"}
+        />
+
+        <AddEditPotModal
+          open={isAddEditModalOpen}
+          onClose={() => {
+            closeAddEditModal();
+            setSelectedPot(null);
+            setMode(null);
+          }}
+          updatePots={
+            mode === "edit"
+              ? handleEditPot
+              : mode === "add"
+              ? handleAddPot
+              : () => {}
+          }
+          mode={mode}
+          potNamesUsed={potNamesUsed.filter(
+            (potName) => potName !== selectedPot?.name
+          )}
+          potName={selectedPot?.name}
+          targetVal={selectedPot?.target}
+          markerTheme={selectedPot?.theme}
         />
       </Box>
     </>

@@ -1,35 +1,36 @@
-import { useContext, useEffect, useCallback } from "react";
-import { Box, Typography, Stack } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import ActionModal from "./ActionModal";
-import theme from "../../theme/theme";
+import { useCallback, useContext, useEffect } from "react";
 import CategoryMarkerContext from "../../context/CategoryMarkerContext";
-import { Category, MarkerTheme } from "../../types/Data";
-import Button from "../../utilityComponents/Button";
+import { MarkerTheme } from "../../types/Data";
+import ActionModal from "./ActionModal";
+import { Box, Stack, Typography } from "@mui/material";
+import theme from "../../theme/theme";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
 import { formatDecimalNumber, hexToRGBA } from "../../utils/utilityFunctions";
-import ModalSelectDropdown from "./ModalSelectDropdown";
 import ModalTextField from "./ModalTextField";
+import Button from "../../utilityComponents/Button";
+import ModalSelectDropdown from "./ModalSelectDropdown";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 // Types & Interfaces
-interface AddEditBudgetModalProps {
+interface AddEditPotModalProps {
   open: boolean;
   onClose: () => void;
-  updateBudgets: (args: {
-    category: string;
-    maxSpend: string;
+  potNamesUsed: string[];
+  potName?: string;
+  targetVal?: number;
+  mode?: "edit" | "add" | null;
+  markerTheme?: string;
+  updatePots: (args: {
+    potName: string;
+    target: string;
     markerTheme: string;
   }) => void;
-  category?: string;
-  markerTheme?: string;
-  maximumSpend?: number;
-  mode?: "edit" | "add" | null;
 }
 
 interface FormValues {
-  category: string;
-  maxSpend: string;
+  potName: string;
+  target: string;
   selectedTheme: string;
 }
 
@@ -37,32 +38,40 @@ interface Option {
   value: string;
   label: string;
   used?: boolean;
-  colorCode?: string;
+  colorCode: string;
 }
 
 // Yup Schema for Validation
-const buildSchema = () =>
+const buildSchema = (usedPotNames: string[]) =>
   yup.object({
-    category: yup.string().required("Category is required"),
-    maxSpend: yup
+    potName: yup
       .string()
-      .matches(/^\d+(\.\d{0,2})?$/, "Enter a valid number (up to 2 decimals).")
-      .required("Maximum spend is required"),
+      .required("Pot Name is required")
+
+      .notOneOf(usedPotNames, "Pot name already in use"),
+    target: yup
+      .string()
+      .matches(
+        /^\d+(\.\d{0, 2})?$/,
+        "Enter a valid number (up to 2 decimal places)."
+      )
+      .required("Target is required"),
     selectedTheme: yup.string().required("Theme is required"),
   });
 
-// Add/Edit Budget Modal Component
-const AddEditBudgetModal = ({
+// Add Edit Pot Modal
+const AddEditPotModal = ({
   open,
   onClose,
-  updateBudgets,
-  category,
-  markerTheme,
-  maximumSpend,
+  updatePots,
+  potNamesUsed,
   mode = "edit",
-}: AddEditBudgetModalProps) => {
+  potName,
+  targetVal,
+  markerTheme = "",
+}: AddEditPotModalProps) => {
   // Access marker themes and categories from context.
-  const { markerThemes, categories } = useContext(CategoryMarkerContext);
+  const { markerThemes } = useContext(CategoryMarkerContext);
 
   // Create a map for marker name to its lowercased color code.
   const nameToColorCode = new Map<string, string>(
@@ -90,62 +99,32 @@ const AddEditBudgetModal = ({
       .map((b) => b.colorCode.toLowerCase())
   );
 
-  // Determine categories already used (except current one).
-  const UsedCategoriesNames = new Set(
-    categories
-      .filter((c: Category) => c.name !== category && c.usedInBudgets)
-      .map((c) => c.name)
-  );
-
   // Setup React Hook Form.
   const { control, handleSubmit, reset, trigger } = useForm<FormValues>({
-    resolver: yupResolver(buildSchema()),
+    resolver: yupResolver(buildSchema(potNamesUsed)),
     mode: "onSubmit",
     defaultValues: {
-      category: category || "",
-      maxSpend: maximumSpend
-        ? formatDecimalNumber(maximumSpend).toString()
-        : "",
+      potName: potName || "",
+      target: targetVal ? formatDecimalNumber(targetVal).toString() : "",
       selectedTheme: defaultThemeName,
     },
   });
 
-  // Reset form when props change.
+  // Reset Form when props change.
   useEffect(() => {
     reset({
-      category: category || "",
-      maxSpend: maximumSpend
-        ? formatDecimalNumber(maximumSpend).toString()
-        : "0.00",
+      potName: potName || "",
+      target: targetVal ? formatDecimalNumber(targetVal).toString() : "",
       selectedTheme: getDefaultThemeName(),
     });
   }, [
-    category,
-    maximumSpend,
+    potName,
+    targetVal,
     markerTheme,
     markerThemes,
     reset,
     getDefaultThemeName,
   ]);
-
-  // Form submission handler.
-  const onSubmit = (data: FormValues) => {
-    const selectedThemeCode =
-      nameToColorCode.get(data.selectedTheme) || "#ffffff";
-    updateBudgets({
-      category: data.category,
-      maxSpend: data.maxSpend,
-      markerTheme: selectedThemeCode,
-    });
-    onClose();
-  };
-
-  // Build dropdown options for categories.
-  const categoryOptions: Option[] = categories.map((c) => ({
-    value: c.name,
-    label: c.name,
-    used: UsedCategoriesNames.has(c.name),
-  }));
 
   // Build dropdown options for marker themes.
   const themeOptions: Option[] = markerThemes.map((marker) => ({
@@ -155,40 +134,70 @@ const AddEditBudgetModal = ({
     colorCode: marker.colorCode,
   }));
 
+  // Form submission handler.
+  const onSubmit = (data: FormValues) => {
+    const selectedThemeCode =
+      nameToColorCode.get(data.selectedTheme) || "#fffff";
+    updatePots({
+      potName: data.potName,
+      target: data.target,
+      markerTheme: selectedThemeCode,
+    });
+    onClose();
+  };
+
   return (
     <ActionModal
       open={open}
       onClose={onClose}
-      heading={`${mode === "edit" ? "Edit" : "Add New"} Budget`}
+      heading={mode === "edit" ? "Edit Pot" : "Add New Pot"}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="20px">
           <Typography fontSize="14px" color={theme.palette.primary.light}>
             {mode === "edit"
-              ? "As your budget changes, feel free to update your spending limits."
-              : "Choose a category to set a spending budget. These categories can help you monitor spending."}
+              ? "If your saving targets change, feel free to update your pots."
+              : "Create a pot to set savings targets. These can help keep you on track as you save for special purchases."}
           </Typography>
 
-          {/* CATEGORY FIELD */}
+          {/* POT NAME */}
           <Controller
-            name="category"
+            name="potName"
             control={control}
-            render={({ field }) => (
-              <Box>
-                <ModalSelectDropdown
+            render={({ field, fieldState: { error } }) => (
+              <Stack position="relative">
+                <ModalTextField
                   value={field.value}
-                  onChange={field.onChange}
-                  options={categoryOptions}
-                  disabled={mode === "edit"}
-                  label={"Budget Category"}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 30) {
+                      field.onChange(e);
+                    }
+                  }}
+                  onBlur={() => {
+                    field.onBlur();
+                    if (field.value.trim() !== "") {
+                      trigger(field.name);
+                    }
+                  }}
+                  error={error}
+                  label={"Pot Name"}
+                  maxLength={30}
                 />
-              </Box>
+                <Typography
+                  fontSize="12px"
+                  color={theme.palette.primary.light}
+                  marginLeft="auto"
+                  marginTop="1px"
+                >
+                  {`${30 - field.value.length} characters left`}
+                </Typography>
+              </Stack>
             )}
           />
 
-          {/* MAXIMUM SPEND FIELD */}
+          {/* TARGET FIELD */}
           <Controller
-            name="maxSpend"
+            name="target"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <Box>
@@ -202,7 +211,7 @@ const AddEditBudgetModal = ({
                     }
                   }}
                   error={error}
-                  label="Maximum Spend"
+                  label="Target"
                   placeholder="0.00"
                   adornmentText="$"
                 />
@@ -214,7 +223,7 @@ const AddEditBudgetModal = ({
           <Controller
             name="selectedTheme"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <Box>
                 <ModalSelectDropdown
                   value={field.value}
@@ -222,6 +231,7 @@ const AddEditBudgetModal = ({
                   options={themeOptions}
                   isTheme={true}
                   label={"Theme"}
+                  error={error}
                 />
               </Box>
             )}
@@ -248,4 +258,4 @@ const AddEditBudgetModal = ({
   );
 };
 
-export default AddEditBudgetModal;
+export default AddEditPotModal;

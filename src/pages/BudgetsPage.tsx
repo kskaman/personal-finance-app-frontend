@@ -60,9 +60,9 @@ const BudgetsPage = () => {
     closeModal: closeDeleteModal,
   } = useModal();
   const {
-    isOpen: isEditModalOpen,
-    openModal: openEditModal,
-    closeModal: closeEditModal,
+    isOpen: isAddEditModalOpen,
+    openModal: openAddEditModal,
+    closeModal: closeAddEditModal,
   } = useModal();
 
   // Local state for the selected budget (for edit/delete)
@@ -138,7 +138,7 @@ const BudgetsPage = () => {
                 color={theme.palette.text.primary}
                 onClick={() => {
                   setMode("add");
-                  openEditModal();
+                  openAddEditModal();
                 }}
                 hoverColor={theme.palette.text.primary}
                 hoverBgColor={theme.palette.primary.light}
@@ -241,7 +241,7 @@ const BudgetsPage = () => {
                       setEditModalOpen={() => {
                         setSelectedBudget(budget);
                         setMode("edit");
-                        openEditModal();
+                        openAddEditModal();
                       }}
                       setDeleteModalOpen={() => {
                         setSelectedBudget(budget);
@@ -263,7 +263,10 @@ const BudgetsPage = () => {
         {/* Delete Modal Component */}
         <DeleteModal
           open={isDeleteModalOpen}
-          onClose={closeDeleteModal}
+          onClose={() => {
+            setSelectedBudget(null);
+            closeDeleteModal();
+          }}
           handleDelete={() =>
             handleBudgetDelete(selectedBudget?.category || "")
           }
@@ -274,21 +277,22 @@ const BudgetsPage = () => {
         {/* Edit Modal Component */}
         <AddEditBudgetModal
           mode={mode}
-          open={isEditModalOpen}
+          open={isAddEditModalOpen}
           onClose={() => {
-            closeEditModal();
+            closeAddEditModal();
             setSelectedBudget(null);
+            setMode(null);
           }}
-          updateBudget={
+          updateBudgets={
             mode === "edit"
               ? handleEditBudget
               : mode === "add"
               ? handleAddBudget
               : () => {}
           }
-          category={selectedBudget?.category || ""}
-          maximumSpend={selectedBudget?.maximum || 0}
-          markerTheme={selectedBudget?.theme || ""}
+          category={selectedBudget?.category}
+          maximumSpend={selectedBudget?.maximum}
+          markerTheme={selectedBudget?.theme}
         />
       </Box>
     </>

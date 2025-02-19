@@ -1,6 +1,10 @@
 export const formatNumber = (num: number) => {
     return new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
 };
+
+export const formatDecimalNumber = (num: number): string => {
+  return num.toFixed(2);
+};
   
 
 const monthCode: {[key: string]: string} = {
