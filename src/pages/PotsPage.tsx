@@ -101,7 +101,7 @@ const PotsPage = () => {
         pot.name === potName
           ? {
               ...pot,
-              total: pot.total + val,
+              total: val,
             }
           : pot
       )
@@ -226,6 +226,8 @@ const PotsPage = () => {
             }}
             type={potType}
             potName={selectedPot.name}
+            potTotal={selectedPot.total}
+            potTarget={selectedPot.target}
             updatePotAmount={(val) =>
               handleUpdatePotAmount(selectedPot.name, val)
             }

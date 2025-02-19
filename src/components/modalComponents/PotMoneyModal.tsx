@@ -7,13 +7,16 @@ import { Controller, useForm } from "react-hook-form";
 import ModalTextField from "./ModalTextField";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import PotsProgressBar from "../../utilityComponents/PotsProgressBar";
 
 // Types & Interface
 interface PotMoneyModalProps {
   open: boolean;
   onClose: () => void;
   type: "addMoney" | "withdraw" | null;
-  potName: string | null;
+  potName: string;
+  potTotal: number;
+  potTarget: number;
   updatePotAmount: (amount: number) => void;
 }
 
@@ -36,14 +39,16 @@ const PotMoneyModal = ({
   onClose,
   type,
   potName,
+  potTotal,
+  potTarget,
   updatePotAmount,
 }: PotMoneyModalProps) => {
   // Form submission handler.
   const onSubmit = (data: FormValues) => {
     if (type === "addMoney") {
-      updatePotAmount(parseFloat(data.amount));
+      updatePotAmount(potTotal + parseFloat(data.amount));
     } else if (type === "withdraw") {
-      updatePotAmount(-parseFloat(data.amount));
+      updatePotAmount(potTotal - parseFloat(data.amount));
     }
 
     onClose();
@@ -67,6 +72,18 @@ const PotMoneyModal = ({
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="20px">
+          {potTotal && potTarget && (
+            <PotsProgressBar
+              value={potTotal}
+              target={potTarget}
+              color={
+                type === "addMoney"
+                  ? theme.palette.others.green
+                  : theme.palette.others.red
+              }
+              bgColor={theme.palette.background.default}
+            />
+          )}
           {/* AMOUNT FIELD */}
           <Controller
             name="amount"
