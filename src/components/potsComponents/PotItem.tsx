@@ -10,9 +10,17 @@ interface Props {
   pot: Pot;
   setDeleteModalOpen: () => void;
   setEditModalOpen: () => void;
+  setPotAddMoneyModalOpen: () => void;
+  setPotWithdrawMoneyModalOpen: () => void;
 }
 
-const PotItem = ({ pot, setDeleteModalOpen, setEditModalOpen }: Props) => {
+const PotItem = ({
+  pot,
+  setDeleteModalOpen,
+  setEditModalOpen,
+  setPotAddMoneyModalOpen,
+  setPotWithdrawMoneyModalOpen,
+}: Props) => {
   return (
     <SubContainer gap="32px">
       <Stack direction="row" alignItems="center" gap="24px">
@@ -50,7 +58,7 @@ const PotItem = ({ pot, setDeleteModalOpen, setEditModalOpen }: Props) => {
           height="100%"
           color={theme.palette.primary.main}
           backgroundColor={theme.palette.background.default}
-          onClick={() => console.log("clicked '+ Add Money'")}
+          onClick={setPotAddMoneyModalOpen}
           hoverBgColor="inherit"
           hoverColor="inherit"
         >
@@ -63,7 +71,7 @@ const PotItem = ({ pot, setDeleteModalOpen, setEditModalOpen }: Props) => {
           height="100%"
           color={theme.palette.primary.main}
           backgroundColor={theme.palette.background.default}
-          onClick={() => console.log("clicked 'Withdraw'")}
+          onClick={setPotWithdrawMoneyModalOpen}
           hoverBgColor="inherit"
           hoverColor="inherit"
         >

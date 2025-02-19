@@ -13,6 +13,7 @@ import useModal from "../customHooks/useModal";
 import { Pot } from "../types/Data";
 import DeleteModal from "../components/modalComponents/DeleteModal";
 import AddEditPotModal from "../components/modalComponents/AddEditPotModal";
+import PotMoneyModal from "../components/modalComponents/PotMoneyModal";
 
 const PotsPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
@@ -34,8 +35,15 @@ const PotsPage = () => {
     closeModal: closeAddEditModal,
   } = useModal();
 
+  const {
+    isOpen: isPotMoneyModalOpen,
+    openModal: openPotMoneyModal,
+    closeModal: closePotMoneyModal,
+  } = useModal();
+
   const [selectedPot, setSelectedPot] = useState<Pot | null>(null);
   const [mode, setMode] = useState<"add" | "edit" | null>(null);
+  const [potType, setPotType] = useState<"addMoney" | "withdraw" | null>(null);
 
   const handlePotDelete = (potName: string | null) => {
     if (selectedPot === null) return;
@@ -81,6 +89,19 @@ const PotsPage = () => {
               target: parseFloat(target),
               total: 0,
               theme: markerTheme,
+            }
+          : pot
+      )
+    );
+  };
+
+  const handleUpdatePotAmount = (potName: string, val: number) => {
+    setPots((prevPots) =>
+      prevPots.map((pot) =>
+        pot.name === potName
+          ? {
+              ...pot,
+              total: pot.total + val,
             }
           : pot
       )
@@ -139,6 +160,16 @@ const PotsPage = () => {
                         setMode("edit");
                         openAddEditModal();
                       }}
+                      setPotAddMoneyModalOpen={() => {
+                        setSelectedPot(pot);
+                        setPotType("addMoney");
+                        openPotMoneyModal();
+                      }}
+                      setPotWithdrawMoneyModalOpen={() => {
+                        setSelectedPot(pot);
+                        setPotType("withdraw");
+                        openPotMoneyModal();
+                      }}
                     />
                   </Grid>
                 );
@@ -147,39 +178,59 @@ const PotsPage = () => {
           </Stack>
         </PageDiv>
 
-        <DeleteModal
-          open={isDeleteModal}
-          onClose={() => {
-            setSelectedPot(null);
-            closeDeleteModal();
-          }}
-          handleDelete={() => handlePotDelete(selectedPot?.name || null)}
-          label={selectedPot?.name || ""}
-          type={"pot"}
-        />
+        {isDeleteModal && (
+          <DeleteModal
+            open={isDeleteModal}
+            onClose={() => {
+              setSelectedPot(null);
+              closeDeleteModal();
+            }}
+            handleDelete={() => handlePotDelete(selectedPot?.name || null)}
+            label={selectedPot?.name || ""}
+            type={"pot"}
+          />
+        )}
 
-        <AddEditPotModal
-          open={isAddEditModalOpen}
-          onClose={() => {
-            closeAddEditModal();
-            setSelectedPot(null);
-            setMode(null);
-          }}
-          updatePots={
-            mode === "edit"
-              ? handleEditPot
-              : mode === "add"
-              ? handleAddPot
-              : () => {}
-          }
-          mode={mode}
-          potNamesUsed={potNamesUsed.filter(
-            (potName) => potName !== selectedPot?.name
-          )}
-          potName={selectedPot?.name}
-          targetVal={selectedPot?.target}
-          markerTheme={selectedPot?.theme}
-        />
+        {isAddEditModalOpen && (
+          <AddEditPotModal
+            open={isAddEditModalOpen}
+            onClose={() => {
+              closeAddEditModal();
+              setSelectedPot(null);
+              setMode(null);
+            }}
+            updatePots={
+              mode === "edit"
+                ? handleEditPot
+                : mode === "add"
+                ? handleAddPot
+                : () => {}
+            }
+            mode={mode}
+            potNamesUsed={potNamesUsed.filter(
+              (potName) => potName !== selectedPot?.name
+            )}
+            potName={selectedPot?.name}
+            targetVal={selectedPot?.target}
+            markerTheme={selectedPot?.theme}
+          />
+        )}
+
+        {isPotMoneyModalOpen && selectedPot && (
+          <PotMoneyModal
+            open={isPotMoneyModalOpen}
+            onClose={() => {
+              closePotMoneyModal();
+              setSelectedPot(null);
+              setPotType(null);
+            }}
+            type={potType}
+            potName={selectedPot.name}
+            updatePotAmount={(val) =>
+              handleUpdatePotAmount(selectedPot.name, val)
+            }
+          />
+        )}
       </Box>
     </>
   );
