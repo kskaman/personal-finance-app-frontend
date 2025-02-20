@@ -47,8 +47,12 @@ const buildSchema = (usedPotNames: string[]) =>
     potName: yup
       .string()
       .required("Pot Name is required")
-
-      .notOneOf(usedPotNames, "Pot name already in use"),
+      .test("unique", "Pot name already in use", function (value) {
+        if (value && usedPotNames.includes(value.toLowerCase())) {
+          return false;
+        }
+        return true;
+      }),
     target: yup
       .string()
       .matches(

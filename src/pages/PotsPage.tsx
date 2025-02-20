@@ -21,7 +21,7 @@ const PotsPage = () => {
   const { pots } = useContext(PotsDataContext);
   const { setPots } = useContext(PotsActionContext);
 
-  const potNamesUsed = pots.map((pot) => pot.name);
+  const potNamesUsed = pots.map((pot) => pot.name.toLowerCase());
 
   const {
     isOpen: isDeleteModal,

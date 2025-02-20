@@ -4,14 +4,14 @@ import theme from "../theme/theme";
 import BudgetsPieChart from "../utilityComponents/BudgetsPieChart";
 import PageDiv from "../utilityComponents/PageDiv";
 import SubContainer from "../utilityComponents/SubContainer";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState, useEffect } from "react";
 import {
   BudgetsActionContext,
   BudgetsDataContext,
 } from "../context/BudgetsContext";
 import { formatNumber } from "../utils/utilityFunctions";
 import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
-import { Budget, Transaction } from "../types/Data";
+import { Budget, Category, MarkerTheme, Transaction } from "../types/Data";
 import Button from "../utilityComponents/Button";
 import BudgetsItem from "../components/budgetsComponents/BudgetsItem";
 import useParentWidth from "../customHooks/useParentWidth";
@@ -19,6 +19,8 @@ import { LG_BREAK, MD_SM_BREAK } from "../data/widthConstants";
 import DeleteModal from "../components/modalComponents/DeleteModal";
 import AddEditBudgetModal from "../components/modalComponents/AddEditBudgetModal";
 import useModal from "../customHooks/useModal";
+import CategoryMarkerContext from "../context/CategoryMarkerContext";
+import { updateUsedStatuses } from "../utils/budgetUtils";
 
 const BudgetsPage = () => {
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
@@ -26,10 +28,12 @@ const BudgetsPage = () => {
   const { transactions, monthlySpentByCategory } = useContext(
     BalanceTransactionsDataContext
   );
+  const { markerThemes, categories, setMarkerThemes, setCategories } =
+    useContext(CategoryMarkerContext);
 
   const budgetCategories = budgets.map((budget) => budget.category);
 
-  // Memoize computed values for performance
+  // Memoize computed values for performance.
   const transactionsPerCategory = useMemo(() => {
     return budgetCategories.reduce<Record<string, Transaction[]>>(
       (acc, category) => {
@@ -49,11 +53,41 @@ const BudgetsPage = () => {
     }, {});
   }, [budgetCategories, monthlySpentByCategory]);
 
+  // Update the usedInBudgets flags for categories and markerThemes whenever budgets change.
+  useEffect(() => {
+    const { updatedCategories, updatedMarkerThemes } = updateUsedStatuses(
+      budgets,
+      categories,
+      markerThemes
+    );
+    setCategories(updatedCategories);
+    setMarkerThemes(updatedMarkerThemes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [budgets]);
+
+  // Build dropdown options using the updated context arrays.
+  const categoryOptions = useMemo(() => {
+    return categories.map((cat: Category) => ({
+      value: cat.name,
+      label: cat.name,
+      used: cat.usedInBudgets,
+    }));
+  }, [categories]);
+
+  const themeOptions = useMemo(() => {
+    return markerThemes.map((marker: MarkerTheme) => ({
+      value: marker.colorCode,
+      label: marker.name,
+      used: marker.usedInBudgets,
+      colorCode: marker.colorCode,
+    }));
+  }, [markerThemes]);
+
   const { containerRef, parentWidth } = useParentWidth();
   const isParentLg = parentWidth < LG_BREAK;
   const isParentMdSm = parentWidth < MD_SM_BREAK;
 
-  // Use custom modal hooks for managing modal states
+  // Modal management hooks.
   const {
     isOpen: isDeleteModalOpen,
     openModal: openDeleteModal,
@@ -104,9 +138,12 @@ const BudgetsPage = () => {
 
   const handleBudgetDelete = (itemLabel: string) => {
     if (itemLabel === "") return;
-    setBudgets((prevBudgets) =>
-      prevBudgets.filter((budget) => budget.category !== itemLabel)
+    const newBudgets = budgets.filter(
+      (budget) => budget.category !== itemLabel
     );
+    setBudgets(newBudgets);
+    // No need to update categories/markerThemes manually—
+    // the useEffect above will update them based on the new budgets.
     setSelectedBudget(null);
   };
 
@@ -220,9 +257,9 @@ const BudgetsPage = () => {
                                   monthlySpent[budget.category]
                                 )}`}
                               </Typography>
-                              <Typography fontSize="14px">{`of $${formatNumber(
-                                budget.maximum
-                              )}`}</Typography>
+                              <Typography fontSize="14px">
+                                {`of $${formatNumber(budget.maximum)}`}
+                              </Typography>
                             </Stack>
                           </ListItem>
                           {index < budgets.length - 1 && <Divider />}
@@ -293,6 +330,8 @@ const BudgetsPage = () => {
           category={selectedBudget?.category}
           maximumSpend={selectedBudget?.maximum}
           markerTheme={selectedBudget?.theme}
+          categoryOptions={categoryOptions}
+          themeOptions={themeOptions}
         />
       </Box>
     </>
