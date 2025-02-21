@@ -4,16 +4,22 @@ import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import { PotsActionContext, PotsDataContext } from "../context/PotsContext";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import PotItem from "../components/potsComponents/PotItem";
 import Button from "../utilityComponents/Button";
 import useParentWidth from "../customHooks/useParentWidth";
 import { MD_BREAK } from "../data/widthConstants";
 import useModal from "../customHooks/useModal";
-import { Pot } from "../types/Data";
+import { MarkerTheme, Pot } from "../types/Data";
 import DeleteModal from "../components/modalComponents/DeleteModal";
 import AddEditPotModal from "../components/modalComponents/AddEditPotModal";
 import PotMoneyModal from "../components/modalComponents/PotMoneyModal";
+import CategoryMarkerContext from "../context/CategoryMarkerContext";
+import { updateUsedStatuses } from "../utils/potsUtils";
+import {
+  BalanceTransactionsActionContext,
+  BalanceTransactionsDataContext,
+} from "../context/BalanceTransactionsContext";
 
 const PotsPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
@@ -22,6 +28,29 @@ const PotsPage = () => {
   const { setPots } = useContext(PotsActionContext);
 
   const potNamesUsed = pots.map((pot) => pot.name.toLowerCase());
+
+  const currentBalance = useContext(BalanceTransactionsDataContext).balance;
+  const setCurrentBalance = useContext(
+    BalanceTransactionsActionContext
+  ).setBalance;
+
+  const { markerThemes, setMarkerThemes } = useContext(CategoryMarkerContext);
+
+  const themeOptions = useMemo(() => {
+    return markerThemes.map((marker: MarkerTheme) => ({
+      value: marker.colorCode,
+      label: marker.name,
+      used: marker.usedInPots,
+      colorCode: marker.colorCode,
+    }));
+  }, [markerThemes]);
+
+  // Update the usedInPots flags for markerThemes whenever pots change.
+  useEffect(() => {
+    const { updatedMarkerThemes } = updateUsedStatuses(pots, markerThemes);
+    setMarkerThemes(updatedMarkerThemes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pots]);
 
   const {
     isOpen: isDeleteModal,
@@ -48,6 +77,10 @@ const PotsPage = () => {
   const handlePotDelete = (potName: string | null) => {
     if (selectedPot === null) return;
 
+    setCurrentBalance((prevBalance) => ({
+      ...prevBalance,
+      current: prevBalance.current + selectedPot.total,
+    }));
     setPots((prevPots) => prevPots.filter((pot) => pot.name !== potName));
     setSelectedPot(null);
   };
@@ -95,7 +128,11 @@ const PotsPage = () => {
     );
   };
 
-  const handleUpdatePotAmount = (potName: string, val: number) => {
+  const handleUpdatePotAmount = (
+    potName: string,
+    val: number,
+    newBalance: number
+  ) => {
     setPots((prevPots) =>
       prevPots.map((pot) =>
         pot.name === potName
@@ -106,7 +143,15 @@ const PotsPage = () => {
           : pot
       )
     );
+    setCurrentBalance((prevBalance) => ({
+      ...prevBalance,
+      current: newBalance,
+    }));
   };
+
+  const sortedPots = useMemo(() => {
+    return pots.slice().sort((a, b) => a.name.localeCompare(b.name));
+  }, [pots]);
 
   return (
     <>
@@ -146,7 +191,7 @@ const PotsPage = () => {
               spacing="24px"
               columns={parentWidth <= MD_BREAK ? 1 : 2}
             >
-              {pots.map((pot) => {
+              {sortedPots.map((pot) => {
                 return (
                   <Grid key={pot.name} size={1}>
                     <PotItem
@@ -187,6 +232,9 @@ const PotsPage = () => {
             }}
             handleDelete={() => handlePotDelete(selectedPot?.name || null)}
             label={selectedPot?.name || ""}
+            warningText={`Are you sure you want to delete this pot? The money in the pot 
+              will be added to current balance. This action cannot be
+          reversed and all the data inside it will be removed forever.`}
             type={"pot"}
           />
         )}
@@ -213,6 +261,7 @@ const PotsPage = () => {
             potName={selectedPot?.name}
             targetVal={selectedPot?.target}
             markerTheme={selectedPot?.theme}
+            themeOptions={themeOptions}
           />
         )}
 
@@ -228,9 +277,10 @@ const PotsPage = () => {
             potName={selectedPot.name}
             potTotal={selectedPot.total}
             potTarget={selectedPot.target}
-            updatePotAmount={(val) =>
-              handleUpdatePotAmount(selectedPot.name, val)
+            updatePotAmount={(val, amount) =>
+              handleUpdatePotAmount(selectedPot.name, val, amount)
             }
+            maxLimit={currentBalance.current}
           />
         )}
       </Box>

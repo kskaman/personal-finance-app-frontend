@@ -10,9 +10,17 @@ interface Props {
   handleDelete: () => void;
   label: string;
   type: string;
+  warningText?: string;
 }
 
-const DeleteModal = ({ open, onClose, handleDelete, label, type }: Props) => {
+const DeleteModal = ({
+  open,
+  onClose,
+  handleDelete,
+  warningText,
+  label,
+  type,
+}: Props) => {
   const typedToken = capitalizeSentence(label);
 
   const onDelete = () => {
@@ -28,8 +36,10 @@ const DeleteModal = ({ open, onClose, handleDelete, label, type }: Props) => {
     >
       <Stack gap="32px">
         <Typography fontSize="14px" color={theme.palette.primary.light}>
-          Are you sure you want to delete this {type}? This action cannot be
-          reversed and all the data inside it will be removed forever.
+          {warningText
+            ? warningText
+            : `Are you sure you want to delete this ${type}? This action cannot be
+          reversed and all the data inside it will be removed forever.`}
         </Typography>
 
         <Box>

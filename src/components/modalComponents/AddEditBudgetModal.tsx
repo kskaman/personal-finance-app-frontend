@@ -47,6 +47,11 @@ const buildSchema = () =>
     maxSpend: yup
       .string()
       .matches(/^\d+(\.\d{0,2})?$/, "Enter a valid number (up to 2 decimals).")
+      .test(
+        "positive",
+        "Maximum spend must be a positive number",
+        (value) => Number(value) > 0
+      )
       .required("Maximum spend is required"),
     selectedTheme: yup.string().required("Theme is required"),
   });

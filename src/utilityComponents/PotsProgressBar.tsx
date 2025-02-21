@@ -38,12 +38,14 @@ const PotsProgressBar = ({
           Total Saved
         </Typography>
         <Typography fontSize="32px" color={theme.palette.primary.main}>
-          ${formatNumber(value)}
+          {value < 0
+            ? `-$${formatNumber(Math.abs(value))}`
+            : `$${formatNumber(value)}`}
         </Typography>
       </Stack>
       <LinearProgress
         variant="determinate"
-        value={fraction}
+        value={fraction >= 100 ? 100 : fraction}
         sx={{
           height: "8px",
           borderRadius: "4px",

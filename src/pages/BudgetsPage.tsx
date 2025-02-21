@@ -142,10 +142,12 @@ const BudgetsPage = () => {
       (budget) => budget.category !== itemLabel
     );
     setBudgets(newBudgets);
-    // No need to update categories/markerThemes manually—
-    // the useEffect above will update them based on the new budgets.
     setSelectedBudget(null);
   };
+
+  const sortedBudgets = useMemo(() => {
+    return budgets.slice().sort((a, b) => a.category.localeCompare(b.category));
+  }, [budgets]);
 
   return (
     <>
@@ -220,7 +222,7 @@ const BudgetsPage = () => {
                       Spending Summary
                     </Typography>
                     <List>
-                      {budgets.map((budget, index) => (
+                      {sortedBudgets.map((budget, index) => (
                         <div key={budget.category}>
                           <ListItem
                             sx={{
