@@ -36,10 +36,9 @@ const getBillStatus = (lastPaid: string, dueDate: string) => {
     status = "paid";
   } else {
     const diffDays =
-      dueDateObj &&
-      Math.ceil((dueDateObj.getTime() - now.getTime()) / (1000 * 3600 * 24));
-    const isDueSoon = dueDateObj && diffDays && diffDays >= 0 && diffDays <= 3;
-    const isDue = dueDateObj && diffDays && diffDays < 0;
+      dueDateObj && (dueDateObj.getTime() - now.getTime()) / (1000 * 3600 * 24);
+    const isDueSoon = dueDateObj && diffDays && diffDays > 0 && diffDays <= 3;
+    const isDue = dueDateObj && diffDays && diffDays <= 0;
     if (isDueSoon) status = "dueSoon";
     if (isDue) status = "due";
   }
@@ -49,9 +48,11 @@ const getBillStatus = (lastPaid: string, dueDate: string) => {
 const BillsTable = ({
   bills,
   parentWidth,
+  setDeleteModalOpen,
 }: {
   bills: RecurringBill[];
   parentWidth: number;
+  setDeleteModalOpen: (recurringBill: RecurringBill) => void;
 }) => {
   const isParentWidth = parentWidth < MD_SM_BREAK;
 
@@ -159,7 +160,9 @@ const BillsTable = ({
                   <OptionsButton
                     type="bill"
                     onEdit={() => console.log("Edit Bill")}
-                    onDelete={() => console.log("Delete Bill")}
+                    onDelete={() => {
+                      setDeleteModalOpen(bill);
+                    }}
                   />
                 </Stack>
 
@@ -304,7 +307,9 @@ const BillsTable = ({
                   <OptionsButton
                     type="bill"
                     onEdit={() => console.log("Edit Bill")}
-                    onDelete={() => console.log("Delete Bill")}
+                    onDelete={() => {
+                      setDeleteModalOpen(bill);
+                    }}
                   />
                 </Stack>
               </TableCell>

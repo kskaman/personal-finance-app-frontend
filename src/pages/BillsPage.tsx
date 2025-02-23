@@ -3,7 +3,10 @@ import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import { useContext, useState } from "react";
-import { RecurringDataContext } from "../context/RecurringContext";
+import {
+  RecurringActionContext,
+  RecurringDataContext,
+} from "../context/RecurringContext";
 import Total from "../components/billsComponents/Total";
 import Summary from "../components/billsComponents/Summary";
 import BillsTable from "../components/billsComponents/BillsTable";
@@ -12,6 +15,8 @@ import Filter from "../utilityComponents/Filter";
 import { RecurringBill } from "../types/Data";
 import useParentWidth from "../customHooks/useParentWidth";
 import { SM_BREAK, XL_BREAK } from "../data/widthConstants";
+import DeleteModal from "../components/modalComponents/DeleteModal";
+import useModal from "../customHooks/useModal";
 
 // Function to filter & sort bills
 const filterAndSortBills = (
@@ -49,6 +54,9 @@ const BillsPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
 
   const { recurringBills } = useContext(RecurringDataContext);
+  const setRecurringBills = useContext(
+    RecurringActionContext
+  ).setRecurringBills;
 
   const [searchName, setSearchName] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("Latest");
@@ -57,6 +65,30 @@ const BillsPage = () => {
     recurringBills.reduce((sum, bill) => sum + bill.amount, 0)
   );
   const filteredBills = filterAndSortBills(recurringBills, searchName, sortBy);
+
+  // Modal management hooks.
+  const {
+    isOpen: isDeleteModalOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
+  // const {
+  //   isOpen: isEditModalOpen,
+  //   openModal: openEditModal,
+  //   closeModal: closeEditModal,
+  // } = useModal();
+
+  // Local state for the selected budget (for edit/delete)
+  const [selectedBill, setSelectedBill] = useState<RecurringBill | null>(null);
+
+  const handleBillDelete = (selectedBillId: string) => {
+    if (selectedBillId === "") return;
+    const newBills = recurringBills.filter(
+      (bill: RecurringBill) => bill.id !== selectedBillId
+    );
+    setRecurringBills(newBills);
+    setSelectedBill(null);
+  };
 
   return (
     <>
@@ -102,12 +134,31 @@ const BillsPage = () => {
                     sortBy={sortBy}
                     setSortBy={setSortBy}
                   />
-                  <BillsTable parentWidth={parentWidth} bills={filteredBills} />
+                  <BillsTable
+                    parentWidth={parentWidth}
+                    bills={filteredBills}
+                    setDeleteModalOpen={(bill: RecurringBill) => {
+                      setSelectedBill(bill);
+                      openDeleteModal();
+                    }}
+                  />
                 </Stack>
               </SubContainer>
             </Stack>
           </Stack>
         </PageDiv>
+
+        {/* Delete Modal Component */}
+        <DeleteModal
+          open={isDeleteModalOpen}
+          onClose={() => {
+            setSelectedBill(null);
+            closeDeleteModal();
+          }}
+          handleDelete={() => handleBillDelete(selectedBill?.id || "")}
+          label={"Recurring Bill"}
+          type="bill"
+        />
       </Box>
     </>
   );
