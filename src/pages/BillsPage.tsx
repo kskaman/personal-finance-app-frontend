@@ -17,6 +17,7 @@ import useParentWidth from "../customHooks/useParentWidth";
 import { SM_BREAK, XL_BREAK } from "../data/widthConstants";
 import DeleteModal from "../components/modalComponents/DeleteModal";
 import useModal from "../customHooks/useModal";
+import EditBillModal from "../components/modalComponents/EditBillModal";
 
 // Function to filter & sort bills
 const filterAndSortBills = (
@@ -72,11 +73,12 @@ const BillsPage = () => {
     openModal: openDeleteModal,
     closeModal: closeDeleteModal,
   } = useModal();
-  // const {
-  //   isOpen: isEditModalOpen,
-  //   openModal: openEditModal,
-  //   closeModal: closeEditModal,
-  // } = useModal();
+
+  const {
+    isOpen: isEditModalOpen,
+    openModal: openEditModal,
+    closeModal: closeEditModal,
+  } = useModal();
 
   // Local state for the selected budget (for edit/delete)
   const [selectedBill, setSelectedBill] = useState<RecurringBill | null>(null);
@@ -88,6 +90,18 @@ const BillsPage = () => {
     );
     setRecurringBills(newBills);
     setSelectedBill(null);
+  };
+
+  const handleUpdateBill = (
+    billId: string,
+    amount: number,
+    dueDate: string
+  ) => {
+    if (!billId) return;
+    const updatedBills = recurringBills.map((bill) =>
+      bill.id === billId ? { ...bill, amount: -amount, dueDate } : bill
+    );
+    setRecurringBills(updatedBills);
   };
 
   return (
@@ -141,6 +155,10 @@ const BillsPage = () => {
                       setSelectedBill(bill);
                       openDeleteModal();
                     }}
+                    setEditModalOpen={(bill: RecurringBill) => {
+                      setSelectedBill(bill);
+                      openEditModal();
+                    }}
                   />
                 </Stack>
               </SubContainer>
@@ -149,16 +167,30 @@ const BillsPage = () => {
         </PageDiv>
 
         {/* Delete Modal Component */}
-        <DeleteModal
-          open={isDeleteModalOpen}
-          onClose={() => {
-            setSelectedBill(null);
-            closeDeleteModal();
-          }}
-          handleDelete={() => handleBillDelete(selectedBill?.id || "")}
-          label={"Recurring Bill"}
-          type="bill"
-        />
+        {selectedBill && isDeleteModalOpen && (
+          <DeleteModal
+            open={isDeleteModalOpen}
+            onClose={() => {
+              setSelectedBill(null);
+              closeDeleteModal();
+            }}
+            handleDelete={() => handleBillDelete(selectedBill.id)}
+            label={"Recurring Bill"}
+            type="bill"
+          />
+        )}
+
+        {/* Edit Recurring Bill Modal */}
+        {selectedBill && isEditModalOpen && (
+          <EditBillModal
+            open={isEditModalOpen}
+            onClose={closeEditModal}
+            billId={selectedBill.id}
+            amount={Math.abs(selectedBill.amount)}
+            dueDate={selectedBill.dueDate}
+            updateBill={handleUpdateBill}
+          />
+        )}
       </Box>
     </>
   );

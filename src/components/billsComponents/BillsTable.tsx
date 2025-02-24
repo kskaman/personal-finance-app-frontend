@@ -49,10 +49,12 @@ const BillsTable = ({
   bills,
   parentWidth,
   setDeleteModalOpen,
+  setEditModalOpen,
 }: {
   bills: RecurringBill[];
   parentWidth: number;
   setDeleteModalOpen: (recurringBill: RecurringBill) => void;
+  setEditModalOpen: (recurringBill: RecurringBill) => void;
 }) => {
   const isParentWidth = parentWidth < MD_SM_BREAK;
 
@@ -159,7 +161,9 @@ const BillsTable = ({
                   </Box>
                   <OptionsButton
                     type="bill"
-                    onEdit={() => console.log("Edit Bill")}
+                    onEdit={() => {
+                      setEditModalOpen(bill);
+                    }}
                     onDelete={() => {
                       setDeleteModalOpen(bill);
                     }}
@@ -306,7 +310,9 @@ const BillsTable = ({
                 >
                   <OptionsButton
                     type="bill"
-                    onEdit={() => console.log("Edit Bill")}
+                    onEdit={() => {
+                      setEditModalOpen(bill);
+                    }}
                     onDelete={() => {
                       setDeleteModalOpen(bill);
                     }}
