@@ -23,12 +23,14 @@ interface Props {
   txns: Transaction[];
   parentWidth: number;
   setDeleteModalOpen: (txn: Transaction) => void;
+  setEditModalOpen: (txn: Transaction) => void;
 }
 
 const TransactionsTable = ({
   txns,
   parentWidth,
   setDeleteModalOpen,
+  setEditModalOpen,
 }: Props) => {
   const isParentWidth = parentWidth < MD_SM_BREAK;
   return (
@@ -165,7 +167,7 @@ const TransactionsTable = ({
                   {/* Action Button */}
                   <OptionsButton
                     type="transaction"
-                    onEdit={() => console.log("Edit Transaction")}
+                    onEdit={() => setEditModalOpen(txn)}
                     onDelete={() => setDeleteModalOpen(txn)}
                   />
                 </Stack>
@@ -247,7 +249,7 @@ const TransactionsTable = ({
                 <TableCell sx={{ textAlign: "right" }}>
                   <OptionsButton
                     type="transaction"
-                    onEdit={() => console.log("Edit Transaction")}
+                    onEdit={() => setEditModalOpen(txn)}
                     onDelete={() => setDeleteModalOpen(txn)}
                   />
                 </TableCell>

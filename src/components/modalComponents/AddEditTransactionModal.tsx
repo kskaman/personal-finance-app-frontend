@@ -6,7 +6,6 @@ import {
   Radio,
   RadioGroup,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -26,6 +25,8 @@ interface FormValues {
   date: string;
   amount: string;
   paymentType: "oneTime" | "recurring";
+  recurringId?: string;
+  dueDate?: string;
 }
 
 interface AddEditTransactionModalProps {
@@ -33,6 +34,7 @@ interface AddEditTransactionModalProps {
   onClose: () => void;
   onSubmit: (data: FormValues) => void;
   initialData?: FormValues;
+  recurringOptions: { label: string; value: string }[];
 }
 
 // Yup validation schema – note that recurringId is required only when paymentType is "recurring"
@@ -40,7 +42,32 @@ const buildSchema = () =>
   yup.object({
     name: yup.string().required("Transaction Name is required"),
     category: yup.string().required("Category is required"),
-    date: yup.string().required("Date is required"),
+    date: yup
+      .string()
+      .required("Date is required")
+      .matches(
+        /^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
+        "Date must be in dd/mm/yyyy format"
+      )
+      .test("valid-date", "Enter a valid date", (value) => {
+        if (!value) return false;
+        const [day, month, year] = value.split("/").map(Number);
+        const dateObj = new Date(year, month - 1, day);
+        // Check that the constructed date matches the input (to catch invalid dates like 31/02/2025)
+        return (
+          dateObj.getFullYear() === year &&
+          dateObj.getMonth() === month - 1 &&
+          dateObj.getDate() === day
+        );
+      })
+      .test("not-future", "Date cannot be in the future", (value) => {
+        if (!value) return false;
+        const [day, month, year] = value.split("/").map(Number);
+        const dateObj = new Date(year, month - 1, day);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return dateObj <= today;
+      }),
     amount: yup
       .string()
       .required("Amount is required")
@@ -49,6 +76,12 @@ const buildSchema = () =>
       .string()
       .oneOf(["oneTime", "recurring"])
       .required("Select a payment type"),
+    recurringId: yup.string().when("paymentType", (paymentType, schema) => {
+      const pt = Array.isArray(paymentType) ? paymentType[0] : paymentType;
+      return pt === "recurring"
+        ? schema.required("Select a recurring bill or add new")
+        : schema.notRequired();
+    }),
   });
 
 const AddEditTransactionModal = ({
@@ -56,8 +89,9 @@ const AddEditTransactionModal = ({
   onClose,
   onSubmit,
   initialData,
+  recurringOptions,
 }: AddEditTransactionModalProps) => {
-  const { control, handleSubmit, reset, trigger } = useForm<FormValues>({
+  const { control, handleSubmit, reset, trigger, watch } = useForm<FormValues>({
     resolver: yupResolver(buildSchema()),
     defaultValues: initialData || {
       name: "",
@@ -88,6 +122,10 @@ const AddEditTransactionModal = ({
     }
   }, [initialData, open, reset]);
 
+  // Watch paymentType and recurringId for conditional rendering.
+  const watchPaymentType = watch("paymentType");
+  const watchRecurringId = watch("recurringId");
+
   return (
     <ActionModal
       open={open}
@@ -97,7 +135,13 @@ const AddEditTransactionModal = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="20px">
           {/* Payment Type Radio Buttons */}
-          <Typography variant="subtitle1">Payment Type</Typography>
+          <Typography
+            fontSize="12px"
+            color={theme.palette.primary.light}
+            fontWeight="bold"
+          >
+            Payment Type
+          </Typography>
           <Controller
             name="paymentType"
             control={control}
@@ -119,7 +163,52 @@ const AddEditTransactionModal = ({
             )}
           />
 
+          {/* If recurring payment is selected, show the recurring fields */}
+          {watchPaymentType === "recurring" && (
+            <>
+              {/* Recurring Bills Dropdown */}
+              <Controller
+                name="recurringId"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <ModalSelectDropdown
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    options={[
+                      ...recurringOptions,
+                      { label: "Add New Bill", value: "new" },
+                    ]}
+                    label="Recurring Bills"
+                    error={error}
+                  />
+                )}
+              />
+
+              {/* Due Date for the recurring bill */}
+              <Controller
+                name="dueDate"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <ModalTextField
+                    value={field.value || ""}
+                    label="Due Date"
+                    placeholder="dd"
+                    error={error}
+                    onChange={field.onChange}
+                    onBlur={() => {
+                      field.onBlur();
+                      if (field.value && field.value.trim() !== "") {
+                        trigger(field.name);
+                      }
+                    }}
+                  />
+                )}
+              />
+            </>
+          )}
+
           {/* Transaction Name */}
+
           <Controller
             name="name"
             control={control}
@@ -159,14 +248,18 @@ const AddEditTransactionModal = ({
             name="date"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
+              <ModalTextField
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={() => {
+                  field.onBlur();
+                  if (field.value.trim() !== "") {
+                    trigger(field.name);
+                  }
+                }}
+                error={error}
                 label="Date"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                error={!!error}
-                helperText={error ? error.message : ""}
-                fullWidth
+                placeholder="dd/mm/yyyy"
               />
             )}
           />
@@ -193,7 +286,6 @@ const AddEditTransactionModal = ({
             )}
           />
 
-          {/* Action Buttons */}
           {/* SAVE BUTTON */}
           <Button
             type="submit"
@@ -206,7 +298,7 @@ const AddEditTransactionModal = ({
             hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
           >
             <Typography fontSize="14px" fontWeight="bold">
-              {initialData ? "Add Transaction" : "Save Changes"}
+              Save Changes
             </Typography>
           </Button>
         </Stack>

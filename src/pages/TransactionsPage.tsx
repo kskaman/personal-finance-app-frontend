@@ -11,7 +11,7 @@ import {
   BalanceTransactionsActionContext,
   BalanceTransactionsDataContext,
 } from "../context/BalanceTransactionsContext";
-import { Transaction } from "../types/Data";
+import { RecurringBill, Transaction } from "../types/Data";
 import useParentWidth from "../customHooks/useParentWidth";
 import Button from "../utilityComponents/Button";
 import useModal from "../customHooks/useModal";
@@ -20,6 +20,7 @@ import {
   RecurringActionContext,
   RecurringDataContext,
 } from "../context/RecurringContext";
+import AddEditTransactionModal from "../components/modalComponents/AddEditTransactionModal";
 
 const filterAndSortTransactions = (
   transactions: Transaction[],
@@ -103,8 +104,28 @@ const TransactionsPage = () => {
     closeModal: closeDeleteModal,
   } = useModal();
 
+  const {
+    isOpen: isEditModalOpen,
+    openModal: openEditModal,
+    closeModal: closeEditModal,
+  } = useModal();
+
+  const {
+    isOpen: isAddModalOpen,
+    openModal: openAddModal,
+    closeModal: closeAddModal,
+  } = useModal();
+
+  const recurringOptions = recurringBills.map((bill: RecurringBill) => {
+    return {
+      value: `${bill.id}`,
+      label: `${bill.name} - $${Math.abs(bill.amount)}`,
+    };
+  });
+
   const [selectedTnx, setSelectedTnx] = useState<Transaction | null>(null);
 
+  // handle transaction delete functionality
   const handleDeleteTnx = () => {
     if (selectedTnx === null) return;
 
@@ -177,7 +198,7 @@ const TransactionsPage = () => {
                 padding="16px"
                 backgroundColor={theme.palette.primary.main}
                 color={theme.palette.text.primary}
-                onClick={() => console.log("clicked Add New Transaction")}
+                onClick={openAddModal}
                 hoverColor={theme.palette.text.primary}
                 hoverBgColor={theme.palette.primary.light}
               >
@@ -204,6 +225,10 @@ const TransactionsPage = () => {
                   setSelectedTnx(txn);
                   openDeleteModal();
                 }}
+                setEditModalOpen={(txn: Transaction) => {
+                  setSelectedTnx(txn);
+                  openEditModal();
+                }}
               />
 
               <PageNav
@@ -226,6 +251,27 @@ const TransactionsPage = () => {
             handleDelete={() => handleDeleteTnx()}
             label="Transaction"
             type="transaction"
+          />
+        )}
+
+        {isAddModalOpen && (
+          <AddEditTransactionModal
+            open={isAddModalOpen}
+            onClose={closeAddModal}
+            onSubmit={() => console.log("Added Transaction")}
+            recurringOptions={recurringOptions}
+          />
+        )}
+
+        {isEditModalOpen && (
+          <AddEditTransactionModal
+            open={isEditModalOpen}
+            onClose={() => {
+              setSelectedTnx(null);
+              closeEditModal();
+            }}
+            onSubmit={() => console.log("Edit Transaction")}
+            recurringOptions={recurringOptions}
           />
         )}
       </Box>
