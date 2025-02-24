@@ -13,7 +13,7 @@ export interface Transaction {
     theme: string;
     amount: number;
     recurring: boolean;
-    recurringId?: true;
+    recurringId?: string;
 }
 
 export interface RecurringBill {

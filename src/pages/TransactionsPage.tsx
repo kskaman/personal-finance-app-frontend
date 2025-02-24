@@ -16,6 +16,10 @@ import useParentWidth from "../customHooks/useParentWidth";
 import Button from "../utilityComponents/Button";
 import useModal from "../customHooks/useModal";
 import DeleteModal from "../components/modalComponents/DeleteModal";
+import {
+  RecurringActionContext,
+  RecurringDataContext,
+} from "../context/RecurringContext";
 
 const filterAndSortTransactions = (
   transactions: Transaction[],
@@ -65,6 +69,9 @@ const TransactionsPage = () => {
     BalanceTransactionsActionContext
   );
 
+  const recurringBills = useContext(RecurringDataContext).recurringBills;
+  const { setRecurringBills } = useContext(RecurringActionContext);
+
   const numPages = Math.ceil(transactions.length / 10);
 
   const numbers = Array.from({ length: numPages }, (_, i) => i + 1);
@@ -98,9 +105,15 @@ const TransactionsPage = () => {
 
   const [selectedTnx, setSelectedTnx] = useState<Transaction | null>(null);
 
-  const handleDeleteTnx = (tnxId: string, amount: number) => {
-    const newTnxs = transactions.filter((tnx: Transaction) => tnx.id !== tnxId);
+  const handleDeleteTnx = () => {
+    if (selectedTnx === null) return;
 
+    // Remove the deleted transaction from the list.
+    const newTnxs = transactions.filter(
+      (tnx: Transaction) => tnx.id !== selectedTnx.id
+    );
+
+    const amount = selectedTnx.amount;
     const isNegative = amount < 0;
     setBalance({
       ...balance,
@@ -110,6 +123,37 @@ const TransactionsPage = () => {
     });
 
     setTransactions(newTnxs);
+
+    // If the deleted transaction was recurring, update the recurring bill.
+    if (selectedTnx.recurring && selectedTnx.recurringId) {
+      // Use the updated transactions list for related transactions.
+      const relatedTxns = newTnxs.filter(
+        (txn) => txn.recurring && txn.recurringId === selectedTnx.recurringId
+      );
+
+      let updatedRecurringBills;
+      if (relatedTxns.length === 0) {
+        // If no related transactions remain, clear the lastPaid date.
+        updatedRecurringBills = recurringBills.map((bill) => {
+          if (bill.id === selectedTnx.recurringId) {
+            return { ...bill, lastPaid: "" };
+          }
+          return bill;
+        });
+      } else {
+        // Find the transaction with the latest date.
+        const latestTxn = relatedTxns.reduce((prev, current) =>
+          new Date(current.date) > new Date(prev.date) ? current : prev
+        );
+        updatedRecurringBills = recurringBills.map((bill) => {
+          if (bill.id === selectedTnx.recurringId) {
+            return { ...bill, lastPaid: latestTxn.date };
+          }
+          return bill;
+        });
+      }
+      setRecurringBills(updatedRecurringBills);
+    }
   };
 
   return (
@@ -179,9 +223,7 @@ const TransactionsPage = () => {
               setSelectedTnx(null);
               closeDeleteModal();
             }}
-            handleDelete={() =>
-              handleDeleteTnx(selectedTnx.id, selectedTnx.amount)
-            }
+            handleDelete={() => handleDeleteTnx()}
             label="Transaction"
             type="transaction"
           />
