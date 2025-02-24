@@ -7,10 +7,15 @@ import Filter from "../utilityComponents/Filter";
 import TransactionsTable from "../components/transactionsComponents/TransactionsTable";
 import PageNav from "../components/transactionsComponents/PageNav";
 import { useContext, useState } from "react";
-import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
+import {
+  BalanceTransactionsActionContext,
+  BalanceTransactionsDataContext,
+} from "../context/BalanceTransactionsContext";
 import { Transaction } from "../types/Data";
 import useParentWidth from "../customHooks/useParentWidth";
 import Button from "../utilityComponents/Button";
+import useModal from "../customHooks/useModal";
+import DeleteModal from "../components/modalComponents/DeleteModal";
 
 const filterAndSortTransactions = (
   transactions: Transaction[],
@@ -55,7 +60,11 @@ const TransactionsPage = () => {
 
   const [pageNum, setPageNum] = useState<number>(() => 1);
 
-  const transactions = useContext(BalanceTransactionsDataContext).transactions;
+  const { transactions, balance } = useContext(BalanceTransactionsDataContext);
+  const { setTransactions, setBalance } = useContext(
+    BalanceTransactionsActionContext
+  );
+
   const numPages = Math.ceil(transactions.length / 10);
 
   const numbers = Array.from({ length: numPages }, (_, i) => i + 1);
@@ -78,7 +87,30 @@ const TransactionsPage = () => {
   );
 
   const i = pageNum * 10;
-  const selectedTx = filteredTx.slice(i - 10, i);
+  const selectedTnxs = filteredTx.slice(i - 10, i);
+
+  // Modal management hooks
+  const {
+    isOpen: isDeleteModalOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
+
+  const [selectedTnx, setSelectedTnx] = useState<Transaction | null>(null);
+
+  const handleDeleteTnx = (tnxId: string, amount: number) => {
+    const newTnxs = transactions.filter((tnx: Transaction) => tnx.id !== tnxId);
+
+    const isNegative = amount < 0;
+    setBalance({
+      ...balance,
+      current: isNegative ? balance.current + amount : balance.current - amount,
+      income: isNegative ? balance.income : balance.income - amount,
+      expenses: isNegative ? balance.expenses + amount : balance.expenses,
+    });
+
+    setTransactions(newTnxs);
+  };
 
   return (
     <>
@@ -121,7 +153,14 @@ const TransactionsPage = () => {
                 setSortBy={setSortBy}
               />
 
-              <TransactionsTable txns={selectedTx} parentWidth={parentWidth} />
+              <TransactionsTable
+                txns={selectedTnxs}
+                parentWidth={parentWidth}
+                setDeleteModalOpen={(txn: Transaction) => {
+                  setSelectedTnx(txn);
+                  openDeleteModal();
+                }}
+              />
 
               <PageNav
                 numbers={numbers}
@@ -132,6 +171,21 @@ const TransactionsPage = () => {
             </SubContainer>
           </Stack>
         </PageDiv>
+
+        {selectedTnx && isDeleteModalOpen && (
+          <DeleteModal
+            open={isDeleteModalOpen}
+            onClose={() => {
+              setSelectedTnx(null);
+              closeDeleteModal();
+            }}
+            handleDelete={() =>
+              handleDeleteTnx(selectedTnx.id, selectedTnx.amount)
+            }
+            label="Transaction"
+            type="transaction"
+          />
+        )}
       </Box>
     </>
   );

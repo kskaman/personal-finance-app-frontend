@@ -22,9 +22,14 @@ import { MD_SM_BREAK } from "../../data/widthConstants";
 interface Props {
   txns: Transaction[];
   parentWidth: number;
+  setDeleteModalOpen: (txn: Transaction) => void;
 }
 
-const TransactionsTable = ({ txns, parentWidth }: Props) => {
+const TransactionsTable = ({
+  txns,
+  parentWidth,
+  setDeleteModalOpen,
+}: Props) => {
   const isParentWidth = parentWidth < MD_SM_BREAK;
   return (
     <Table>
@@ -161,7 +166,7 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
                   <OptionsButton
                     type="transaction"
                     onEdit={() => console.log("Edit Transaction")}
-                    onDelete={() => console.log("Delete Transaction")}
+                    onDelete={() => setDeleteModalOpen(txn)}
                   />
                 </Stack>
 
@@ -243,7 +248,7 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
                   <OptionsButton
                     type="transaction"
                     onEdit={() => console.log("Edit Transaction")}
-                    onDelete={() => console.log("Delete Transaction")}
+                    onDelete={() => setDeleteModalOpen(txn)}
                   />
                 </TableCell>
               </>
