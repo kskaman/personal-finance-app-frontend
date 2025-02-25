@@ -9,7 +9,7 @@ import SignupForm from "../components/loginSignupComponents/SignupForm";
 import SubContainer from "../utilityComponents/SubContainer";
 
 const LoginPage = () => {
-  const [isLogOpen, setLogOpen] = useState<boolean>(false);
+  const [isLogOpen, setLogOpen] = useState<boolean>(true);
 
   const handleLogin = (email: string, password: string) => {
     console.log(`email : ${email}\npassword : ${password}`);
@@ -75,15 +75,15 @@ const LoginPage = () => {
         alignItems="center"
         height="69.76px"
         sx={{
-          borderBottomLeftRadius: "16px",
-          borderBottomRightRadius: "16px",
+          borderBottomLeftRadius: "8px",
+          borderBottomRightRadius: "8px",
         }}
       >
         <img src={logoIcon} alt="Logo Icons" />
       </Stack>
 
       {/* Login / Signup Form Container */}
-      <Stack justifyContent="center" alignItems="center" height="100%">
+      <Stack flex={1} justifyContent="center" alignItems="center" height="100%">
         <SubContainer width="min(560px, 90%)">
           {isLogOpen ? (
             <LoginForm handleLogin={handleLogin} />
