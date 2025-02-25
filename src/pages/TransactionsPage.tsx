@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
@@ -21,7 +22,24 @@ import {
   RecurringDataContext,
 } from "../context/RecurringContext";
 import AddEditTransactionModal from "../components/modalComponents/AddEditTransactionModal";
+import {
+  formatDecimalNumber,
+  formatISODateToDDMMYYYY,
+} from "../utils/utilityFunctions";
 
+// Interfaces and Props
+interface FormValues {
+  txnName: string;
+  category: string;
+  date: string;
+  amount: string;
+  paymentType: "oneTime" | "recurring";
+  paymentDirection: "paid" | "received";
+  recurringId?: string;
+  dueDate?: string;
+}
+
+// Helper function
 const filterAndSortTransactions = (
   transactions: Transaction[],
   searchName: string,
@@ -60,6 +78,7 @@ const filterAndSortTransactions = (
   });
 };
 
+// Main Page component
 const TransactionsPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
 
@@ -120,6 +139,10 @@ const TransactionsPage = () => {
     return {
       value: `${bill.id}`,
       label: `${bill.name} - $${Math.abs(bill.amount)}`,
+      dueDate: bill.dueDate,
+      category: bill.category,
+      name: bill.name,
+      amount: formatDecimalNumber(Math.abs(bill.amount)),
     };
   });
 
@@ -175,6 +198,61 @@ const TransactionsPage = () => {
       }
       setRecurringBills(updatedRecurringBills);
     }
+  };
+
+  // function to add a transaction.
+  const handleAddTransaction = (formData: FormValues) => {
+    let transaction: Transaction;
+    if (formData.paymentType === "oneTime") {
+      // For one-time, use the entered payment direction.
+      transaction = {
+        id: uuidv4(),
+        name: formData.txnName,
+        category: formData.category,
+        date: new Date().toISOString(), // stored in ISO format
+        amount:
+          formData.paymentDirection === "paid"
+            ? -parseFloat(formData.amount)
+            : parseFloat(formData.amount),
+        recurring: false,
+        theme: "#defaultTheme",
+      };
+    } else {
+      // For recurring transactions, force paymentDirection to "paid"
+      let recurringId = formData.recurringId;
+      if (!recurringId || recurringId === "new") {
+        // Create new recurring bill if none exists or "new" was chosen.
+        const newBill: RecurringBill = {
+          id: uuidv4(),
+          name: formData.txnName,
+          category: formData.category,
+          amount: -parseFloat(formData.amount),
+          recurring: true,
+          lastPaid: new Date().toISOString(),
+          dueDate: formData.dueDate!, // dueDate is required in recurring mode
+          theme: "#defaultRecurringTheme",
+        };
+        // Update recurring bills state: assume setRecurringBills adds the new bill.
+        setRecurringBills((prevBills: RecurringBill[]) => [
+          ...prevBills,
+          newBill,
+        ]);
+        recurringId = newBill.id;
+      }
+      transaction = {
+        id: uuidv4(),
+        name: formData.txnName,
+        category: formData.category,
+        date: new Date().toISOString(),
+        // Force amount to be negative for recurring payments (bills)
+        amount: -parseFloat(formData.amount),
+        recurring: true,
+        recurringId,
+        theme: "#defaultRecurringTheme",
+      };
+    }
+    // Update transactions state (prepend to the list)
+    setTransactions((prevTxns: Transaction[]) => [transaction, ...prevTxns]);
   };
 
   return (
@@ -258,12 +336,15 @@ const TransactionsPage = () => {
           <AddEditTransactionModal
             open={isAddModalOpen}
             onClose={closeAddModal}
-            onSubmit={() => console.log("Added Transaction")}
+            onSubmit={(formData: FormValues) => {
+              handleAddTransaction(formData);
+              closeAddModal();
+            }}
             recurringOptions={recurringOptions}
           />
         )}
 
-        {isEditModalOpen && (
+        {selectedTnx && isEditModalOpen && (
           <AddEditTransactionModal
             open={isEditModalOpen}
             onClose={() => {
@@ -272,6 +353,17 @@ const TransactionsPage = () => {
             }}
             onSubmit={() => console.log("Edit Transaction")}
             recurringOptions={recurringOptions}
+            txnData={{
+              txnName: selectedTnx.name,
+              category: selectedTnx.category,
+              date: formatISODateToDDMMYYYY(selectedTnx.date),
+              amount: formatDecimalNumber(
+                Math.abs(selectedTnx.amount)
+              ).toString(),
+              paymentDirection: selectedTnx.amount < 0 ? "paid" : "received",
+              paymentType: selectedTnx.recurring ? "recurring" : "oneTime",
+              recurringId: selectedTnx.recurringId || "",
+            }}
           />
         )}
       </Box>

@@ -11,6 +11,7 @@ interface CustomTextFieldProps {
   placeholder?: string;
   adornmentText?: string | null;
   maxLength?: number;
+  isDisabled?: boolean;
 }
 
 const ModalTextField: React.FC<CustomTextFieldProps> = ({
@@ -22,6 +23,7 @@ const ModalTextField: React.FC<CustomTextFieldProps> = ({
   maxLength,
   placeholder = "",
   adornmentText = null,
+  isDisabled = false,
 }) => {
   return (
     <Box>
@@ -34,6 +36,7 @@ const ModalTextField: React.FC<CustomTextFieldProps> = ({
         {label}
       </Typography>
       <TextField
+        disabled={isDisabled}
         value={value}
         onChange={onChange}
         onBlur={onBlur}

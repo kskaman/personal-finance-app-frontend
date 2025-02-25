@@ -21,7 +21,7 @@ interface ModalSelectDropdownProps {
   onChange: (event: SelectChangeEvent<string>) => void;
   options: Option[];
   label?: string;
-  disabled?: boolean;
+  isDisabled?: boolean;
   isTheme?: boolean;
   error?: { message?: string };
 }
@@ -32,7 +32,7 @@ const ModalSelectDropdown = ({
   options,
   label = "",
   error,
-  disabled = false,
+  isDisabled = false,
   isTheme = false,
 }: ModalSelectDropdownProps) => {
   // Sort options: used items are pushed to the bottom.
@@ -56,7 +56,7 @@ const ModalSelectDropdown = ({
       <Select
         value={value}
         onChange={onChange}
-        disabled={disabled}
+        disabled={isDisabled}
         fullWidth
         error={!!error}
         sx={{
