@@ -10,9 +10,10 @@ import PotsPage from "./pages/PotsPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import TabNavBar from "./components/TabNavBar";
 import theme from "./theme/theme";
+import SettingsPage from "./pages/SettingsPage";
 
 const App = () => {
-  const isMobile = useMediaQuery("(max-width:520px)");
+  const isMobile = useMediaQuery("(max-width:600px)");
 
   const isTabletOrMobile = useMediaQuery("(max-width:900px)");
 
@@ -36,6 +37,7 @@ const App = () => {
             <Route path="/budgets" element={<BudgetsPage />} />
             <Route path="/pots" element={<PotsPage />} />
             <Route path="/transactions" element={<TransactionsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </Box>
         {isTabletOrMobile && <TabNavBar isMobile={isMobile} />}

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  Box,
   FormControl,
   FormControlLabel,
   Radio,
@@ -131,7 +132,7 @@ const AddEditTransactionModal = ({
     useForm<FormValues>({
       resolver: yupResolver(buildSchema()),
       mode: "onChange",
-      defaultValues: txnData || {
+      defaultValues: {
         txnName: "",
         category: "",
         date: "",
@@ -158,6 +159,7 @@ const AddEditTransactionModal = ({
         amount: "",
         paymentType: "oneTime",
         recurringId: "new",
+        paymentDirection: "paid",
       });
     }
   }, [txnData, open, reset]);
@@ -166,19 +168,19 @@ const AddEditTransactionModal = ({
   const watchPaymentType = watch("paymentType");
   const watchRecurringId = watch("recurringId");
 
+  useEffect(() => {
+    if (watchPaymentType === "recurring") {
+      // Force "paid"
+      setValue("paymentDirection", "paid");
+    }
+  }, [watchPaymentType, setValue]);
+
   // Create a flag for saved recurring bill (not "new")
   const isSavedRecurring =
     (watchPaymentType === "recurring" &&
       watchRecurringId &&
       watchRecurringId !== "new") ||
     false;
-
-  // if user switches to "Recurring" but has "received" selected, force "paid"
-  useEffect(() => {
-    if (watchPaymentType === "recurring") {
-      setValue("paymentDirection", "paid");
-    }
-  }, [watchPaymentType, setValue]);
 
   // if user switches to "recurring" and has no recurringId, default to "new"
   useEffect(() => {
@@ -226,78 +228,91 @@ const AddEditTransactionModal = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="20px">
           {/* Payment Type Radio Buttons */}
-          <Typography
-            fontSize="12px"
-            color={theme.palette.primary.light}
-            fontWeight="bold"
-          >
-            Payment Type
-          </Typography>
-          <Controller
-            name="paymentType"
-            control={control}
-            render={({ field }) => (
-              <FormControl component="fieldset">
-                <RadioGroup row {...field}>
-                  <FormControlLabel
-                    value="oneTime"
-                    control={<Radio />}
-                    label="One-Time Payment"
-                  />
-                  <FormControlLabel
-                    value="recurring"
-                    control={<Radio />}
-                    label="Recurring Payment"
-                  />
-                </RadioGroup>
-              </FormControl>
-            )}
-          />
+          <Stack gap={"4px"}>
+            <Typography
+              fontSize="12px"
+              color={theme.palette.primary.light}
+              fontWeight="bold"
+            >
+              Payment Type
+            </Typography>
+            <Controller
+              name="paymentType"
+              control={control}
+              render={({ field }) => (
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                  >
+                    <Stack direction="row" justifyContent="space-evenly">
+                      <FormControlLabel
+                        value="oneTime"
+                        control={<Radio />}
+                        label="One-Time"
+                      />
+                      <FormControlLabel
+                        value="recurring"
+                        control={<Radio />}
+                        label="Recurring"
+                      />
+                    </Stack>
+                  </RadioGroup>
+                </FormControl>
+              )}
+            />
+          </Stack>
 
           {/* Always render the recurring fields, but hide them if paymentType is not recurring */}
           <Stack
+            direction={{ xs: "column", sm: "row" }}
             display={watchPaymentType === "recurring" ? "flex" : "none"}
-            gap="20px"
+            gap={2}
           >
             {/* Recurring Bills Dropdown */}
-            <Controller
-              name="recurringId"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <ModalSelectDropdown
-                  value={field.value || ""}
-                  onChange={field.onChange}
-                  options={[
-                    { label: "Add New Bill", value: "new" },
-                    ...recurringOptions,
-                  ]}
-                  label="Recurring Bills"
-                  error={error}
-                />
-              )}
-            />
+            <Box flex={2}>
+              <Controller
+                name="recurringId"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <ModalSelectDropdown
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    options={[
+                      { label: "Add New Bill", value: "new" },
+                      ...recurringOptions,
+                    ]}
+                    label="Recurring Bills"
+                    error={error}
+                  />
+                )}
+              />
+            </Box>
 
-            {/* Due Date for the recurring bill */}
-            <Controller
-              name="dueDate"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <ModalTextField
-                  isDisabled={isSavedRecurring}
-                  value={field.value || ""}
-                  label="Due Date"
-                  placeholder="dd/mm/yyyy"
-                  error={error}
-                  onChange={field.onChange}
-                  onBlur={() => {
-                    field.onBlur();
-                    if (field.value && field.value.trim() !== "") {
-                      trigger(field.name);
-                    }
-                  }}
-                />
-              )}
-            />
+            <Box flex={1}>
+              {/* Due Date for the recurring bill */}
+              <Controller
+                name="dueDate"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <ModalTextField
+                    isDisabled={isSavedRecurring}
+                    value={field.value || ""}
+                    label="Due Date"
+                    placeholder="dd"
+                    error={error}
+                    onChange={field.onChange}
+                    onBlur={() => {
+                      field.onBlur();
+                      if (field.value && field.value.trim() !== "") {
+                        trigger(field.name);
+                      }
+                    }}
+                  />
+                )}
+              />
+            </Box>
           </Stack>
 
           {/* Transaction Name */}
@@ -317,96 +332,102 @@ const AddEditTransactionModal = ({
             )}
           />
 
-          {/* Category */}
-          <Controller
-            name="category"
-            control={control}
-            render={({ field }) => (
-              <ModalSelectDropdown
-                isDisabled={isSavedRecurring}
-                value={field.value}
-                onChange={field.onChange}
-                options={categoryOptions}
-                label={"Category"}
-              />
-            )}
-          />
-
-          {/* Date */}
-          <Controller
-            name="date"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <ModalTextField
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={error}
-                label="Date"
-                placeholder="dd/mm/yyyy"
-              />
-            )}
-          />
-
-          {/* Payment Direction */}
-          <Typography
-            fontSize="12px"
-            color={theme.palette.primary.light}
-            fontWeight="bold"
-          >
-            Payment Direction
-          </Typography>
-          <Controller
-            name="paymentDirection"
-            control={control}
-            render={({ field }) => (
-              <FormControl component="fieldset">
-                <RadioGroup
-                  row
-                  {...field}
-                  // If recurring , force value to "paid"
-                  onChange={() => {
-                    if (watchPaymentType === "recurring") {
-                      setValue("paymentDirection", "paid");
-                      field.onChange();
-                    } else {
-                      field.onChange();
-                    }
-                  }}
-                >
-                  <FormControlLabel
-                    value="paid"
-                    control={<Radio />}
-                    label="Paid"
+          <Stack direction={{ xs: "column", sm: "row" }} gap={1}>
+            <Box flex={2}>
+              {/* Category */}
+              <Controller
+                name="category"
+                control={control}
+                render={({ field }) => (
+                  <ModalSelectDropdown
+                    isDisabled={isSavedRecurring}
+                    value={field.value}
+                    onChange={field.onChange}
+                    options={categoryOptions}
+                    label={"Category"}
                   />
-                  <FormControlLabel
-                    value="received"
-                    control={<Radio />}
-                    label="Received"
-                    disabled={watchPaymentType === "recurring"}
-                  />
-                </RadioGroup>
-              </FormControl>
-            )}
-          />
-
-          {/* Amount */}
-          <Controller
-            name="amount"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <ModalTextField
-                isDisabled={isSavedRecurring}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={error}
-                label="Amount"
-                placeholder="0.00"
-                adornmentText="$"
+                )}
               />
-            )}
-          />
+            </Box>
+            <Box flex={1}>
+              {/* Date */}
+              <Controller
+                name="date"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <ModalTextField
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    error={error}
+                    label="Date"
+                    placeholder="dd/mm/yyyy"
+                  />
+                )}
+              />
+            </Box>
+          </Stack>
+
+          <Stack direction={{ xs: "column", sm: "row" }}>
+            <Stack flex={1}>
+              {/* Payment Direction */}
+              <Typography
+                fontSize="12px"
+                color={theme.palette.primary.light}
+                fontWeight="bold"
+                marginBottom={"4px"}
+              >
+                Payment Direction
+              </Typography>
+              <Controller
+                name="paymentDirection"
+                control={control}
+                render={({ field }) => (
+                  <FormControl component="fieldset">
+                    <RadioGroup
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                    >
+                      <Stack direction="row" justifyContent="space-evenly">
+                        <FormControlLabel
+                          value="paid"
+                          control={<Radio />}
+                          label="Paid"
+                        />
+                        <FormControlLabel
+                          value="received"
+                          control={<Radio />}
+                          label="Received"
+                          disabled={watchPaymentType === "recurring"}
+                        />
+                      </Stack>
+                    </RadioGroup>
+                  </FormControl>
+                )}
+              />
+            </Stack>
+
+            <Box flex={1}>
+              {/* Amount */}
+              <Controller
+                name="amount"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <ModalTextField
+                    isDisabled={isSavedRecurring}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    error={error}
+                    label="Amount"
+                    placeholder="0.00"
+                    adornmentText="$"
+                  />
+                )}
+              />
+            </Box>
+          </Stack>
 
           {/* SAVE BUTTON */}
           <Button

@@ -15,7 +15,7 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
     <Modal open={open} onClose={onClose}>
       <Stack
         gap="20px"
-        maxHeight="85vh"
+        maxHeight="90vh"
         sx={{
           position: "absolute",
           top: "50%",

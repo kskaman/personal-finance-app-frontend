@@ -8,6 +8,7 @@ import TransactionsIcon from "../Icons/TransactionsIcon";
 import BudgetsIcon from "../Icons/BudgetsIcon";
 import PotsIcon from "../Icons/PotsIcon";
 import BillsIcon from "../Icons/BillsIcon";
+import SettingsIcon from "../Icons/SettingsIcon";
 
 interface TabNavBarProps {
   isMobile: boolean;
@@ -49,6 +50,12 @@ const TabNavBar = ({ isMobile }: TabNavBarProps) => {
         to="/bills"
         Icon={BillsIcon}
         text="Recurring Bills"
+        isMobile={isMobile}
+      />
+      <TabNavItem
+        to="/settings"
+        Icon={SettingsIcon}
+        text="Settings"
         isMobile={isMobile}
       />
     </Stack>

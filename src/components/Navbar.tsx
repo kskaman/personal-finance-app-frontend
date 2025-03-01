@@ -14,6 +14,7 @@ import BillsIcon from "../Icons/BillsIcon";
 
 import NavItem from "../utilityComponents/NavItem";
 import MinimizeButton from "../utilityComponents/MinimizeButton";
+import SettingsIcon from "../Icons/SettingsIcon";
 
 const Navbar = () => {
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
@@ -79,6 +80,12 @@ const Navbar = () => {
         />
       </Stack>
 
+      <NavItem
+        to="/settings"
+        Icon={SettingsIcon}
+        text="Settings"
+        isMinimized={isMinimized}
+      />
       <MinimizeButton
         isMinimized={isMinimized}
         onClick={handleToggleMinimize}
