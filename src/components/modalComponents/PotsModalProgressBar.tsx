@@ -29,7 +29,7 @@ const PotsProgressBar = ({
   // For withdraw: valueChange must be >= 0 and not exceed oldValue
   const isValid =
     type === "addMoney"
-      ? valueChange >= 0 && valueChange <= target - oldValue
+      ? valueChange >= 0 && valueChange <= target
       : type === "withdraw"
       ? valueChange >= 0 && valueChange <= oldValue
       : false;
@@ -54,6 +54,8 @@ const PotsProgressBar = ({
 
   // The percentage to display below the bar is always based on the new total
   const newTotalPercentage = Math.min((displayedValue / target) * 100, 100);
+
+  const singleBlackOnly = blackPercentage > 0 && changePercentage === 0;
 
   return (
     <Box
@@ -110,6 +112,8 @@ const PotsProgressBar = ({
               // Rounded on the left side
               borderTopLeftRadius: "4px",
               borderBottomLeftRadius: "4px",
+              borderTopRightRadius: singleBlackOnly ? "4px" : "0px",
+              borderBottomRightRadius: singleBlackOnly ? "4px" : "0px",
             }}
           />
           {/* Colored segment: for addMoney, it's the addition; for withdraw, it's the withdrawn portion */}

@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
 import { hexToRGBA } from "../../utils/utilityFunctions";
@@ -8,6 +8,7 @@ import ModalTextField from "./ModalTextField";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import PotsModalProgressBar from "./PotsModalProgressBar";
+import { useEffect, useState } from "react";
 
 // Types & Interface
 interface PotMoneyModalProps {
@@ -18,7 +19,11 @@ interface PotMoneyModalProps {
   potTotal: number;
   potTarget: number;
   maxLimit: number;
-  updatePotAmount: (val: number, amount: number) => void;
+  updatePotAmount: (
+    newTotal: number,
+    newTarget: number,
+    newBalance: number
+  ) => void;
 }
 
 interface FormValues {
@@ -30,7 +35,8 @@ const buildSchema = (
   type: "addMoney" | "withdraw" | null,
   potTotal: number,
   maxLimit: number,
-  potTarget: number
+  potTarget: number,
+  isConfirmed: boolean
 ) =>
   yup.object({
     amount: yup
@@ -53,11 +59,10 @@ const buildSchema = (
       )
       .test(
         "target-limit",
-        `Amount cannot exceed the amount required to reach target ($${potTarget.toFixed(
-          2
-        )})`,
+        `Amount exceeded the required amount to reach target. This extra will increase your target.`,
         (value) => {
           const num = parseFloat(value || "0");
+          if (isConfirmed) return true;
           if (type === "addMoney") {
             return num <= potTarget - potTotal;
           }
@@ -78,27 +83,80 @@ const PotMoneyModal = ({
   maxLimit,
   updatePotAmount,
 }: PotMoneyModalProps) => {
-  // Form submission handler.
+  // Local state to hold confirmation details
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
+  const [exceedFlag, setExceedFlag] = useState<boolean>(false);
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
+  // Setup React Hook Form.
+  const { control, handleSubmit, watch, reset } = useForm<FormValues>({
+    defaultValues: { amount: "" },
+    resolver: yupResolver(
+      buildSchema(type, potTotal, maxLimit, potTarget, isConfirm)
+    ),
+    mode: "onChange",
+  });
+
+  // Get the current amount value.
+  const watchedAmount = parseFloat(watch("amount")) || 0;
+  const requiredToReachTarget = potTarget - potTotal;
+  const extra =
+    type === "addMoney" && watchedAmount > requiredToReachTarget
+      ? watchedAmount - requiredToReachTarget
+      : 0;
+  const computedNewTarget = potTarget + extra;
+
+  // Update confirmation flag when amount changes.
+  useEffect(() => {
+    if (type === "addMoney" && watchedAmount > requiredToReachTarget) {
+      setShowConfirm(true);
+    } else {
+      setShowConfirm(false);
+    }
+  }, [watchedAmount, type, requiredToReachTarget]);
+
   const onSubmit = (data: FormValues) => {
     const amount = parseFloat(data.amount);
     if (type === "addMoney") {
-      // For adding money: increase pot total and reduce available funds (maxLimit)
-      updatePotAmount(potTotal + amount, maxLimit - amount);
+      updatePotAmount(potTotal + amount, computedNewTarget, maxLimit - amount);
     } else if (type === "withdraw") {
-      // For withdrawing money: decrease pot total and increase available funds (maxLimit)
-      updatePotAmount(potTotal - amount, maxLimit + amount);
+      updatePotAmount(potTotal - amount, computedNewTarget, maxLimit + amount);
     }
-
     onClose();
   };
 
-  // Setup React Hook Form.
-  const { control, handleSubmit, trigger, watch } = useForm<FormValues>({
-    resolver: yupResolver(buildSchema(type, potTotal, maxLimit, potTarget)),
-    mode: "onSubmit",
-  });
+  // Handler for confirming the extra amount inline.
+  const handleConfirm = () => {
+    if (exceedFlag) return;
+    setShowConfirm(false);
+    setIsConfirm(true);
+  };
 
-  const watchedAmount = parseFloat(watch("amount")) || 0;
+  // Handler to cancel the confirmation.
+  const handleCancel = () => {
+    if (exceedFlag) {
+      setExceedFlag(false);
+    }
+    setShowConfirm(false);
+    reset({ amount: "" });
+  };
+
+  useEffect(() => {
+    if (type === "addMoney") {
+      const requiredToReachTarget = potTarget - potTotal;
+      if (watchedAmount > requiredToReachTarget) {
+        if (watchedAmount > maxLimit) {
+          setExceedFlag(true);
+          setShowConfirm(false);
+        } else {
+          setExceedFlag(false);
+          setShowConfirm(true);
+        }
+      } else {
+        setExceedFlag(false);
+        setShowConfirm(false);
+      }
+    }
+  }, [watchedAmount, type, potTarget, potTotal, maxLimit]);
 
   return (
     <ActionModal
@@ -122,7 +180,7 @@ const PotMoneyModal = ({
               type={type}
               oldValue={potTotal}
               valueChange={watchedAmount}
-              target={potTarget}
+              target={potTarget + extra}
               color={
                 type === "addMoney"
                   ? theme.palette.others.green
@@ -136,40 +194,64 @@ const PotMoneyModal = ({
             name="amount"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <Box>
-                <ModalTextField
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={() => {
-                    field.onBlur();
-                    if (field.value.trim() !== "") {
-                      trigger(field.name);
-                    }
-                  }}
-                  error={error}
-                  label="Maximum Spend"
-                  placeholder="0.00"
-                  adornmentText="$"
-                />
-              </Box>
+              <ModalTextField
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={error}
+                label="Maximum Spend"
+                placeholder="0.00"
+                adornmentText="$"
+              />
             )}
           />
 
-          {/* SAVE BUTTON */}
-          <Button
-            type="submit"
-            width="100%"
-            height="53px"
-            backgroundColor={theme.palette.primary.main}
-            onClick={() => {}}
-            color={theme.palette.text.primary}
-            hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
-          >
-            <Typography fontSize="14px" fontWeight="bold">
-              {`Confirm ${type === "addMoney" ? "Addition" : "Withdrawal"}`}
-            </Typography>
-          </Button>
+          {exceedFlag || showConfirm ? (
+            <Stack direction="row" spacing={2} mt={1}>
+              <Button
+                onClick={handleConfirm}
+                backgroundColor={theme.palette.primary.main}
+                width="100%"
+                height="53px"
+                color={theme.palette.text.primary}
+                hoverColor={theme.palette.text.primary}
+                hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+              >
+                <Typography fontSize="14px" fontWeight="bold">
+                  Proceed
+                </Typography>
+              </Button>
+              <Button
+                onClick={handleCancel}
+                backgroundColor={theme.palette.text.primary}
+                width="100%"
+                height="53px"
+                color={theme.palette.primary.light}
+                hoverColor={theme.palette.primary.light}
+                hoverBgColor={theme.palette.text.primary}
+              >
+                <Typography fontSize="14px" fontWeight="bold">
+                  Cancel
+                </Typography>
+              </Button>
+            </Stack>
+          ) : (
+            /* SAVE BUTTON */
+            <Button
+              type="submit"
+              width="100%"
+              height="53px"
+              backgroundColor={theme.palette.primary.main}
+              onClick={() => {}}
+              color={theme.palette.text.primary}
+              hoverColor={theme.palette.text.primary}
+              hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            >
+              <Typography fontSize="14px" fontWeight="bold">
+                {`Confirm ${type === "addMoney" ? "Addition" : "Withdrawal"}`}
+              </Typography>
+            </Button>
+          )}
         </Stack>
       </form>
     </ActionModal>

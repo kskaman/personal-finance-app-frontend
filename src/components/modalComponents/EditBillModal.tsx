@@ -49,9 +49,9 @@ const EditBillModal = ({
   dueDate,
   updateBill,
 }: EditBillModalProps) => {
-  const { control, handleSubmit, trigger } = useForm<FormValues>({
+  const { control, handleSubmit } = useForm<FormValues>({
     resolver: yupResolver(buildSchema()),
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: {
       amount: formatDecimalNumber(amount).toString(),
       dueDate: dueDate,
@@ -84,12 +84,7 @@ const EditBillModal = ({
                 <ModalTextField
                   value={field.value}
                   onChange={field.onChange}
-                  onBlur={() => {
-                    field.onBlur();
-                    if (field.value.trim() !== "") {
-                      trigger(field.name);
-                    }
-                  }}
+                  onBlur={field.onBlur}
                   error={error}
                   label="Amount"
                   placeholder="0.00"

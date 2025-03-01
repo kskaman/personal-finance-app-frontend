@@ -130,7 +130,8 @@ const PotsPage = () => {
 
   const handleUpdatePotAmount = (
     potName: string,
-    val: number,
+    newTotal: number,
+    newTarget: number,
     newBalance: number
   ) => {
     setPots((prevPots) =>
@@ -138,7 +139,8 @@ const PotsPage = () => {
         pot.name === potName
           ? {
               ...pot,
-              total: val,
+              total: newTotal,
+              target: newTarget,
             }
           : pot
       )
@@ -277,8 +279,13 @@ const PotsPage = () => {
             potName={selectedPot.name}
             potTotal={selectedPot.total}
             potTarget={selectedPot.target}
-            updatePotAmount={(val, amount) =>
-              handleUpdatePotAmount(selectedPot.name, val, amount)
+            updatePotAmount={(newTotal, newTarget, newBalance) =>
+              handleUpdatePotAmount(
+                selectedPot.name,
+                newTotal,
+                newTarget,
+                newBalance
+              )
             }
             maxLimit={currentBalance.current}
           />

@@ -91,9 +91,9 @@ const AddEditPotModal = ({
   const defaultThemeName = getDefaultThemeName();
 
   // Setup React Hook Form.
-  const { control, handleSubmit, reset, trigger } = useForm<FormValues>({
+  const { control, handleSubmit, reset } = useForm<FormValues>({
     resolver: yupResolver(buildSchema(potNamesUsed)),
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: {
       potName: potName || "",
       target: targetVal ? formatDecimalNumber(targetVal).toString() : "",
@@ -150,12 +150,7 @@ const AddEditPotModal = ({
                       field.onChange(e);
                     }
                   }}
-                  onBlur={() => {
-                    field.onBlur();
-                    if (field.value.trim() !== "") {
-                      trigger(field.name);
-                    }
-                  }}
+                  onBlur={field.onBlur}
                   error={error}
                   label={"Pot Name"}
                   maxLength={30}
@@ -181,12 +176,7 @@ const AddEditPotModal = ({
                 <ModalTextField
                   value={field.value}
                   onChange={field.onChange}
-                  onBlur={() => {
-                    field.onBlur();
-                    if (field.value.trim() !== "") {
-                      trigger(field.name);
-                    }
-                  }}
+                  onBlur={field.onBlur}
                   error={error}
                   label="Target"
                   placeholder="0.00"

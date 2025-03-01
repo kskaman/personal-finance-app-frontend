@@ -130,6 +130,7 @@ const AddEditTransactionModal = ({
   const { control, handleSubmit, reset, trigger, watch, getValues, setValue } =
     useForm<FormValues>({
       resolver: yupResolver(buildSchema()),
+      mode: "onChange",
       defaultValues: txnData || {
         txnName: "",
         category: "",
@@ -267,8 +268,8 @@ const AddEditTransactionModal = ({
                   value={field.value || ""}
                   onChange={field.onChange}
                   options={[
-                    ...recurringOptions,
                     { label: "Add New Bill", value: "new" },
+                    ...recurringOptions,
                   ]}
                   label="Recurring Bills"
                   error={error}
@@ -308,12 +309,7 @@ const AddEditTransactionModal = ({
                 isDisabled={isSavedRecurring}
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={() => {
-                  field.onBlur();
-                  if (field.value.trim() !== "") {
-                    trigger(field.name);
-                  }
-                }}
+                onBlur={field.onBlur}
                 error={error}
                 label="Recipient/Sender"
                 placeholder=""
@@ -344,12 +340,7 @@ const AddEditTransactionModal = ({
               <ModalTextField
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={() => {
-                  field.onBlur();
-                  if (field.value.trim() !== "") {
-                    trigger(field.name);
-                  }
-                }}
+                onBlur={field.onBlur}
                 error={error}
                 label="Date"
                 placeholder="dd/mm/yyyy"
@@ -408,12 +399,7 @@ const AddEditTransactionModal = ({
                 isDisabled={isSavedRecurring}
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={() => {
-                  field.onBlur();
-                  if (field.value.trim() !== "") {
-                    trigger(field.name);
-                  }
-                }}
+                onBlur={field.onBlur}
                 error={error}
                 label="Amount"
                 placeholder="0.00"
