@@ -34,6 +34,12 @@ export const formatISODateToDDMMYYYY = (isoDate : string) =>  {
 }
 
 
+export const convertDateToISOString = (dateStr: string): string => {
+  const [day, month, year] = dateStr.split("/").map(Number);
+  const dateObj = new Date(year, month - 1, day);
+  return dateObj.toISOString();
+};
+
 
 export const formatDateToReadable = (dateString: string) => {
   const date = dateString.split("T")[0].split("-");

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Box,
@@ -15,9 +15,9 @@ import ActionModal from "./ActionModal";
 import ModalSelectDropdown from "./ModalSelectDropdown";
 import theme from "../../theme/theme";
 import ModalTextField from "./ModalTextField";
-import { categories } from "../../data/categories";
 import Button from "../../utilityComponents/Button";
 import { hexToRGBA } from "../../utils/utilityFunctions";
+import { categories } from "../../data/categories";
 
 // Interfaces and Props
 interface FormValues {
@@ -46,7 +46,7 @@ interface AddEditTransactionModalProps {
   }[];
 }
 
-// Yup validation schema – note that recurringId is required only when paymentType is "recurring"
+// Yup validation schema – recurringId and dueDate required only for recurring
 const buildSchema = () =>
   yup.object({
     txnName: yup.string().required("Transaction Name is required"),
@@ -62,7 +62,6 @@ const buildSchema = () =>
         if (!value) return false;
         const [day, month, year] = value.split("/").map(Number);
         const dateObj = new Date(year, month - 1, day);
-        // Check that the constructed date matches the input (to catch invalid dates like 31/02/2025)
         return (
           dateObj.getFullYear() === year &&
           dateObj.getMonth() === month - 1 &&
@@ -89,7 +88,6 @@ const buildSchema = () =>
         /^\d+(\.\d{0,2})?$/,
         "Enter a valid positive number (up to 2 decimals)"
       ),
-
     paymentType: yup
       .string()
       .oneOf(["oneTime", "recurring"])
@@ -128,7 +126,7 @@ const AddEditTransactionModal = ({
   txnData,
   recurringOptions,
 }: AddEditTransactionModalProps) => {
-  const { control, handleSubmit, reset, trigger, watch, getValues, setValue } =
+  const { control, handleSubmit, watch, reset, getValues, setValue, trigger } =
     useForm<FormValues>({
       resolver: yupResolver(buildSchema()),
       mode: "onChange",
@@ -147,7 +145,18 @@ const AddEditTransactionModal = ({
     label: cat,
   }));
 
-  // Reset the form values whenever the modal is opened or initialData changes
+  // State for inline confirmation override
+  const [pendingConfirmation, setPendingConfirmation] = useState<{
+    recurringData: {
+      name: string;
+      category: string;
+      amount: string;
+      dueDate: string;
+    };
+    newRecurringId: string;
+  } | null>(null);
+
+  // Reset form on open or when txnData changes.
   useEffect(() => {
     if (txnData) {
       reset(txnData);
@@ -162,37 +171,31 @@ const AddEditTransactionModal = ({
         paymentDirection: "paid",
       });
     }
+    setPendingConfirmation(null);
   }, [txnData, open, reset]);
 
-  // Watch paymentType and recurringId for conditional rendering.
+  // Watch paymentType and recurringId.
   const watchPaymentType = watch("paymentType");
   const watchRecurringId = watch("recurringId");
 
+  // Force "paid" when recurring is selected.
   useEffect(() => {
     if (watchPaymentType === "recurring") {
-      // Force "paid"
       setValue("paymentDirection", "paid");
     }
   }, [watchPaymentType, setValue]);
 
-  // Create a flag for saved recurring bill (not "new")
-  const isSavedRecurring =
-    (watchPaymentType === "recurring" &&
-      watchRecurringId &&
-      watchRecurringId !== "new") ||
-    false;
-
-  // if user switches to "recurring" and has no recurringId, default to "new"
+  // Default to "new" if recurring is selected and recurringId is empty.
   useEffect(() => {
-    if (watchPaymentType === "recurring") {
-      if (!watchRecurringId || watchRecurringId.trim() === "") {
-        setValue("recurringId", "new");
-      }
+    if (
+      watchPaymentType === "recurring" &&
+      (!watchRecurringId || watchRecurringId.trim() === "")
+    ) {
+      setValue("recurringId", "new");
     }
   }, [watchPaymentType, watchRecurringId, setValue]);
 
-  // When a recurring transaction is selected and a recurringId other than "new" is chosen,
-  // update the form with the recurring bill's category and dueDate.
+  // When a saved recurring bill is selected, check if form data differs.
   useEffect(() => {
     if (
       watchPaymentType === "recurring" &&
@@ -203,13 +206,43 @@ const AddEditTransactionModal = ({
         (opt) => opt.value === watchRecurringId
       );
       if (selectedRecurring) {
-        // update only the specific fields with setValue.
-        setValue("paymentDirection", "paid");
-        setValue("category", selectedRecurring.category);
-        setValue("dueDate", selectedRecurring.dueDate);
-        setValue("txnName", selectedRecurring.name);
-        setValue("amount", selectedRecurring.amount);
+        const currentName = getValues("txnName") || "";
+        const currentCategory = getValues("category") || "";
+        const currentAmount = getValues("amount") || "";
+        const currentDueDate = getValues("dueDate") || "";
+        if (
+          (currentName !== "" ||
+            currentCategory !== "" ||
+            currentAmount !== "" ||
+            currentDueDate !== "") &&
+          (currentName !== selectedRecurring.name ||
+            currentCategory !== selectedRecurring.category ||
+            currentAmount !== selectedRecurring.amount ||
+            currentDueDate !== selectedRecurring.dueDate)
+        ) {
+          // Set pending confirmation instead of immediately overriding.
+          setPendingConfirmation({
+            recurringData: {
+              name: selectedRecurring.name,
+              category: selectedRecurring.category,
+              amount: selectedRecurring.amount,
+              dueDate: selectedRecurring.dueDate,
+            },
+            newRecurringId: selectedRecurring.value,
+          });
+        } else {
+          setPendingConfirmation(null);
+          // Update fields with recurring data (if already matching, no confirmation needed).
+          setValue("paymentDirection", "paid");
+          setValue("category", selectedRecurring.category);
+          setValue("dueDate", selectedRecurring.dueDate);
+          setValue("txnName", selectedRecurring.name);
+          setValue("amount", selectedRecurring.amount);
+        }
       }
+    } else {
+      // Clear confirmation if not recurring or "new" is selected.
+      setPendingConfirmation(null);
     }
   }, [
     recurringOptions,
@@ -218,6 +251,26 @@ const AddEditTransactionModal = ({
     getValues,
     setValue,
   ]);
+
+  // Handlers for inline confirmation buttons.
+  const handleProceedConfirmation = () => {
+    if (pendingConfirmation) {
+      const { recurringData } = pendingConfirmation;
+      setValue("paymentDirection", "paid");
+      setValue("category", recurringData.category);
+      setValue("dueDate", recurringData.dueDate);
+      setValue("txnName", recurringData.name);
+      setValue("amount", recurringData.amount);
+      // Confirm the selection by leaving the recurringId as is.
+      setPendingConfirmation(null);
+    }
+  };
+
+  const handleCancelConfirmation = () => {
+    // Revert the recurringId to "new" and clear pending confirmation.
+    setValue("recurringId", "new");
+    setPendingConfirmation(null);
+  };
 
   return (
     <ActionModal
@@ -228,7 +281,7 @@ const AddEditTransactionModal = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="20px">
           {/* Payment Type Radio Buttons */}
-          <Stack gap={"4px"}>
+          <Stack gap="4px">
             <Typography
               fontSize="12px"
               color={theme.palette.primary.light}
@@ -264,14 +317,14 @@ const AddEditTransactionModal = ({
             />
           </Stack>
 
-          {/* Always render the recurring fields, but hide them if paymentType is not recurring */}
+          {/* Recurring Fields */}
           <Stack
             direction={{ xs: "column", sm: "row" }}
             display={watchPaymentType === "recurring" ? "flex" : "none"}
             gap={2}
           >
             {/* Recurring Bills Dropdown */}
-            <Box flex={2}>
+            <Box flex={3}>
               <Controller
                 name="recurringId"
                 control={control}
@@ -290,14 +343,17 @@ const AddEditTransactionModal = ({
               />
             </Box>
 
-            <Box flex={1}>
-              {/* Due Date for the recurring bill */}
+            <Box flex={2}>
+              {/* Due Date for recurring bill */}
               <Controller
                 name="dueDate"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <ModalTextField
-                    isDisabled={isSavedRecurring}
+                    isDisabled={
+                      watchPaymentType === "recurring" &&
+                      watchRecurringId !== "new"
+                    }
                     value={field.value || ""}
                     label="Due Date"
                     placeholder="dd"
@@ -321,7 +377,9 @@ const AddEditTransactionModal = ({
             control={control}
             render={({ field, fieldState: { error } }) => (
               <ModalTextField
-                isDisabled={isSavedRecurring}
+                isDisabled={
+                  watchPaymentType === "recurring" && watchRecurringId !== "new"
+                }
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -333,23 +391,26 @@ const AddEditTransactionModal = ({
           />
 
           <Stack direction={{ xs: "column", sm: "row" }} gap={1}>
-            <Box flex={2}>
+            <Box flex={5}>
               {/* Category */}
               <Controller
                 name="category"
                 control={control}
                 render={({ field }) => (
                   <ModalSelectDropdown
-                    isDisabled={isSavedRecurring}
+                    isDisabled={
+                      watchPaymentType === "recurring" &&
+                      watchRecurringId !== "new"
+                    }
                     value={field.value}
                     onChange={field.onChange}
                     options={categoryOptions}
-                    label={"Category"}
+                    label="Category"
                   />
                 )}
               />
             </Box>
-            <Box flex={1}>
+            <Box flex={4}>
               {/* Date */}
               <Controller
                 name="date"
@@ -368,14 +429,14 @@ const AddEditTransactionModal = ({
             </Box>
           </Stack>
 
-          <Stack direction={{ xs: "column", sm: "row" }}>
+          <Stack direction={{ xs: "column", sm: "row" }} gap={1}>
             <Stack flex={1}>
               {/* Payment Direction */}
               <Typography
                 fontSize="12px"
                 color={theme.palette.primary.light}
                 fontWeight="bold"
-                marginBottom={"4px"}
+                marginBottom="4px"
               >
                 Payment Direction
               </Typography>
@@ -407,7 +468,6 @@ const AddEditTransactionModal = ({
                 )}
               />
             </Stack>
-
             <Box flex={1}>
               {/* Amount */}
               <Controller
@@ -415,7 +475,10 @@ const AddEditTransactionModal = ({
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <ModalTextField
-                    isDisabled={isSavedRecurring}
+                    isDisabled={
+                      watchPaymentType === "recurring" &&
+                      watchRecurringId !== "new"
+                    }
                     value={field.value}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
@@ -429,21 +492,59 @@ const AddEditTransactionModal = ({
             </Box>
           </Stack>
 
-          {/* SAVE BUTTON */}
-          <Button
-            type="submit"
-            width="100%"
-            height="53px"
-            backgroundColor={theme.palette.primary.main}
-            onClick={() => {}}
-            color={theme.palette.text.primary}
-            hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
-          >
-            <Typography fontSize="14px" fontWeight="bold">
-              Save Changes
-            </Typography>
-          </Button>
+          {/* Inline Confirmation UI */}
+          {pendingConfirmation ? (
+            <Stack spacing={1} mt={1}>
+              <Typography fontSize={"14px"} color={theme.palette.others.red}>
+                Warning: Selecting a saved recurring bill will overwrite your
+                current data with the saved bill's details.
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <Button
+                  onClick={handleProceedConfirmation}
+                  backgroundColor={theme.palette.others.red}
+                  width="100%"
+                  height="53px"
+                  color={theme.palette.text.primary}
+                  hoverColor={theme.palette.text.primary}
+                  hoverBgColor={hexToRGBA(theme.palette.others.red, 0.8)}
+                >
+                  <Typography fontSize="14px" fontWeight="bold">
+                    Proceed
+                  </Typography>
+                </Button>
+                <Button
+                  onClick={handleCancelConfirmation}
+                  backgroundColor={theme.palette.text.primary}
+                  width="100%"
+                  height="53px"
+                  color={theme.palette.primary.light}
+                  hoverColor={theme.palette.primary.light}
+                  hoverBgColor={theme.palette.text.primary}
+                >
+                  <Typography fontSize="14px" fontWeight="bold">
+                    Cancel
+                  </Typography>
+                </Button>
+              </Stack>
+            </Stack>
+          ) : (
+            // Save Button when no confirmation is pending.
+            <Button
+              type="submit"
+              width="100%"
+              height="53px"
+              backgroundColor={theme.palette.primary.main}
+              onClick={() => {}}
+              color={theme.palette.text.primary}
+              hoverColor={theme.palette.text.primary}
+              hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            >
+              <Typography fontSize="14px" fontWeight="bold">
+                {txnData ? "Save Changes" : "Confirm Transaction"}
+              </Typography>
+            </Button>
+          )}
         </Stack>
       </form>
     </ActionModal>

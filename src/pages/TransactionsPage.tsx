@@ -23,8 +23,10 @@ import {
 } from "../context/RecurringContext";
 import AddEditTransactionModal from "../components/modalComponents/AddEditTransactionModal";
 import {
+  convertDateToISOString,
   formatDecimalNumber,
   formatISODateToDDMMYYYY,
+  getRandomColor,
 } from "../utils/utilityFunctions";
 
 // Interfaces and Props
@@ -200,22 +202,26 @@ const TransactionsPage = () => {
     }
   };
 
-  // function to add a transaction.
+  // Function to add a transaction.
   const handleAddTransaction = (formData: FormValues) => {
     let transaction: Transaction;
+    let billTheme = getRandomColor();
+    // Convert the provided form date (dd/mm/yyyy) to ISO string.
+    const isoDate = convertDateToISOString(formData.date);
+
     if (formData.paymentType === "oneTime") {
-      // For one-time, use the entered payment direction.
+      // For one-time, use the entered payment direction and the provided date.
       transaction = {
         id: uuidv4(),
         name: formData.txnName,
         category: formData.category,
-        date: new Date().toISOString(), // stored in ISO format
+        date: isoDate,
         amount:
           formData.paymentDirection === "paid"
             ? -parseFloat(formData.amount)
             : parseFloat(formData.amount),
         recurring: false,
-        theme: "#defaultTheme",
+        theme: billTheme,
       };
     } else {
       // For recurring transactions, force paymentDirection to "paid"
@@ -228,9 +234,9 @@ const TransactionsPage = () => {
           category: formData.category,
           amount: -parseFloat(formData.amount),
           recurring: true,
-          lastPaid: new Date().toISOString(),
+          lastPaid: isoDate,
           dueDate: formData.dueDate!, // dueDate is required in recurring mode
-          theme: "#defaultRecurringTheme",
+          theme: billTheme,
         };
         // Update recurring bills state: assume setRecurringBills adds the new bill.
         setRecurringBills((prevBills: RecurringBill[]) => [
@@ -238,21 +244,118 @@ const TransactionsPage = () => {
           newBill,
         ]);
         recurringId = newBill.id;
+        billTheme = newBill.theme;
+      } else if (recurringId) {
+        const updatedBills: RecurringBill[] = recurringBills.map((bill) => {
+          if (bill.id === recurringId) {
+            billTheme = bill.theme;
+            return { ...bill, lastPaid: isoDate };
+          }
+          return bill;
+        });
+        setRecurringBills([...updatedBills]);
       }
       transaction = {
         id: uuidv4(),
         name: formData.txnName,
         category: formData.category,
-        date: new Date().toISOString(),
+        date: isoDate,
         // Force amount to be negative for recurring payments (bills)
         amount: -parseFloat(formData.amount),
         recurring: true,
         recurringId,
-        theme: "#defaultRecurringTheme",
+        theme: billTheme,
       };
     }
     // Update transactions state (prepend to the list)
     setTransactions((prevTxns: Transaction[]) => [transaction, ...prevTxns]);
+  };
+
+  // Function to edit a transaction.
+  const handleEditTransaction = (formData: FormValues) => {
+    if (!selectedTnx) return; // safety check
+
+    // Convert the form date to ISO string.
+    const isoDate = convertDateToISOString(formData.date);
+
+    setTransactions((prevTxns: Transaction[]) =>
+      prevTxns.map((txn) => {
+        if (txn.id !== selectedTnx.id) return txn; // not the one being edited
+
+        // CASE 1: Editing a one-time transaction (or switching to one-time)
+        if (formData.paymentType === "oneTime") {
+          return {
+            ...txn,
+            name: formData.txnName,
+            category: formData.category,
+            date: isoDate,
+            amount:
+              formData.paymentDirection === "paid"
+                ? -parseFloat(formData.amount)
+                : parseFloat(formData.amount),
+            recurring: false,
+            recurringId: undefined, // clear recurring link
+            theme: txn.theme || getRandomColor(),
+          };
+        } else {
+          // CASE 2: Editing a recurring transaction
+          // Subcase a): If originally recurring, only update the instance date.
+          // Subcase b): If switching from one-time to recurring, follow the full recurring logic.
+          let recurringId = formData.recurringId;
+          let billTheme = getRandomColor();
+
+          if (selectedTnx.recurring) {
+            // Transaction was already recurring – update only the date.
+            return {
+              ...txn,
+              date: isoDate,
+            };
+          } else {
+            // Switching from one-time to recurring:
+            if (!recurringId || recurringId === "new") {
+              // Create new recurring bill.
+              const newBill: RecurringBill = {
+                id: uuidv4(),
+                name: formData.txnName,
+                category: formData.category,
+                amount: -parseFloat(formData.amount),
+                recurring: true,
+                lastPaid: isoDate,
+                dueDate: formData.dueDate!, // validated as present in recurring mode
+                theme: getRandomColor(),
+              };
+              setRecurringBills((prevBills: RecurringBill[]) => [
+                ...prevBills,
+                newBill,
+              ]);
+              recurringId = newBill.id;
+              billTheme = newBill.theme;
+            } else if (recurringId) {
+              const updatedBills: RecurringBill[] = recurringBills.map(
+                (bill) => {
+                  if (bill.id === recurringId) {
+                    billTheme = bill.theme;
+                    return { ...bill, lastPaid: isoDate };
+                  }
+                  return bill;
+                }
+              );
+              setRecurringBills([...updatedBills]);
+            }
+            return {
+              ...txn,
+              name: formData.txnName,
+              category: formData.category,
+              date: isoDate,
+              amount: -parseFloat(formData.amount),
+              recurring: true,
+              recurringId,
+              theme: billTheme,
+            };
+          }
+        }
+      })
+    );
   };
 
   return (
@@ -351,7 +454,10 @@ const TransactionsPage = () => {
               setSelectedTnx(null);
               closeEditModal();
             }}
-            onSubmit={() => console.log("Edit Transaction")}
+            onSubmit={(formData: FormValues) => {
+              handleEditTransaction(formData);
+              closeEditModal();
+            }}
             recurringOptions={recurringOptions}
             txnData={{
               txnName: selectedTnx.name,
