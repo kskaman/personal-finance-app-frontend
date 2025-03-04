@@ -7,11 +7,13 @@ import {
   IconButton,
   Box,
 } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import SearchInput from "./SearchInput";
 import CustomDropdown from "./CustomDropdown";
 import SearchIcon from "../Icons/SearchIcon";
 import FilterIcon from "../Icons/FilterIcon";
 import theme from "../theme/theme";
+import { MD_BREAK, SM_BREAK } from "../data/widthConstants";
 
 interface FilterProps {
   parentWidth: number;
@@ -46,16 +48,15 @@ const FilterOption = ({
   options: string[];
   value: string;
   width: string;
-  justifyContent?: string;
   onChange: (event: SelectChangeEvent) => void;
 }) => (
   <Box width={width}>
     <Stack
-      width={"100%"}
+      width="100%"
       direction="row"
       alignItems="center"
       gap="8px"
-      justifyContent={"space-between"}
+      justifyContent="space-between"
     >
       <Typography
         fontSize="14px"
@@ -89,48 +90,118 @@ const Filter = ({
 }: FilterProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // Layout properties for desktop: each filter gets ~30% width.
-  const filterWidth = "250px";
-
   // Prepend "All" to the month options
   const monthDropdownOptions = monthOptions ? ["All", ...monthOptions] : [];
 
   // Group all extra filter options (sort, category, month)
-  const extraFilters = (
-    <Stack
-      direction="row"
-      flexWrap="wrap"
-      gap="16px"
-      alignItems="center"
-      justifyContent="flex-start"
-    >
-      <FilterOption
-        width={filterWidth}
-        label="Sort By"
-        options={sortOptions}
-        value={sortBy}
-        onChange={(event) => setSortBy(event.target.value)}
-      />
-      {category && setCategory && (
-        <FilterOption
-          width={filterWidth}
-          label="Category"
-          options={["All Transactions", ...categories]}
-          value={category}
-          onChange={(event) => setCategory(event.target.value)}
-        />
-      )}
-      {selectedMonth && setSelectedMonth && monthOptions && (
-        <FilterOption
-          width={filterWidth}
-          label="Month"
-          options={monthDropdownOptions}
-          value={selectedMonth}
-          onChange={(event) => setSelectedMonth(event.target.value)}
-        />
-      )}
-    </Stack>
-  );
+  const extraFilters = (() => {
+    if (parentWidth > MD_BREAK) {
+      // For large screens: render filters in a row with fixed 250px width and spaced-between.
+      return (
+        <Grid container spacing={2} justifyContent="space-between">
+          <Grid>
+            <FilterOption
+              label="Sort By"
+              options={sortOptions}
+              value={sortBy}
+              width="250px"
+              onChange={(event) => setSortBy(event.target.value)}
+            />
+          </Grid>
+          {category && setCategory && (
+            <Grid>
+              <FilterOption
+                label="Category"
+                options={["All Transactions", ...categories]}
+                value={category}
+                width="250px"
+                onChange={(event) => setCategory(event.target.value)}
+              />
+            </Grid>
+          )}
+          {selectedMonth && setSelectedMonth && monthOptions && (
+            <Grid>
+              <FilterOption
+                label="Month"
+                options={monthDropdownOptions}
+                value={selectedMonth}
+                width="250px"
+                onChange={(event) => setSelectedMonth(event.target.value)}
+              />
+            </Grid>
+          )}
+        </Grid>
+      );
+    } else if (parentWidth >= SM_BREAK && parentWidth <= MD_BREAK) {
+      // For medium screens: two columns per row (each taking 50% width).
+      return (
+        <Grid container spacing={2}>
+          <Grid size={6}>
+            <FilterOption
+              label="Sort By"
+              options={sortOptions}
+              value={sortBy}
+              width="100%"
+              onChange={(event) => setSortBy(event.target.value)}
+            />
+          </Grid>
+          {category && setCategory && (
+            <Grid size={6}>
+              <FilterOption
+                label="Category"
+                options={["All Transactions", ...categories]}
+                value={category}
+                width="100%"
+                onChange={(event) => setCategory(event.target.value)}
+              />
+            </Grid>
+          )}
+          {selectedMonth && setSelectedMonth && monthOptions && (
+            <Grid size={6}>
+              <FilterOption
+                label="Month"
+                options={monthDropdownOptions}
+                value={selectedMonth}
+                width="100%"
+                onChange={(event) => setSelectedMonth(event.target.value)}
+              />
+            </Grid>
+          )}
+        </Grid>
+      );
+    } else {
+      // For small screens (<600): render in a vertical stack.
+      return (
+        <Stack direction="column" gap="16px">
+          <FilterOption
+            label="Sort By"
+            options={sortOptions}
+            value={sortBy}
+            width="100%"
+            onChange={(event) => setSortBy(event.target.value)}
+          />
+          {category && setCategory && (
+            <FilterOption
+              label="Category"
+              options={["All Transactions", ...categories]}
+              value={category}
+              width="100%"
+              onChange={(event) => setCategory(event.target.value)}
+            />
+          )}
+          {selectedMonth && setSelectedMonth && monthOptions && (
+            <FilterOption
+              label="Month"
+              options={monthDropdownOptions}
+              value={selectedMonth}
+              width="100%"
+              onChange={(event) => setSelectedMonth(event.target.value)}
+            />
+          )}
+        </Stack>
+      );
+    }
+  })();
 
   return (
     <>
