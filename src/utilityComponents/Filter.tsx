@@ -5,13 +5,13 @@ import {
   Stack,
   Typography,
   IconButton,
+  Box,
 } from "@mui/material";
 import SearchInput from "./SearchInput";
 import CustomDropdown from "./CustomDropdown";
 import SearchIcon from "../Icons/SearchIcon";
 import FilterIcon from "../Icons/FilterIcon";
 import theme from "../theme/theme";
-import { MD_BREAK } from "../data/widthConstants";
 
 interface FilterProps {
   parentWidth: number;
@@ -21,6 +21,9 @@ interface FilterProps {
   setCategory?: React.Dispatch<React.SetStateAction<string>>;
   sortBy: string;
   setSortBy: React.Dispatch<React.SetStateAction<string>>;
+  selectedMonth?: string;
+  setSelectedMonth?: React.Dispatch<React.SetStateAction<string>>;
+  monthOptions?: string[];
 }
 
 const sortOptions = [
@@ -36,8 +39,7 @@ const FilterOption = ({
   label,
   options,
   value,
-  width,
-  justifyContent,
+  width = "50%",
   onChange,
 }: {
   label: string;
@@ -47,28 +49,30 @@ const FilterOption = ({
   justifyContent?: string;
   onChange: (event: SelectChangeEvent) => void;
 }) => (
-  <Stack
-    width={width}
-    direction="row"
-    alignItems="center"
-    gap="8px"
-    justifyContent={justifyContent || "flex-start"}
-  >
-    <Typography
-      fontSize="14px"
-      color={theme.palette.primary.light}
-      whiteSpace="nowrap"
+  <Box width={width}>
+    <Stack
+      width={"100%"}
+      direction="row"
+      alignItems="center"
+      gap="8px"
+      justifyContent={"space-between"}
     >
-      {label}
-    </Typography>
-    <CustomDropdown
-      width="fit-content"
-      color={theme.palette.primary.main}
-      options={options}
-      value={value}
-      onChange={onChange}
-    />
-  </Stack>
+      <Typography
+        fontSize="14px"
+        color={theme.palette.primary.light}
+        whiteSpace="nowrap"
+      >
+        {label}
+      </Typography>
+      <CustomDropdown
+        width="80%"
+        color={theme.palette.primary.main}
+        options={options}
+        value={value}
+        onChange={onChange}
+      />
+    </Stack>
+  </Box>
 );
 
 const Filter = ({
@@ -79,78 +83,86 @@ const Filter = ({
   setCategory,
   sortBy,
   setSortBy,
+  selectedMonth,
+  setSelectedMonth,
+  monthOptions,
 }: FilterProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const isParentMd = parentWidth < MD_BREAK;
+  // Layout properties for desktop: each filter gets ~30% width.
+  const filterWidth = "250px";
+
+  // Prepend "All" to the month options
+  const monthDropdownOptions = monthOptions ? ["All", ...monthOptions] : [];
+
+  // Group all extra filter options (sort, category, month)
+  const extraFilters = (
+    <Stack
+      direction="row"
+      flexWrap="wrap"
+      gap="16px"
+      alignItems="center"
+      justifyContent="flex-start"
+    >
+      <FilterOption
+        width={filterWidth}
+        label="Sort By"
+        options={sortOptions}
+        value={sortBy}
+        onChange={(event) => setSortBy(event.target.value)}
+      />
+      {category && setCategory && (
+        <FilterOption
+          width={filterWidth}
+          label="Category"
+          options={["All Transactions", ...categories]}
+          value={category}
+          onChange={(event) => setCategory(event.target.value)}
+        />
+      )}
+      {selectedMonth && setSelectedMonth && monthOptions && (
+        <FilterOption
+          width={filterWidth}
+          label="Month"
+          options={monthDropdownOptions}
+          value={selectedMonth}
+          onChange={(event) => setSelectedMonth(event.target.value)}
+        />
+      )}
+    </Stack>
+  );
 
   return (
     <>
-      <Stack
-        direction="row"
-        height="45px"
-        gap="24px"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <SearchInput
-          placeholder="Search Transaction"
-          value={searchName}
-          width={{ xs: "100%", sm: "375px" }}
-          Icon={SearchIcon}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchName(event.target.value)
-          }
-        />
-        {isParentMd ? (
+      <Stack direction="column">
+        <Stack
+          direction="row"
+          height="45px"
+          gap="24px"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <SearchInput
+            placeholder="Search Transaction"
+            value={searchName}
+            width={{ xs: "100%", sm: "375px" }}
+            Icon={SearchIcon}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchName(event.target.value)
+            }
+          />
+
           <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
             <FilterIcon color={theme.palette.primary.main} />
           </IconButton>
-        ) : (
-          <Stack direction="row" gap="24px" alignItems="center">
-            <FilterOption
-              width="177px"
-              label="Sort By"
-              options={sortOptions}
-              value={sortBy}
-              onChange={(event) => {
-                setSortBy(event.target.value);
-              }}
-            />
-            {category && setCategory && (
-              <FilterOption
-                width="245px"
-                label="Category"
-                options={["All Transactions", ...categories]}
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-              />
-            )}
+        </Stack>
+
+        {isFilterOpen && (
+          <Stack direction="column" gap="16px" marginTop="24px" width="100%">
+            {extraFilters}
           </Stack>
         )}
       </Stack>
-      {isFilterOpen && isParentMd && (
-        <Stack direction="column" gap="16px" marginTop="8px" width="100%">
-          <FilterOption
-            width={"100%"}
-            label="Sort By"
-            options={sortOptions}
-            value={sortBy}
-            justifyContent="space-between"
-            onChange={(event) => setSortBy(event.target.value)}
-          />
-          {category && setCategory && (
-            <FilterOption
-              width={"100%"}
-              label="Category"
-              options={["All Transactions", ...categories]}
-              value={category}
-              justifyContent="space-between"
-              onChange={(event) => setCategory(event.target.value)}
-            />
-          )}
-        </Stack>
-      )}
     </>
   );
 };

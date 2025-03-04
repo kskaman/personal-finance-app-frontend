@@ -7,7 +7,7 @@ import SubContainer from "../utilityComponents/SubContainer";
 import Filter from "../utilityComponents/Filter";
 import TransactionsTable from "../components/transactionsComponents/TransactionsTable";
 import PageNav from "../components/transactionsComponents/PageNav";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import {
   BalanceTransactionsActionContext,
   BalanceTransactionsDataContext,
@@ -41,22 +41,52 @@ interface FormValues {
   dueDate?: string;
 }
 
-// Helper function
+// Helper function: generate month options from earliest transaction date until current month
+const getMonthYearOptions = (transactions: Transaction[]): string[] => {
+  if (transactions.length === 0) return [];
+  // Find the earliest transaction date
+  const dates = transactions.map((txn) => new Date(txn.date));
+  const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
+  const current = new Date();
+  const options = [];
+  const iterDate = new Date(earliest.getFullYear(), earliest.getMonth(), 1);
+  while (
+    iterDate.getFullYear() < current.getFullYear() ||
+    (iterDate.getFullYear() === current.getFullYear() &&
+      iterDate.getMonth() <= current.getMonth())
+  ) {
+    options.push(
+      iterDate.toLocaleString("default", { month: "long", year: "numeric" })
+    );
+    iterDate.setMonth(iterDate.getMonth() + 1);
+  }
+  return options.reverse();
+};
+
+// Helper function : filter transaction as per search, sort by , category and month
 const filterAndSortTransactions = (
   transactions: Transaction[],
   searchName: string,
   category: string,
-  sortBy: string
+  sortBy: string,
+  selectedMonth: string
 ): Transaction[] => {
   const filteredTx = transactions.filter((txn) => {
     const matchesSearch = searchName
       ? txn.name.toLowerCase().includes(searchName.toLowerCase().trim())
       : true;
-
     const matchesCategory =
       category === "All Transactions" || txn.category === category;
-
-    return matchesSearch && matchesCategory;
+    let matchesMonth = true;
+    if (selectedMonth && selectedMonth !== "All") {
+      const txnDate = new Date(txn.date);
+      const txnMonthYear = txnDate.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+      matchesMonth = txnMonthYear === selectedMonth;
+    }
+    return matchesSearch && matchesCategory && matchesMonth;
   });
 
   // Sorting Logic
@@ -94,7 +124,21 @@ const TransactionsPage = () => {
   const recurringBills = useContext(RecurringDataContext).recurringBills;
   const { setRecurringBills } = useContext(RecurringActionContext);
 
-  const numPages = Math.ceil(transactions.length / 10);
+  const [searchName, setSearchName] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("Latest");
+  const [category, setCategory] = useState<string>("All Transactions");
+
+  const [selectedMonth, setSelectedMonth] = useState<string>("All");
+
+  const filteredTx: Transaction[] = filterAndSortTransactions(
+    transactions,
+    searchName,
+    category,
+    sortBy,
+    selectedMonth
+  );
+
+  const numPages = Math.ceil(filteredTx.length / 10);
 
   const numbers = Array.from({ length: numPages }, (_, i) => i + 1);
 
@@ -103,17 +147,6 @@ const TransactionsPage = () => {
       setPageNum(newPageNum);
     }
   };
-
-  const [searchName, setSearchName] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("Latest");
-  const [category, setCategory] = useState<string>("All Transactions");
-
-  const filteredTx: Transaction[] = filterAndSortTransactions(
-    transactions,
-    searchName,
-    category,
-    sortBy
-  );
 
   const i = pageNum * 10;
   const selectedTnxs = filteredTx.slice(i - 10, i);
@@ -150,7 +183,7 @@ const TransactionsPage = () => {
 
   const [selectedTnx, setSelectedTnx] = useState<Transaction | null>(null);
 
-  // handle transaction delete functionality
+  // Handle transaction delete functionality
   const handleDeleteTnx = () => {
     if (selectedTnx === null) return;
 
@@ -358,6 +391,11 @@ const TransactionsPage = () => {
     );
   };
 
+  const monthOptions = useMemo(
+    () => getMonthYearOptions(transactions),
+    [transactions]
+  );
+
   return (
     <>
       <SetTitle title="Transactions" />
@@ -397,6 +435,9 @@ const TransactionsPage = () => {
                 setCategory={setCategory}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+                monthOptions={monthOptions}
               />
 
               <TransactionsTable
