@@ -56,7 +56,7 @@ const buildSchema = () =>
       .required("Date is required")
       .matches(
         /^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
-        "Date must be in dd/mm/yyyy format"
+        "Enter a valid date in dd/mm/yyyy format"
       )
       .test("valid-date", "Enter a valid date", (value) => {
         if (!value) return false;
@@ -126,19 +126,26 @@ const AddEditTransactionModal = ({
   txnData,
   recurringOptions,
 }: AddEditTransactionModalProps) => {
-  const { control, handleSubmit, watch, reset, getValues, setValue, trigger } =
-    useForm<FormValues>({
-      resolver: yupResolver(buildSchema()),
-      mode: "onChange",
-      defaultValues: {
-        txnName: "",
-        category: "",
-        date: "",
-        amount: "",
-        paymentType: "oneTime",
-        paymentDirection: "paid",
-      },
-    });
+  const {
+    control,
+    handleSubmit,
+    watch,
+    reset,
+    getValues,
+    setValue,
+    clearErrors,
+  } = useForm<FormValues>({
+    resolver: yupResolver(buildSchema()),
+    mode: "onChange",
+    defaultValues: {
+      txnName: "",
+      category: "",
+      date: "",
+      amount: "",
+      paymentType: "oneTime",
+      paymentDirection: "paid",
+    },
+  });
 
   const categoryOptions = categories.map((cat: string) => ({
     value: cat,
@@ -252,6 +259,11 @@ const AddEditTransactionModal = ({
     setValue,
   ]);
 
+  useEffect(() => {
+    // As soon as paymentType changes, clear all validation errors.
+    clearErrors();
+  }, [watchPaymentType, clearErrors]);
+
   // Handlers for inline confirmation buttons.
   const handleProceedConfirmation = () => {
     if (pendingConfirmation) {
@@ -359,12 +371,7 @@ const AddEditTransactionModal = ({
                     placeholder="dd"
                     error={error}
                     onChange={field.onChange}
-                    onBlur={() => {
-                      field.onBlur();
-                      if (field.value && field.value.trim() !== "") {
-                        trigger(field.name);
-                      }
-                    }}
+                    onBlur={field.onBlur}
                   />
                 )}
               />
@@ -396,7 +403,7 @@ const AddEditTransactionModal = ({
               <Controller
                 name="category"
                 control={control}
-                render={({ field }) => (
+                render={({ field, fieldState: { error } }) => (
                   <ModalSelectDropdown
                     isDisabled={
                       watchPaymentType === "recurring" &&
@@ -406,6 +413,7 @@ const AddEditTransactionModal = ({
                     onChange={field.onChange}
                     options={categoryOptions}
                     label="Category"
+                    error={error}
                   />
                 )}
               />

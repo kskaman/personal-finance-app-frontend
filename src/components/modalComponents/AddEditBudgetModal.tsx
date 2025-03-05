@@ -171,7 +171,7 @@ const AddEditBudgetModal = ({
           <Controller
             name="category"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <Box>
                 <ModalSelectDropdown
                   value={field.value}
@@ -179,6 +179,7 @@ const AddEditBudgetModal = ({
                   options={filteredCategoryOptions}
                   isDisabled={mode === "edit"}
                   label={"Budget Category"}
+                  error={error}
                 />
               </Box>
             )}
@@ -209,7 +210,7 @@ const AddEditBudgetModal = ({
           <Controller
             name="selectedTheme"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <Box>
                 <ModalSelectDropdown
                   value={field.value}
@@ -217,6 +218,7 @@ const AddEditBudgetModal = ({
                   options={filteredThemeOptions}
                   isTheme={true}
                   label={"Theme"}
+                  error={error}
                 />
               </Box>
             )}

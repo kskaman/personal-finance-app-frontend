@@ -61,19 +61,42 @@ const filterAndSortTransactions = (
 
   // Sorting Logic
   return filteredTx.sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+
     switch (sortBy) {
-      case "Latest":
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      case "Oldest":
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      case "Latest": {
+        // Primary sort: descending by date (so b - a)
+        const dateDiff = dateB - dateA;
+        if (dateDiff !== 0) {
+          return dateDiff;
+        }
+        // If dates tie, fallback to name A–Z
+        return a.name.localeCompare(b.name);
+      }
+
+      case "Oldest": {
+        // Primary sort: ascending by date (so a - b)
+        const dateDiff = dateA - dateB;
+        if (dateDiff !== 0) {
+          return dateDiff;
+        }
+        // If dates tie, fallback to name A–Z
+        return a.name.localeCompare(b.name);
+      }
+
       case "A to Z":
         return a.name.localeCompare(b.name);
+
       case "Z to A":
         return b.name.localeCompare(a.name);
+
       case "Highest":
         return a.amount - b.amount;
+
       case "Lowest":
         return b.amount - a.amount;
+
       default:
         return 0;
     }

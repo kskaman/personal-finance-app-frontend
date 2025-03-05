@@ -129,7 +129,12 @@ const ModalSelectDropdown = ({
         ))}
       </Select>
       {error && (
-        <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+        <Typography
+          marginLeft="12px"
+          variant="caption"
+          color="error"
+          sx={{ mt: 1 }}
+        >
           {error.message}
         </Typography>
       )}
