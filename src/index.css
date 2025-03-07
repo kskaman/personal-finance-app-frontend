@@ -1,3 +1,33 @@
+@font-face {
+  font-family: "source-code";
+  src: url("/src/assets/fonts/SourceCodePro-VariableFont_wght.ttf")
+      format("truetype"),
+    url("/src/assets/fonts/SourceCodePro-Italic-VariableFont_wght.ttf")
+      format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "noto-serif";
+  src: url("/src/assets/fonts/NotoSerif-VariableFont_wdth\,wght.ttf")
+      format("truetype"),
+    url("/src/assets/fonts/NotoSerif-VariableFont_wdth\,wght.ttf")
+      format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "public-sans";
+  src: url("/src/assets/fonts/PublicSans-VariableFont_wght.ttf")
+      format("truetype"),
+    url("/src/assets/fonts/PublicSans-Italic-VariableFont_wght.ttf")
+      format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 *,
 *::before,
 *::after {

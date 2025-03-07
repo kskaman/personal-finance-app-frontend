@@ -1,23 +1,93 @@
-import {
-  Box,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import PageDiv from "../utilityComponents/PageDiv";
 import theme from "../theme/theme";
 import Button from "../utilityComponents/Button";
 import SetTitle from "../components/SetTitle";
 import LogoutIcon from "../Icons/LogoutIcon";
 import SubContainer from "../utilityComponents/SubContainer";
+import { SettingsRadioOption } from "../types/settingsData";
+import SettingsOptionGroup from "../components/settingsComponents/SettingsOptionGroup";
+import useParentWidth from "../customHooks/useParentWidth";
+
+const fontOptions: SettingsRadioOption[] = [
+  {
+    value: "source-code",
+    symbol: (
+      <Typography
+        fontSize="14px"
+        color={theme.palette.primary.main}
+        fontFamily="source-code"
+      >
+        Aa
+      </Typography>
+    ),
+    label: "Source Cod Pro",
+  },
+  {
+    value: "noto-serif",
+    symbol: (
+      <Typography
+        fontSize="14px"
+        color={theme.palette.primary.main}
+        fontFamily="noto-serif"
+      >
+        Aa
+      </Typography>
+    ),
+    label: "Noto Serif",
+  },
+  {
+    value: "public-sans",
+    symbol: (
+      <Typography
+        fontSize="14px"
+        color={theme.palette.primary.main}
+        fontFamily="public-sans"
+      >
+        Aa
+      </Typography>
+    ),
+    label: "Public Sans",
+  },
+];
+
+const currencyOptions: SettingsRadioOption[] = [
+  {
+    value: "usd",
+    symbol: (
+      <Typography color={theme.palette.primary.main} fontSize="14px">
+        $
+      </Typography>
+    ),
+    label: "U.S. Dollar",
+  },
+  {
+    value: "cad",
+    symbol: (
+      <Typography fontSize="14px" color={theme.palette.primary.main}>
+        C$
+      </Typography>
+    ),
+    label: "Canadian Dollar",
+  },
+  {
+    value: "eur",
+    symbol: (
+      <Typography color={theme.palette.primary.main} fontSize="14px">
+        €
+      </Typography>
+    ),
+    label: "Euro",
+  },
+];
 
 const SettingsPage = () => {
+  const { parentWidth, containerRef } = useParentWidth();
+
   return (
     <>
       <SetTitle title="Settings" />
+      <Box ref={containerRef}></Box>
       <PageDiv>
         <Stack gap="32px">
           <Stack direction="row" gap="32px">
@@ -58,26 +128,30 @@ const SettingsPage = () => {
               </Stack>
             </Button>
           </Stack>
-          <SubContainer>
-            {/* Theme Option */}
+
+          <Stack gap="20px">
+            {/* Font Option */}
             <SubContainer>
-              <Typography variant="h6" fontWeight="bold">
-                Theme
-              </Typography>
-              <FormControl component="fieldset">
-                <FormGroup row>
-                  <FormControlLabel
-                    control={<Checkbox checked={true} onChange={() => {}} />}
-                    label="Light"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox checked={false} onChange={() => {}} />}
-                    label="Dark"
-                  />
-                </FormGroup>
-              </FormControl>
+              {/* Font Options Section */}
+              <SettingsOptionGroup
+                heading="Font Options"
+                options={fontOptions}
+                selectedValue="public-sans"
+                onChange={() => {}}
+                parentWidth={parentWidth}
+              />
             </SubContainer>
-          </SubContainer>
+            <SubContainer>
+              {/* Currency Options Section */}
+              <SettingsOptionGroup
+                heading="Currency Options"
+                options={currencyOptions}
+                selectedValue="usd"
+                onChange={() => {}}
+                parentWidth={parentWidth}
+              />
+            </SubContainer>
+          </Stack>
         </Stack>
       </PageDiv>
     </>
