@@ -6,6 +6,7 @@ import BudgetsProvider from "./BudgetsProvider";
 import RecurringProvider from "./RecurringProvider";
 import { PotsProvider } from "./PotsProvider";
 import CategoryMarkerProvider from "./CategoryMarkerProvider";
+import { SettingsProvider } from "./SettingsProvider";
 
 interface DataProviderProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ interface DataProviderProps {
 
 const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [data, setData] = useState<DataType>(() => ({
+    settings: { font: "public-sans", currency: "$" },
     balance: {
       current: 0,
       income: 0,
@@ -89,21 +91,26 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     );
 
   return (
-    <CategoryMarkerProvider
-      categories={data.categories}
-      markerThemes={data.markerThemes}
+    <SettingsProvider
+      font={data.settings.font}
+      currency={data.settings.currency}
     >
-      <BalanceTransactionsProvider
-        balance={data.balance}
-        transactions={data.transactions}
+      <CategoryMarkerProvider
+        categories={data.categories}
+        markerThemes={data.markerThemes}
       >
-        <BudgetsProvider budgets={data.budgets}>
-          <RecurringProvider recurringBills={data.recurringBills}>
-            <PotsProvider pots={data.pots}>{children}</PotsProvider>
-          </RecurringProvider>
-        </BudgetsProvider>
-      </BalanceTransactionsProvider>
-    </CategoryMarkerProvider>
+        <BalanceTransactionsProvider
+          balance={data.balance}
+          transactions={data.transactions}
+        >
+          <BudgetsProvider budgets={data.budgets}>
+            <RecurringProvider recurringBills={data.recurringBills}>
+              <PotsProvider pots={data.pots}>{children}</PotsProvider>
+            </RecurringProvider>
+          </BudgetsProvider>
+        </BalanceTransactionsProvider>
+      </CategoryMarkerProvider>
+    </SettingsProvider>
   );
 };
 

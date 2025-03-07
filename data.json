@@ -1,7 +1,7 @@
 {
   "settings": {
     "font": "public-sans",
-    "currency": "usd"
+    "currency": "$"
   },
   "balance": {
     "current": 4836.0,

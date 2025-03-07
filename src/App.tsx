@@ -11,12 +11,15 @@ import TransactionsPage from "./pages/TransactionsPage";
 import TabNavBar from "./components/TabNavBar";
 import theme from "./theme/theme";
 import SettingsPage from "./pages/SettingsPage";
+import { useContext } from "react";
+import { SettingsContext } from "./context/SettingsContext";
 
 const App = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const isTabletOrMobile = useMediaQuery("(max-width:900px)");
 
+  const selectedFont = useContext(SettingsContext).selectedFont;
   return (
     <Router>
       {/** 
@@ -28,6 +31,7 @@ const App = () => {
         bgcolor={theme.palette.background.default}
         direction={isTabletOrMobile ? "column" : "row"}
         sx={{ height: "100%", width: "100%" }}
+        fontFamily={selectedFont}
       >
         {!isTabletOrMobile && <Navbar />}
         <Box sx={{ flex: 1, overflow: "auto" }}>

@@ -5,9 +5,11 @@ import Button from "../utilityComponents/Button";
 import SetTitle from "../components/SetTitle";
 import LogoutIcon from "../Icons/LogoutIcon";
 import SubContainer from "../utilityComponents/SubContainer";
-import { SettingsRadioOption } from "../types/settingsData";
+import { Currencies, Fonts, SettingsRadioOption } from "../types/settingsData";
 import SettingsOptionGroup from "../components/settingsComponents/SettingsOptionGroup";
 import useParentWidth from "../customHooks/useParentWidth";
+import { useContext } from "react";
+import { SettingsContext } from "../context/SettingsContext";
 
 const fontOptions: SettingsRadioOption[] = [
   {
@@ -21,7 +23,15 @@ const fontOptions: SettingsRadioOption[] = [
         Aa
       </Typography>
     ),
-    label: "Source Cod Pro",
+    label: (
+      <Typography
+        fontFamily="source-code"
+        fontSize="14px"
+        color={theme.palette.primary.main}
+      >
+        Source Code
+      </Typography>
+    ),
   },
   {
     value: "noto-serif",
@@ -34,7 +44,15 @@ const fontOptions: SettingsRadioOption[] = [
         Aa
       </Typography>
     ),
-    label: "Noto Serif",
+    label: (
+      <Typography
+        fontSize="14px"
+        fontFamily="noto-serif"
+        color={theme.palette.primary.main}
+      >
+        Noto Serif
+      </Typography>
+    ),
   },
   {
     value: "public-sans",
@@ -47,7 +65,15 @@ const fontOptions: SettingsRadioOption[] = [
         Aa
       </Typography>
     ),
-    label: "Public Sans",
+    label: (
+      <Typography
+        fontFamily={"public-sans"}
+        fontSize="14px"
+        color={theme.palette.primary.main}
+      >
+        Public Sans
+      </Typography>
+    ),
   },
 ];
 
@@ -59,7 +85,11 @@ const currencyOptions: SettingsRadioOption[] = [
         $
       </Typography>
     ),
-    label: "U.S. Dollar",
+    label: (
+      <Typography fontSize="14px" color={theme.palette.primary.main}>
+        U.S. Dollar
+      </Typography>
+    ),
   },
   {
     value: "cad",
@@ -68,7 +98,11 @@ const currencyOptions: SettingsRadioOption[] = [
         C$
       </Typography>
     ),
-    label: "Canadian Dollar",
+    label: (
+      <Typography fontSize="14px" color={theme.palette.primary.main}>
+        Canadian Dollar
+      </Typography>
+    ),
   },
   {
     value: "eur",
@@ -77,12 +111,22 @@ const currencyOptions: SettingsRadioOption[] = [
         €
       </Typography>
     ),
-    label: "Euro",
+    label: (
+      <Typography fontSize="14px" color={theme.palette.primary.main}>
+        Euro
+      </Typography>
+    ),
   },
 ];
 
 const SettingsPage = () => {
   const { parentWidth, containerRef } = useParentWidth();
+  const {
+    selectedFont,
+    setSelectedFont,
+    selectedCurrency,
+    setSelectedCurrency,
+  } = useContext(SettingsContext);
 
   return (
     <>
@@ -132,22 +176,22 @@ const SettingsPage = () => {
           <Stack gap="20px">
             {/* Font Option */}
             <SubContainer>
-              {/* Font Options Section */}
               <SettingsOptionGroup
                 heading="Font Options"
                 options={fontOptions}
-                selectedValue="public-sans"
-                onChange={() => {}}
+                selectedValue={selectedFont}
+                onChange={(e) => setSelectedFont(e.target.value as Fonts)}
                 parentWidth={parentWidth}
               />
             </SubContainer>
             <SubContainer>
-              {/* Currency Options Section */}
               <SettingsOptionGroup
                 heading="Currency Options"
                 options={currencyOptions}
-                selectedValue="usd"
-                onChange={() => {}}
+                selectedValue={selectedCurrency}
+                onChange={(e) =>
+                  setSelectedCurrency(e.target.value as Currencies)
+                }
                 parentWidth={parentWidth}
               />
             </SubContainer>

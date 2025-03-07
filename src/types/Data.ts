@@ -61,8 +61,14 @@ export interface Pot {
     total: number;
     theme: string;
 }
+
+export interface Settings {
+    font: "public-sans" | "noto-serif" | "source-code";
+    currency: "$" | "C$" | "€";
+}
   
 export interface DataType {
+    settings: Settings;
     balance: Balance;
     transactions: Transaction[];
     budgets: Budget[];

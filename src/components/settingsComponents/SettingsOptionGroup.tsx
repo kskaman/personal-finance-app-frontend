@@ -29,7 +29,7 @@ const SettingsOptionGroup = ({
 }: SettingOptionGroupProp) => {
   const isParentWidth = parentWidth < MD_BREAK;
   return (
-    <Stack gap={2}>
+    <Stack gap="20px">
       <Typography
         fontSize="16px"
         fontWeight="bold"
@@ -63,13 +63,13 @@ const SettingsOptionGroup = ({
                   ? theme.palette.background.default
                   : theme.palette.text.primary
               }
-              borderRadius={"8px"}
+              borderRadius="8px"
               padding={1}
               flex={1}
               sx={{
                 cursor: "pointer",
                 "&:hover": {
-                  bgcolor: lighten(theme.palette.background.default, 0.75),
+                  bgcolor: lighten(theme.palette.background.default, 0.6),
                 },
               }}
             >
@@ -84,9 +84,7 @@ const SettingsOptionGroup = ({
                 >
                   {option.symbol}
                 </Stack>
-                <Typography fontSize="14px" color={theme.palette.primary.main}>
-                  {option.label}
-                </Typography>
+                {option.label}
               </Stack>
               <FormControlLabel
                 value={option.value}
