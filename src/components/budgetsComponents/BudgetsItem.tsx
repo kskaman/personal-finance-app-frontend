@@ -74,7 +74,11 @@ const BudgetsItem = ({
         />
         <SubContainer bgColor={theme.palette.background.default}>
           <Stack direction="row">
-            <Typography fontWeight="bold" fontSize="16px">
+            <Typography
+              fontWeight="bold"
+              fontSize="16px"
+              color={theme.palette.primary.main}
+            >
               Latest Spending
             </Typography>
             <Stack
@@ -103,7 +107,7 @@ const BudgetsItem = ({
           <List>
             {transactionsForCategory.slice(0, 3).map((transaction, index) => {
               return (
-                <div key={transaction.date}>
+                <div key={transaction.id}>
                   <ListItem
                     sx={{
                       display: "flex",

@@ -1,6 +1,6 @@
 import SetTitle from "../components/SetTitle";
-import { Box, Stack, Typography } from "@mui/material";
-import theme from "../theme/theme";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
+
 import Balance from "../components/overviewComponents/Balance";
 import TransactionsOverview from "../components/overviewComponents/TransactionsOverview";
 import PotsOverview from "../components/overviewComponents/PotsOverview";
@@ -14,6 +14,8 @@ const OverViewPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
   const isParentLg = parentWidth < LG_BREAK;
   const isParentSm = parentWidth < SM_BREAK;
+
+  const theme = useTheme();
   return (
     <>
       <SetTitle title="OverView" />
