@@ -8,7 +8,9 @@ import ModalTextField from "./ModalTextField";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import PotsModalProgressBar from "./PotsModalProgressBar";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Currencies } from "../../types/settingsData";
+import { SettingsContext } from "../../context/SettingsContext";
 
 // Types & Interface
 interface PotMoneyModalProps {
@@ -36,7 +38,8 @@ const buildSchema = (
   potTotal: number,
   maxLimit: number,
   potTarget: number,
-  isConfirmed: boolean
+  isConfirmed: boolean,
+  currencySymbol: Currencies
 ) =>
   yup.object({
     amount: yup
@@ -45,8 +48,12 @@ const buildSchema = (
       .test(
         "max-limit",
         type === "addMoney"
-          ? `Amount cannot exceed available funds ($${maxLimit.toFixed(2)})`
-          : `Amount cannot exceed current pot total ($${potTotal.toFixed(2)})`,
+          ? `Amount cannot exceed available funds (${currencySymbol}${maxLimit.toFixed(
+              2
+            )})`
+          : `Amount cannot exceed current pot total (${currencySymbol}${potTotal.toFixed(
+              2
+            )})`,
         (value) => {
           const num = parseFloat(value || "0");
           if (type === "addMoney") {
@@ -87,11 +94,20 @@ const PotMoneyModal = ({
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [exceedFlag, setExceedFlag] = useState<boolean>(false);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
+
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
   // Setup React Hook Form.
   const { control, handleSubmit, watch, reset } = useForm<FormValues>({
     defaultValues: { amount: "" },
     resolver: yupResolver(
-      buildSchema(type, potTotal, maxLimit, potTarget, isConfirm)
+      buildSchema(
+        type,
+        potTotal,
+        maxLimit,
+        potTarget,
+        isConfirm,
+        currencySymbol
+      )
     ),
     mode: "onChange",
   });
@@ -201,7 +217,6 @@ const PotMoneyModal = ({
                 error={error}
                 label="Maximum Spend"
                 placeholder="0.00"
-                adornmentText="$"
               />
             )}
           />

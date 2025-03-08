@@ -5,6 +5,7 @@ import SubContainer from "../../utilityComponents/SubContainer";
 import { useContext } from "react";
 import { RecurringDataContext } from "../../context/RecurringContext";
 import { formatNumber } from "../../utils/utilityFunctions";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const BillsOverview = () => {
   const { recurringSummary } = useContext(RecurringDataContext);
@@ -19,6 +20,8 @@ const BillsOverview = () => {
     due: { label: "Due", borderColor: theme.palette.others.red },
   };
   const showDue = recurringSummary.due.count !== 0;
+
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <SubContainer>
@@ -91,7 +94,7 @@ const BillsOverview = () => {
                       : theme.palette.primary.main
                   }
                 >
-                  ${formatNumber(summary.total)}
+                  {`${currencySymbol}${formatNumber(summary.total)}`}
                 </Typography>
               </Stack>
             );

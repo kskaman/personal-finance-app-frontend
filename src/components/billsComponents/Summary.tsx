@@ -4,6 +4,7 @@ import { formatNumber } from "../../utils/utilityFunctions";
 import theme from "../../theme/theme";
 import { useContext } from "react";
 import { RecurringDataContext } from "../../context/RecurringContext";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const Summary = () => {
   const summaryData = {
@@ -17,6 +18,8 @@ const Summary = () => {
 
   const recurringSummary = useContext(RecurringDataContext).recurringSummary;
   const showDue = recurringSummary.due.count !== 0;
+
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <>
@@ -66,7 +69,9 @@ const Summary = () => {
                           : theme.palette.primary.main
                       }
                     >
-                      {`${summary.count} ($${formatNumber(summary.total)})`}
+                      {`${summary.count} (${currencySymbol}${formatNumber(
+                        summary.total
+                      )})`}
                     </Typography>
                   </ListItem>
 

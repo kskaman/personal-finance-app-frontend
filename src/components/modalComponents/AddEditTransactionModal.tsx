@@ -372,6 +372,7 @@ const AddEditTransactionModal = ({
                     error={error}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
+                    adornmentTextFlag={false}
                   />
                 )}
               />
@@ -393,6 +394,7 @@ const AddEditTransactionModal = ({
                 error={error}
                 label="Recipient/Sender"
                 placeholder=""
+                adornmentTextFlag={false}
               />
             )}
           />
@@ -431,6 +433,7 @@ const AddEditTransactionModal = ({
                     error={error}
                     label="Date"
                     placeholder="dd/mm/yyyy"
+                    adornmentTextFlag={false}
                   />
                 )}
               />
@@ -493,7 +496,6 @@ const AddEditTransactionModal = ({
                     error={error}
                     label="Amount"
                     placeholder="0.00"
-                    adornmentText="$"
                   />
                 )}
               />

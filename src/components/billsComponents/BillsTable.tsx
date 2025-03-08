@@ -20,6 +20,8 @@ import PaidIcon from "../../Icons/PaidIcon";
 import DueIcon from "../../Icons/DueIcon";
 import OptionsButton from "../modalComponents/OptionsButton";
 import { MD_SM_BREAK } from "../../data/widthConstants";
+import { useContext } from "react";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const getBillStatus = (lastPaid: string, dueDate: string) => {
   let status = "unpaid";
@@ -57,6 +59,8 @@ const BillsTable = ({
   setEditModalOpen: (recurringBill: RecurringBill) => void;
 }) => {
   const isParentWidth = parentWidth < MD_SM_BREAK;
+
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <Table
@@ -212,7 +216,8 @@ const BillsTable = ({
                         : theme.palette.primary.main
                     }
                   >
-                    ${formatNumber(Math.abs(bill.amount))}
+                    {currencySymbol}
+                    {formatNumber(Math.abs(bill.amount))}
                   </Typography>
                 </Stack>
               </TableCell>
@@ -294,7 +299,8 @@ const BillsTable = ({
                   fontWeight: "bold",
                 }}
               >
-                ${formatNumber(Math.abs(bill.amount))}
+                {currencySymbol}
+                {formatNumber(Math.abs(bill.amount))}
               </TableCell>
 
               <TableCell

@@ -18,6 +18,8 @@ import {
 } from "../../utils/utilityFunctions";
 import OptionsButton from "../modalComponents/OptionsButton";
 import { MD_SM_BREAK } from "../../data/widthConstants";
+import { useContext } from "react";
+import { SettingsContext } from "../../context/SettingsContext";
 
 interface Props {
   txns: Transaction[];
@@ -33,6 +35,8 @@ const TransactionsTable = ({
   setEditModalOpen,
 }: Props) => {
   const isParentWidth = parentWidth < MD_SM_BREAK;
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
+
   return (
     <Table>
       {/* Table Head (Visible only on larger screens) */}
@@ -160,8 +164,8 @@ const TransactionsTable = ({
                       marginRight: "8px",
                     }}
                   >
-                    {txn.amount < 0 ? "-" : "+"}$
-                    {formatNumber(Math.abs(txn.amount))}
+                    {txn.amount < 0 ? "-" : "+"}
+                    {`${currencySymbol}${formatNumber(Math.abs(txn.amount))}`}
                   </Typography>
 
                   {/* Action Button */}
@@ -243,8 +247,8 @@ const TransactionsTable = ({
                         : theme.palette.others.green,
                   }}
                 >
-                  {txn.amount < 0 ? "-" : "+"}$
-                  {formatNumber(Math.abs(txn.amount))}
+                  {txn.amount < 0 ? "-" : "+"}
+                  {`${currencySymbol}${formatNumber(Math.abs(txn.amount))}`}
                 </TableCell>
                 <TableCell sx={{ textAlign: "right" }}>
                   <OptionsButton

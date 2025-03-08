@@ -1,6 +1,8 @@
 import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 import theme from "../theme/theme";
 import { formatNumber } from "../utils/utilityFunctions";
+import { SettingsContext } from "../context/SettingsContext";
+import { useContext } from "react";
 
 interface BudgetsProgressBarProps {
   value: number;
@@ -21,6 +23,7 @@ const BudgetsProgressBar = ({
     : (value / total) * 100;
   const remaining = Math.abs(total - value);
 
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
   return (
     <Box
       sx={{
@@ -39,7 +42,7 @@ const BudgetsProgressBar = ({
         }}
       >
         <Typography fontSize="14px" color={theme.palette.primary.light}>
-          Maximum of ${formatNumber(total)}
+          Maximum of {`${currencySymbol}${formatNumber(total)}`}
         </Typography>
       </Stack>
       <LinearProgress
@@ -79,7 +82,7 @@ const BudgetsProgressBar = ({
               fontWeight="bold"
               color={theme.palette.primary.light}
             >
-              ${formatNumber(value)}
+              {`${currencySymbol}${formatNumber(value)}`}
             </Typography>
           </Stack>
         </Stack>
@@ -99,7 +102,8 @@ const BudgetsProgressBar = ({
               fontWeight="bold"
               color={theme.palette.primary.light}
             >
-              {isOverBudget && "-"} ${formatNumber(remaining)}
+              {isOverBudget && "-"}{" "}
+              {`${currencySymbol}${formatNumber(remaining)}`}
             </Typography>
           </Stack>
         </Stack>

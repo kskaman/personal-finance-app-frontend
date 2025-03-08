@@ -18,11 +18,14 @@ import theme from "../../theme/theme";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import SubContainer from "../../utilityComponents/SubContainer";
 import { BalanceTransactionsDataContext } from "../../context/BalanceTransactionsContext";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const TransactionsOverview = () => {
   const latestTransactions = useContext(
     BalanceTransactionsDataContext
   ).transactions.slice(0, 5);
+
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <SubContainer gap="32px">
@@ -96,7 +99,7 @@ const TransactionsOverview = () => {
                     fontWeight="bold"
                     color={theme.palette.secondary.main}
                   >
-                    +${formatNumber(transaction.amount)}
+                    +{`${currencySymbol}${formatNumber(transaction.amount)}`}
                   </Typography>
                 ) : (
                   <Typography
@@ -104,7 +107,7 @@ const TransactionsOverview = () => {
                     fontWeight="bold"
                     color={theme.palette.primary.main}
                   >
-                    -${formatNumber(Math.abs(transaction.amount))}
+                    -{`${currencySymbol}${formatNumber(transaction.amount)}`}
                   </Typography>
                 )}
                 <Typography fontSize="12px" color={theme.palette.primary.light}>

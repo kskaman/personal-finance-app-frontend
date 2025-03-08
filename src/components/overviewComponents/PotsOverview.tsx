@@ -9,6 +9,7 @@ import SubContainer from "../../utilityComponents/SubContainer";
 import { PotsDataContext } from "../../context/PotsContext";
 import useParentWidth from "../../customHooks/useParentWidth";
 import { SM_BREAK } from "../../data/widthConstants";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const PotsOverview = () => {
   const pots = useContext(PotsDataContext).pots;
@@ -20,6 +21,8 @@ const PotsOverview = () => {
   const { containerRef, parentWidth } = useParentWidth();
 
   const isParentWidth = parentWidth < SM_BREAK;
+
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <Box ref={containerRef}>
@@ -75,7 +78,7 @@ const PotsOverview = () => {
                 Total Saved
               </Typography>
               <Typography fontSize="32px" color={theme.palette.primary.main}>
-                ${formatNumber(totalSaved)}
+                {`${currencySymbol}${formatNumber(totalSaved)}`}
               </Typography>
             </Stack>
           </Stack>
@@ -119,7 +122,7 @@ const PotsOverview = () => {
                     fontWeight="bold"
                     color={theme.palette.primary.main}
                   >
-                    ${formatNumber(pot.total)}
+                    {`${currencySymbol}${formatNumber(pot.total)}`}
                   </Typography>
                 </Stack>
               </Grid>

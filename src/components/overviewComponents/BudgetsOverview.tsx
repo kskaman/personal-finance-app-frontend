@@ -9,6 +9,7 @@ import { BudgetsDataContext } from "../../context/BudgetsContext";
 import BudgetsPieChart from "../../utilityComponents/BudgetsPieChart";
 import { formatNumber } from "../../utils/utilityFunctions";
 import useParentWidth from "../../customHooks/useParentWidth";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const BudgetsOverview = () => {
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
@@ -33,6 +34,7 @@ const BudgetsOverview = () => {
   const { containerRef, parentWidth } = useParentWidth();
 
   const isParentWidth = parentWidth < 600;
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <Box ref={containerRef}>
@@ -124,7 +126,7 @@ const BudgetsOverview = () => {
                     fontWeight="bold"
                     color={theme.palette.primary.main}
                   >
-                    ${formatNumber(budget.maximum)}
+                    {`${currencySymbol}${formatNumber(budget.maximum)}`}
                   </Typography>
                 </Stack>
               </Grid>

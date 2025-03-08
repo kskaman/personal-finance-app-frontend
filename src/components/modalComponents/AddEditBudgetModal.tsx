@@ -199,7 +199,7 @@ const AddEditBudgetModal = ({
                     error={error}
                     label="Maximum Spend"
                     placeholder="0.00"
-                    adornmentText="$"
+                    adornmentTextFlag={true}
                   />
                 </Box>
               );

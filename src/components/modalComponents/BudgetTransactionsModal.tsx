@@ -14,6 +14,8 @@ import {
 } from "../../utils/utilityFunctions";
 import { Transaction } from "../../types/Data";
 import ActionModal from "./ActionModal";
+import { useContext } from "react";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const BudgetTransactionsModal = ({
   open,
@@ -26,6 +28,8 @@ const BudgetTransactionsModal = ({
   transactionsForCategory: Transaction[];
   categoryLabel: string;
 }) => {
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
+
   return (
     <ActionModal open={open} onClose={onClose} heading={categoryLabel}>
       <List>
@@ -70,7 +74,7 @@ const BudgetTransactionsModal = ({
                       fontWeight="bold"
                       color={theme.palette.secondary.main}
                     >
-                      +${formatNumber(transaction.amount)}
+                      +{`${currencySymbol}${formatNumber(transaction.amount)}`}
                     </Typography>
                   ) : (
                     <Typography
@@ -78,8 +82,7 @@ const BudgetTransactionsModal = ({
                       fontWeight="bold"
                       color={theme.palette.primary.main}
                     >
-                      -$
-                      {formatNumber(Math.abs(transaction.amount))}
+                      -{`${currencySymbol}${formatNumber(transaction.amount)}`}
                     </Typography>
                   )}
                   <Typography

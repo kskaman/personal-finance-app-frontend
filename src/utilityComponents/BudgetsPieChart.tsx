@@ -3,6 +3,8 @@ import { PieChart } from "@mui/x-charts";
 import { formatNumber } from "../utils/utilityFunctions";
 import { lighten } from "@mui/system"; // To lighten colors
 import theme from "../theme/theme";
+import { useContext } from "react";
+import { SettingsContext } from "../context/SettingsContext";
 
 interface BudgetsPieChartProps {
   spendings: number[];
@@ -31,6 +33,8 @@ const BudgetsPieChart = ({
 
   const total = spendings.reduce((acc, cur) => acc + cur, 0);
 
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
+
   return (
     <Box width={280} height={280} position="relative">
       {/* Centered Text */}
@@ -44,10 +48,10 @@ const BudgetsPieChart = ({
         sx={{ transform: "translate(-50%, -50%)", zIndex: 2 }}
       >
         <Typography fontSize="32px" color={theme.palette.primary.main}>
-          ${formatNumber(total)}
+          {`${currencySymbol}${formatNumber(total)}`}
         </Typography>
         <Typography fontSize="12px" color={theme.palette.primary.light}>
-          of ${formatNumber(limit)} limit
+          of {`${currencySymbol}${formatNumber(limit)}`} limit
         </Typography>
       </Stack>
 

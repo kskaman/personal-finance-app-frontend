@@ -79,7 +79,7 @@ const fontOptions: SettingsRadioOption[] = [
 
 const currencyOptions: SettingsRadioOption[] = [
   {
-    value: "usd",
+    value: "$",
     symbol: (
       <Typography color={theme.palette.primary.main} fontSize="14px">
         $
@@ -92,7 +92,7 @@ const currencyOptions: SettingsRadioOption[] = [
     ),
   },
   {
-    value: "cad",
+    value: "C$",
     symbol: (
       <Typography fontSize="14px" color={theme.palette.primary.main}>
         C$
@@ -105,7 +105,7 @@ const currencyOptions: SettingsRadioOption[] = [
     ),
   },
   {
-    value: "eur",
+    value: "€",
     symbol: (
       <Typography color={theme.palette.primary.main} fontSize="14px">
         €

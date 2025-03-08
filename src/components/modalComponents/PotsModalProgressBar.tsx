@@ -1,6 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material";
 import theme from "../../theme/theme";
 import { formatNumber } from "../../utils/utilityFunctions";
+import { SettingsContext } from "../../context/SettingsContext";
+import { useContext } from "react";
 
 interface PotsProgressBarProps {
   type: "addMoney" | "withdraw" | null;
@@ -57,6 +59,8 @@ const PotsProgressBar = ({
 
   const singleBlackOnly = blackPercentage > 0 && changePercentage === 0;
 
+  const currencySymbol = useContext(SettingsContext);
+
   return (
     <Box
       sx={{
@@ -79,8 +83,8 @@ const PotsProgressBar = ({
         </Typography>
         <Typography fontSize="32px" color={theme.palette.primary.main}>
           {displayedValue < 0
-            ? `-$${formatNumber(Math.abs(displayedValue))}`
-            : `$${formatNumber(displayedValue)}`}
+            ? `-${currencySymbol}${formatNumber(Math.abs(displayedValue))}`
+            : `${currencySymbol}${formatNumber(displayedValue)}`}
         </Typography>
       </Stack>
       {/* Custom dual-color progress bar */}
@@ -139,7 +143,7 @@ const PotsProgressBar = ({
           {newTotalPercentage.toFixed(2)}%
         </Typography>
         <Typography fontSize="12px" color={theme.palette.primary.light}>
-          Target of ${formatNumber(target)}
+          Target of {`${currencySymbol}${formatNumber(target)}`}
         </Typography>
       </Stack>
     </Box>

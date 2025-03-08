@@ -21,6 +21,7 @@ import AddEditBudgetModal from "../components/modalComponents/AddEditBudgetModal
 import useModal from "../customHooks/useModal";
 import CategoryMarkerContext from "../context/CategoryMarkerContext";
 import { updateUsedStatuses } from "../utils/budgetUtils";
+import { SettingsContext } from "../context/SettingsContext";
 
 const BudgetsPage = () => {
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
@@ -30,6 +31,7 @@ const BudgetsPage = () => {
   );
   const { markerThemes, categories, setMarkerThemes, setCategories } =
     useContext(CategoryMarkerContext);
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   const budgetCategories = budgets.map((budget) => budget.category);
 
@@ -255,12 +257,14 @@ const BudgetsPage = () => {
                                 fontWeight="bold"
                                 color={theme.palette.primary.main}
                               >
-                                {`$${formatNumber(
+                                {`${currencySymbol}${formatNumber(
                                   monthlySpent[budget.category]
                                 )}`}
                               </Typography>
                               <Typography fontSize="14px">
-                                {`of $${formatNumber(budget.maximum)}`}
+                                {`of ${currencySymbol}${formatNumber(
+                                  budget.maximum
+                                )}`}
                               </Typography>
                             </Stack>
                           </ListItem>

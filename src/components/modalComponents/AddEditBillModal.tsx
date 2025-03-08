@@ -112,6 +112,7 @@ const AddEditBillModal = ({
                 error={error}
                 label="Bill Name / Recipient"
                 placeholder="Enter bill name"
+                adornmentTextFlag={false}
               />
             )}
           />
@@ -143,7 +144,6 @@ const AddEditBillModal = ({
                 error={error}
                 label="Amount"
                 placeholder="0.00"
-                adornmentText="$"
               />
             )}
           />

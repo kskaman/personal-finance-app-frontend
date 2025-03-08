@@ -28,6 +28,7 @@ import {
   formatISODateToDDMMYYYY,
   getRandomColor,
 } from "../utils/utilityFunctions";
+import { SettingsContext } from "../context/SettingsContext";
 
 // Interfaces and Props
 interface FormValues {
@@ -146,6 +147,7 @@ const TransactionsPage = () => {
 
   const recurringBills = useContext(RecurringDataContext).recurringBills;
   const { setRecurringBills } = useContext(RecurringActionContext);
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   const [searchName, setSearchName] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("Latest");
@@ -196,7 +198,7 @@ const TransactionsPage = () => {
   const recurringOptions = recurringBills.map((bill: RecurringBill) => {
     return {
       value: `${bill.id}`,
-      label: `${bill.name} - $${Math.abs(bill.amount)}`,
+      label: `${bill.name} - ${currencySymbol}${Math.abs(bill.amount)}`,
       dueDate: bill.dueDate,
       category: bill.category,
       name: bill.name,

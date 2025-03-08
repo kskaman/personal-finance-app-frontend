@@ -154,6 +154,7 @@ const AddEditPotModal = ({
                   error={error}
                   label={"Pot Name"}
                   maxLength={30}
+                  adornmentTextFlag={false}
                 />
                 <Typography
                   fontSize="12px"
@@ -180,7 +181,7 @@ const AddEditPotModal = ({
                   error={error}
                   label="Target"
                   placeholder="0.00"
-                  adornmentText="$"
+                  adornmentTextFlag={true}
                 />
               </Box>
             )}
