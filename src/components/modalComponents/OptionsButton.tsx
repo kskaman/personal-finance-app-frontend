@@ -50,7 +50,7 @@ const OptionsButton = ({
           backgroundColor={backgroundColor || "inherit"}
           color={color || theme.palette.primary.light}
           hoverBgColor={hoverBgColor || theme.palette.text.primary}
-          hoverColor={hoverColor || "inherit"}
+          hoverColor={hoverColor || theme.palette.primary.main}
           onClick={handleOpen}
           borderColor={borderColor || theme.palette.text.primary}
         >
@@ -69,6 +69,7 @@ const OptionsButton = ({
               mt: "8px", // gap between select and dropdown
               borderRadius: "8px",
               padding: "12px 20px",
+              bgcolor: theme.palette.primary.contrastText,
             },
           },
         }}

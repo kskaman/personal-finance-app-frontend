@@ -84,7 +84,11 @@ const TransactionsOverview = () => {
               >
                 {getInitials(transaction.name)}
               </Avatar>
-              <Typography fontSize="14px" fontWeight="bold">
+              <Typography
+                fontSize="14px"
+                fontWeight="bold"
+                color={theme.palette.primary.main}
+              >
                 {transaction.name}
               </Typography>
 
@@ -99,7 +103,10 @@ const TransactionsOverview = () => {
                     fontWeight="bold"
                     color={theme.palette.secondary.main}
                   >
-                    +{`${currencySymbol}${formatNumber(transaction.amount)}`}
+                    +
+                    {`${currencySymbol}${formatNumber(
+                      Math.abs(transaction.amount)
+                    )}`}
                   </Typography>
                 ) : (
                   <Typography
@@ -107,7 +114,10 @@ const TransactionsOverview = () => {
                     fontWeight="bold"
                     color={theme.palette.primary.main}
                   >
-                    -{`${currencySymbol}${formatNumber(transaction.amount)}`}
+                    -
+                    {`${currencySymbol}${formatNumber(
+                      Math.abs(transaction.amount)
+                    )}`}
                   </Typography>
                 )}
                 <Typography fontSize="12px" color={theme.palette.primary.light}>

@@ -60,7 +60,7 @@ const PotItem = ({
           backgroundColor={theme.palette.background.default}
           onClick={setPotAddMoneyModalOpen}
           hoverBgColor="inherit"
-          hoverColor="inherit"
+          hoverColor={theme.palette.primary.main}
         >
           <Typography fontSize="14px" fontWeight="bold" noWrap>
             + Add Money
@@ -73,7 +73,7 @@ const PotItem = ({
           backgroundColor={theme.palette.background.default}
           onClick={setPotWithdrawMoneyModalOpen}
           hoverBgColor="inherit"
-          hoverColor="inherit"
+          hoverColor={theme.palette.primary.main}
         >
           <Typography fontSize="14px" fontWeight="bold" noWrap>
             Withdraw

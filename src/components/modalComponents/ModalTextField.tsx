@@ -55,6 +55,9 @@ const ModalTextField = ({
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: theme.palette.primary.main,
             },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.primary.main,
+            },
           },
           "& .MuiOutlinedInput-notchedOutline": {
             borderRadius: "8px",
@@ -76,6 +79,10 @@ const ModalTextField = ({
                 </InputAdornment>
               ),
             }),
+            style: {
+              caretColor: theme.palette.primary.main, // explicitly set caret color
+              color: theme.palette.primary.main, // ensure text color is visible
+            },
           },
           ...(maxLength ? { maxLength } : {}),
         }}
