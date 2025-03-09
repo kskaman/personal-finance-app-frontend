@@ -10,6 +10,7 @@ import SettingsOptionGroup from "../components/settingsComponents/SettingsOption
 import useParentWidth from "../customHooks/useParentWidth";
 import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
+import CategorySettings from "../components/settingsComponents/CategorySettings";
 
 const fontOptions: SettingsRadioOption[] = [
   {
@@ -117,6 +118,60 @@ const currencyOptions: SettingsRadioOption[] = [
       </Typography>
     ),
   },
+  {
+    value: "₹",
+    symbol: (
+      <Typography color={theme.palette.primary.main} fontSize="14px">
+        ₹
+      </Typography>
+    ),
+    label: (
+      <Typography fontSize="14px" color={theme.palette.primary.main}>
+        Indian Rupees
+      </Typography>
+    ),
+  },
+
+  // ---- ADDED BELOW ----
+  {
+    value: "£",
+    symbol: (
+      <Typography color={theme.palette.primary.main} fontSize="14px">
+        £
+      </Typography>
+    ),
+    label: (
+      <Typography fontSize="14px" color={theme.palette.primary.main}>
+        British Pound Sterling
+      </Typography>
+    ),
+  },
+  {
+    value: "A$",
+    symbol: (
+      <Typography color={theme.palette.primary.main} fontSize="14px">
+        A$
+      </Typography>
+    ),
+    label: (
+      <Typography fontSize="14px" color={theme.palette.primary.main}>
+        Australian Dollar
+      </Typography>
+    ),
+  },
+  {
+    value: "¥",
+    symbol: (
+      <Typography color={theme.palette.primary.main} fontSize="14px">
+        ¥
+      </Typography>
+    ),
+    label: (
+      <Typography fontSize="14px" color={theme.palette.primary.main}>
+        Chinese Yuan
+      </Typography>
+    ),
+  },
 ];
 
 const SettingsPage = () => {
@@ -186,7 +241,7 @@ const SettingsPage = () => {
             </SubContainer>
             <SubContainer>
               <SettingsOptionGroup
-                heading="Currency Options"
+                heading="Currency Symbol"
                 options={currencyOptions}
                 selectedValue={selectedCurrency}
                 onChange={(e) =>
@@ -195,6 +250,9 @@ const SettingsPage = () => {
                 parentWidth={parentWidth}
               />
             </SubContainer>
+
+            {/* Category Option container */}
+            <CategorySettings parentWidth={parentWidth} />
           </Stack>
         </Stack>
       </PageDiv>

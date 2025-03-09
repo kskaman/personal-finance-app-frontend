@@ -50,10 +50,11 @@ export interface MarkerTheme {
 }
 
 export interface Category {
+    id: string;
     name: string;
-    id: number;
     usedInBudgets: boolean;
-}
+    type: "standard" | "custom";
+  }
 
 export interface Pot {
     name: string;

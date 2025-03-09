@@ -658,52 +658,63 @@
   "categories": [
     {
       "name": "General",
-      "id": 1,
+      "id": "general",
+      "type": "standard",
       "usedInBudgets": false
     },
     {
       "name": "Dining Out",
-      "id": 2,
+      "id": "diningOut",
+      "type": "standard",
       "usedInBudgets": true
     },
     {
       "name": "Groceries",
-      "id": 3,
+      "id": "groceries",
+      "type": "standard",
       "usedInBudgets": false
     },
     {
       "name": "Entertainment",
-      "id": 4,
+      "id": "entertainment",
+      
+      "type": "standard",
       "usedInBudgets": true
     },
     {
       "name": "Transportation",
-      "id": 5,
+      "id": "transportation",
+      "type": "standard",
       "usedInBudgets": false
     },
     {
       "name": "Lifestyle",
-      "id": 6,
+      "id": "lifestyle",
+      "type": "standard",
       "usedInBudgets": false
     },
     {
       "name": "Personal Care",
-      "id": 7,
+      "id": "personalCare",
+      "type": "standard",
       "usedInBudgets": true
     },
     {
       "name": "Education",
-      "id": 8,
+      "id": "education",
+      "type": "standard",
       "usedInBudgets": false
     },
     {
       "name": "Bills",
-      "id": 9,
+      "id": "bills",
+      "type": "standard",
       "usedInBudgets": true
     },
     {
       "name": "Shopping",
-      "id": 10,
+      "id": "shopping",
+      "type": "standard",
       "usedInBudgets": false
     }
   ],

@@ -1,4 +1,4 @@
-const DueIcon = ({ color }: { color: string }) => {
+const DueIcon = () => {
   return (
     <svg
       fill="none"

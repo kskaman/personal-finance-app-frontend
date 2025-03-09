@@ -7,6 +7,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import { SettingsRadioOption } from "../../types/settingsData";
 import theme from "../../theme/theme";
 import { MD_BREAK } from "../../data/widthConstants";
@@ -28,6 +29,9 @@ const SettingsOptionGroup = ({
   parentWidth,
 }: SettingOptionGroupProp) => {
   const isParentWidth = parentWidth < MD_BREAK;
+  const gridTemplateColumns = isParentWidth
+    ? "1fr"
+    : "repeat(auto-fit, minmax(250px, 1fr))";
   return (
     <Stack gap="20px">
       <Typography
@@ -42,56 +46,61 @@ const SettingsOptionGroup = ({
           value={selectedValue}
           onChange={onChange}
           sx={{
-            display: "flex",
-            flexDirection: isParentWidth ? "column" : "row",
+            display: "grid",
+            gridTemplateColumns,
             gap: "8px",
           }}
         >
           {options.map((option) => (
-            <Stack
+            <Grid
               key={option.value}
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
               onClick={() => {
                 onChange({
                   target: { value: option.value },
                 } as React.ChangeEvent<HTMLInputElement>);
               }}
-              bgcolor={
-                selectedValue === option.value
-                  ? theme.palette.background.default
-                  : theme.palette.text.primary
-              }
-              borderRadius="8px"
-              padding={1}
-              flex={1}
-              sx={{
-                cursor: "pointer",
-                "&:hover": {
-                  bgcolor: lighten(theme.palette.background.default, 0.6),
-                },
-              }}
+              size={4}
             >
-              <Stack direction="row" gap={1} alignItems="center">
-                <Stack
-                  bgcolor={theme.palette.primary.contrastText}
-                  height="32px"
-                  width="32px"
-                  alignItems="center"
-                  justifyContent="center"
-                  borderRadius="8px"
-                >
-                  {option.symbol}
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                width={"100%"}
+                bgcolor={
+                  selectedValue === option.value
+                    ? theme.palette.background.default
+                    : theme.palette.text.primary
+                }
+                borderRadius="8px"
+                padding={1}
+                flex={1}
+                sx={{
+                  cursor: "pointer",
+                  "&:hover": {
+                    bgcolor: lighten(theme.palette.background.default, 0.6),
+                  },
+                }}
+              >
+                <Stack direction="row" gap={1} alignItems="center">
+                  <Stack
+                    bgcolor={theme.palette.primary.contrastText}
+                    height="32px"
+                    width="32px"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius="8px"
+                  >
+                    {option.symbol}
+                  </Stack>
+                  {option.label}
                 </Stack>
-                {option.label}
+                <FormControlLabel
+                  value={option.value}
+                  control={<Radio disableRipple />}
+                  label=""
+                />
               </Stack>
-              <FormControlLabel
-                value={option.value}
-                control={<Radio disableRipple />}
-                label=""
-              />
-            </Stack>
+            </Grid>
           ))}
         </RadioGroup>
       </FormControl>
