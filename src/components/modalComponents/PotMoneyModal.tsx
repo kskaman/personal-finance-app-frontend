@@ -225,12 +225,12 @@ const PotMoneyModal = ({
             <Stack direction="row" spacing={2} mt={1}>
               <Button
                 onClick={handleConfirm}
-                backgroundColor={theme.palette.primary.main}
+                backgroundColor={theme.palette.others.red}
                 width="100%"
                 height="53px"
                 color={theme.palette.text.primary}
                 hoverColor={theme.palette.text.primary}
-                hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+                hoverBgColor={hexToRGBA(theme.palette.others.red, 0.8)}
               >
                 <Typography fontSize="14px" fontWeight="bold">
                   Proceed

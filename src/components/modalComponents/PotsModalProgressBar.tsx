@@ -59,7 +59,7 @@ const PotsProgressBar = ({
 
   const singleBlackOnly = blackPercentage > 0 && changePercentage === 0;
 
-  const currencySymbol = useContext(SettingsContext);
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <Box

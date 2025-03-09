@@ -74,7 +74,10 @@ const BudgetTransactionsModal = ({
                       fontWeight="bold"
                       color={theme.palette.secondary.main}
                     >
-                      +{`${currencySymbol}${formatNumber(transaction.amount)}`}
+                      +
+                      {`${currencySymbol}${formatNumber(
+                        Math.abs(transaction.amount)
+                      )}`}
                     </Typography>
                   ) : (
                     <Typography
@@ -82,7 +85,10 @@ const BudgetTransactionsModal = ({
                       fontWeight="bold"
                       color={theme.palette.primary.main}
                     >
-                      -{`${currencySymbol}${formatNumber(transaction.amount)}`}
+                      -
+                      {`${currencySymbol}${formatNumber(
+                        Math.abs(transaction.amount)
+                      )}`}
                     </Typography>
                   )}
                   <Typography

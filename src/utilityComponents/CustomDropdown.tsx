@@ -38,8 +38,12 @@ const CustomDropdown = ({
           display: "flex",
           alignItems: "center",
           borderRadius: "8px",
+          color: theme.palette.primary.main,
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: theme.palette.primary.main,
+            borderColor: "primary.main",
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "primary.main",
           },
         }}
         MenuProps={{
@@ -48,6 +52,7 @@ const CustomDropdown = ({
               minHeight: "auto",
               maxHeight: "250px",
               overflowY: "auto",
+              bgcolor: theme.palette.primary.contrastText,
               mt: "8px", // gap between select and dropdown
               borderRadius: "8px",
               padding: "12px 20px",

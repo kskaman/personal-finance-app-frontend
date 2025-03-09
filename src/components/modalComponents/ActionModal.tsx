@@ -42,7 +42,11 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
             overFlowY: "auto",
           }}
         >
-          <Typography fontSize="20px" fontWeight="bold">
+          <Typography
+            fontSize="20px"
+            fontWeight="bold"
+            color={theme.palette.primary.main}
+          >
             {heading}
           </Typography>
 

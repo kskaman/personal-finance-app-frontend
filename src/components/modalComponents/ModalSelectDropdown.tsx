@@ -64,13 +64,16 @@ const ModalSelectDropdown = ({
           height: "45px",
           display: "flex",
           alignItems: "center",
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          color: theme.palette.primary.main,
+
+          "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.primary.main,
           },
         }}
         MenuProps={{
           PaperProps: {
             sx: {
+              backgroundColor: theme.palette.primary.contrastText,
               minHeight: "auto",
               maxHeight: "250px",
               overflowY: "auto",

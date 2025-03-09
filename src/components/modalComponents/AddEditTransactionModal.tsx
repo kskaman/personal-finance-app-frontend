@@ -316,11 +316,21 @@ const AddEditTransactionModal = ({
                         value="oneTime"
                         control={<Radio />}
                         label="One-Time"
+                        sx={{
+                          "& .MuiFormControlLabel-label": {
+                            color: theme.palette.primary.main,
+                          },
+                        }}
                       />
                       <FormControlLabel
                         value="recurring"
                         control={<Radio />}
                         label="Recurring"
+                        sx={{
+                          "& .MuiFormControlLabel-label": {
+                            color: theme.palette.primary.main,
+                          },
+                        }}
                       />
                     </Stack>
                   </RadioGroup>
@@ -466,12 +476,22 @@ const AddEditTransactionModal = ({
                           value="paid"
                           control={<Radio />}
                           label="Paid"
+                          sx={{
+                            "& .MuiFormControlLabel-label": {
+                              color: theme.palette.primary.main,
+                            },
+                          }}
                         />
                         <FormControlLabel
                           value="received"
                           control={<Radio />}
                           label="Received"
                           disabled={watchPaymentType === "recurring"}
+                          sx={{
+                            "& .MuiFormControlLabel-label": {
+                              color: theme.palette.primary.main,
+                            },
+                          }}
                         />
                       </Stack>
                     </RadioGroup>
