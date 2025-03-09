@@ -1,7 +1,6 @@
-import { Stack, Typography } from "@mui/material";
+import { lighten, Stack, Typography } from "@mui/material";
 import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
-import { hexToRGBA } from "../../utils/utilityFunctions";
 import ActionModal from "./ActionModal";
 import { Controller, useForm } from "react-hook-form";
 import ModalTextField from "./ModalTextField";
@@ -230,7 +229,7 @@ const PotMoneyModal = ({
                 height="53px"
                 color={theme.palette.text.primary}
                 hoverColor={theme.palette.text.primary}
-                hoverBgColor={hexToRGBA(theme.palette.others.red, 0.8)}
+                hoverBgColor={lighten(theme.palette.others.red, 0.2)}
               >
                 <Typography fontSize="14px" fontWeight="bold">
                   Proceed
@@ -260,7 +259,7 @@ const PotMoneyModal = ({
               onClick={() => {}}
               color={theme.palette.text.primary}
               hoverColor={theme.palette.text.primary}
-              hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+              hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
             >
               <Typography fontSize="14px" fontWeight="bold">
                 {`Confirm ${type === "addMoney" ? "Addition" : "Withdrawal"}`}

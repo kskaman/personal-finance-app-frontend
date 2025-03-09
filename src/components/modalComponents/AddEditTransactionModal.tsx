@@ -4,6 +4,7 @@ import {
   Box,
   FormControl,
   FormControlLabel,
+  lighten,
   Radio,
   RadioGroup,
   Stack,
@@ -16,7 +17,6 @@ import ModalSelectDropdown from "./ModalSelectDropdown";
 import theme from "../../theme/theme";
 import ModalTextField from "./ModalTextField";
 import Button from "../../utilityComponents/Button";
-import { hexToRGBA } from "../../utils/utilityFunctions";
 import { categories } from "../../data/categories";
 
 // Interfaces and Props
@@ -537,7 +537,7 @@ const AddEditTransactionModal = ({
                   height="53px"
                   color={theme.palette.text.primary}
                   hoverColor={theme.palette.text.primary}
-                  hoverBgColor={hexToRGBA(theme.palette.others.red, 0.8)}
+                  hoverBgColor={lighten(theme.palette.others.red, 0.2)}
                 >
                   <Typography fontSize="14px" fontWeight="bold">
                     Proceed
@@ -568,7 +568,7 @@ const AddEditTransactionModal = ({
               onClick={() => {}}
               color={theme.palette.text.primary}
               hoverColor={theme.palette.text.primary}
-              hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+              hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
             >
               <Typography fontSize="14px" fontWeight="bold">
                 {txnData ? "Save Changes" : "Confirm Transaction"}

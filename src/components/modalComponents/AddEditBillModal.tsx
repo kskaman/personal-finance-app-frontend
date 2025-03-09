@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Stack, Typography } from "@mui/material";
+import { lighten, Stack, Typography } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ActionModal from "./ActionModal";
@@ -8,7 +8,6 @@ import ModalTextField from "./ModalTextField";
 import ModalSelectDropdown from "./ModalSelectDropdown";
 import Button from "../../utilityComponents/Button";
 import theme from "../../theme/theme";
-import { hexToRGBA } from "../../utils/utilityFunctions";
 import { categories } from "../../data/categories";
 import { dateOptions } from "../../data/dates";
 
@@ -171,7 +170,7 @@ const AddEditBillModal = ({
             backgroundColor={theme.palette.primary.main}
             color={theme.palette.text.primary}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
             onClick={() => {}}
           >
             <Typography fontSize="14px" fontWeight="bold">

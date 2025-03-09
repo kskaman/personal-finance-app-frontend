@@ -98,10 +98,9 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
           // pass the signal to axios
           signal: controller.signal,
         });
-
+        //setData(response.data);
         // Shift the data if needed
         const shiftedData = shiftDatesIfNeeded(response.data);
-
         setData(shiftedData);
         setLoading(false);
       } catch (error) {

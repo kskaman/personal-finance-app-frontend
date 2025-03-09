@@ -1,10 +1,10 @@
 import { useCallback, useEffect } from "react";
 import ActionModal from "./ActionModal";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, lighten, Stack, Typography } from "@mui/material";
 import theme from "../../theme/theme";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { formatDecimalNumber, hexToRGBA } from "../../utils/utilityFunctions";
+import { formatDecimalNumber } from "../../utils/utilityFunctions";
 import ModalTextField from "./ModalTextField";
 import Button from "../../utilityComponents/Button";
 import ModalSelectDropdown from "./ModalSelectDropdown";
@@ -214,7 +214,7 @@ const AddEditPotModal = ({
             onClick={() => {}}
             color={theme.palette.text.primary}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Save Changes

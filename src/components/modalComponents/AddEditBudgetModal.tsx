@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useMemo } from "react";
-import { Box, Typography, Stack } from "@mui/material";
+import { Box, Typography, Stack, lighten } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -8,7 +8,7 @@ import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
 import ModalSelectDropdown from "./ModalSelectDropdown";
 import ModalTextField from "./ModalTextField";
-import { formatDecimalNumber, hexToRGBA } from "../../utils/utilityFunctions";
+import { formatDecimalNumber } from "../../utils/utilityFunctions";
 
 // Types & Interfaces
 interface AddEditBudgetModalProps {
@@ -233,7 +233,7 @@ const AddEditBudgetModal = ({
             onClick={() => {}}
             color={theme.palette.text.primary}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Save Changes

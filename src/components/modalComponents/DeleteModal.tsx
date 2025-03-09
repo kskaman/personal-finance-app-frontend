@@ -1,8 +1,8 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, lighten, Stack, Typography } from "@mui/material";
 import ActionModal from "./ActionModal";
 import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
-import { capitalizeSentence, hexToRGBA } from "../../utils/utilityFunctions";
+import { capitalizeSentence } from "../../utils/utilityFunctions";
 
 interface Props {
   open: boolean;
@@ -53,7 +53,7 @@ const DeleteModal = ({
               onClose();
             }}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.others.red, 0.8)}
+            hoverBgColor={lighten(theme.palette.others.red, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Yes, Confirm Delete
