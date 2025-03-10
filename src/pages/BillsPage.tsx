@@ -148,7 +148,7 @@ const BillsPage = () => {
     );
   };
 
-  if (BillsPage.length === 0) {
+  if (filteredBills.length === 0) {
     return (
       <>
         <EmptyStatePage
