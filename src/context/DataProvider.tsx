@@ -154,7 +154,7 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
           height: "100vh",
         }}
       >
-        Error: No data available.
+        Loading Data...
       </div>
     );
   }

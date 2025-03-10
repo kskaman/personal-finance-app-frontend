@@ -180,13 +180,14 @@ const CategorySettings = ({ parentWidth }: CategorySettingsProps) => {
                 {category.name}
               </Typography>
               {category.type === "custom" && (
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" gap={"4px"}>
                   <Button
                     color={`${theme.palette.primary.main}`}
                     onClick={() => {
                       setSelectedCategory(category);
                       openAddEditModal();
                     }}
+                    padding="4px"
                     hoverColor={`${theme.palette.primary.main}`}
                     hoverBgColor={`${theme.palette.primary.contrastText}`}
                     backgroundColor={theme.palette.primary.contrastText}
@@ -199,6 +200,7 @@ const CategorySettings = ({ parentWidth }: CategorySettingsProps) => {
                       setSelectedCategory(category);
                       openDeleteModal();
                     }}
+                    padding="4px"
                     hoverColor={`${theme.palette.primary.main}`}
                     hoverBgColor={`${theme.palette.primary.contrastText}`}
                     backgroundColor={theme.palette.primary.contrastText}

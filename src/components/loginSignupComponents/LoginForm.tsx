@@ -1,11 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Stack, Typography } from "@mui/material";
+import { lighten, Stack, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
 import theme from "../../theme/theme";
-import { hexToRGBA } from "../../utils/utilityFunctions";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { User } from "../../types/User";
@@ -97,6 +96,7 @@ const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
                 error={error}
                 label="Email"
                 placeholder=""
+                adornmentTextFlag={false}
               />
             )}
           />
@@ -116,6 +116,7 @@ const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
                 error={error}
                 label="Password"
                 placeholder=""
+                adornmentTextFlag={false}
               />
             )}
           />
@@ -127,7 +128,7 @@ const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
             onClick={() => {}}
             color={theme.palette.text.primary}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Login

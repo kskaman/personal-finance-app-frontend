@@ -74,7 +74,7 @@ const fontOptions: SettingsRadioOption[] = [
     ),
     label: (
       <Typography
-        fontFamily={"public-sans"}
+        fontFamily="public-sans"
         fontSize="14px"
         color={theme.palette.primary.main}
       >
@@ -137,8 +137,6 @@ const currencyOptions: SettingsRadioOption[] = [
       </Typography>
     ),
   },
-
-  // ---- ADDED BELOW ----
   {
     value: "£",
     symbol: (
@@ -191,7 +189,7 @@ const SettingsPage = () => {
     setDisplayedModules,
   } = useContext(SettingsContext);
 
-  // Handler to toggle the "using" property for a given module
+  // Handler to toggle the "using" property for a given module.
   const handleModuleToggle = (moduleKey: keyof DisplayedModules) => {
     setDisplayedModules((prev: DisplayedModules) => ({
       ...prev,
@@ -200,6 +198,12 @@ const SettingsPage = () => {
         using: !prev[moduleKey].using,
       },
     }));
+  };
+
+  // Logout handler: remove token and navigate to login.
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
+    window.location.reload();
   };
 
   return (
@@ -223,13 +227,12 @@ const SettingsPage = () => {
               padding="16px"
               backgroundColor={theme.palette.primary.main}
               color={theme.palette.text.primary}
-              onClick={() => console.log("clicked logOut")}
+              onClick={handleLogout}
               hoverColor={theme.palette.text.primary}
               hoverBgColor={theme.palette.primary.light}
             >
               <Stack direction="row" gap={1} alignItems="center">
                 <Box
-                  className="iconClass"
                   sx={{
                     display: "flex",
                     alignItems: "center",

@@ -1,12 +1,11 @@
 // SignupForm.tsx
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Stack, Typography } from "@mui/material";
+import { lighten, Stack, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
 import theme from "../../theme/theme";
-import { hexToRGBA } from "../../utils/utilityFunctions";
 import { useState } from "react";
 
 interface FormValues {
@@ -76,6 +75,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
                 error={error}
                 label="Name"
                 placeholder=""
+                adornmentTextFlag={false}
               />
             )}
           />
@@ -96,6 +96,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
                 error={error}
                 label="Email"
                 placeholder=""
+                adornmentTextFlag={false}
               />
             )}
           />
@@ -116,6 +117,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
                 error={error}
                 label="Create Password"
                 placeholder=""
+                adornmentTextFlag={false}
               />
             )}
           />
@@ -128,7 +130,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
             onClick={() => {}}
             color={theme.palette.text.primary}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Create Account
