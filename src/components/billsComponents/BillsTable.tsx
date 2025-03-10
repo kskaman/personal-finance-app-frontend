@@ -20,6 +20,8 @@ import PaidIcon from "../../Icons/PaidIcon";
 import DueIcon from "../../Icons/DueIcon";
 import OptionsButton from "../modalComponents/OptionsButton";
 import { MD_SM_BREAK } from "../../data/widthConstants";
+import { useContext } from "react";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const getBillStatus = (lastPaid: string, dueDate: string) => {
   let status = "unpaid";
@@ -36,10 +38,9 @@ const getBillStatus = (lastPaid: string, dueDate: string) => {
     status = "paid";
   } else {
     const diffDays =
-      dueDateObj &&
-      Math.ceil((dueDateObj.getTime() - now.getTime()) / (1000 * 3600 * 24));
-    const isDueSoon = dueDateObj && diffDays && diffDays >= 0 && diffDays <= 3;
-    const isDue = dueDateObj && diffDays && diffDays < 0;
+      dueDateObj && (dueDateObj.getTime() - now.getTime()) / (1000 * 3600 * 24);
+    const isDueSoon = dueDateObj && diffDays && diffDays > 0 && diffDays <= 3;
+    const isDue = dueDateObj && diffDays && diffDays <= 0;
     if (isDueSoon) status = "dueSoon";
     if (isDue) status = "due";
   }
@@ -49,11 +50,17 @@ const getBillStatus = (lastPaid: string, dueDate: string) => {
 const BillsTable = ({
   bills,
   parentWidth,
+  setDeleteModalOpen,
+  setEditModalOpen,
 }: {
   bills: RecurringBill[];
   parentWidth: number;
+  setDeleteModalOpen: (recurringBill: RecurringBill) => void;
+  setEditModalOpen: (recurringBill: RecurringBill) => void;
 }) => {
   const isParentWidth = parentWidth < MD_SM_BREAK;
+
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <Table
@@ -158,8 +165,12 @@ const BillsTable = ({
                   </Box>
                   <OptionsButton
                     type="bill"
-                    onEdit={() => console.log("Edit Bill")}
-                    onDelete={() => console.log("Delete Bill")}
+                    onEdit={() => {
+                      setEditModalOpen(bill);
+                    }}
+                    onDelete={() => {
+                      setDeleteModalOpen(bill);
+                    }}
                   />
                 </Stack>
 
@@ -205,7 +216,8 @@ const BillsTable = ({
                         : theme.palette.primary.main
                     }
                   >
-                    ${formatNumber(Math.abs(bill.amount))}
+                    {currencySymbol}
+                    {formatNumber(Math.abs(bill.amount))}
                   </Typography>
                 </Stack>
               </TableCell>
@@ -287,7 +299,8 @@ const BillsTable = ({
                   fontWeight: "bold",
                 }}
               >
-                ${formatNumber(Math.abs(bill.amount))}
+                {currencySymbol}
+                {formatNumber(Math.abs(bill.amount))}
               </TableCell>
 
               <TableCell
@@ -303,8 +316,12 @@ const BillsTable = ({
                 >
                   <OptionsButton
                     type="bill"
-                    onEdit={() => console.log("Edit Bill")}
-                    onDelete={() => console.log("Delete Bill")}
+                    onEdit={() => {
+                      setEditModalOpen(bill);
+                    }}
+                    onDelete={() => {
+                      setDeleteModalOpen(bill);
+                    }}
                   />
                 </Stack>
               </TableCell>

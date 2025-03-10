@@ -1,6 +1,7 @@
-import React from "react";
 import { TextField, InputAdornment, Typography, Box } from "@mui/material";
 import theme from "../../theme/theme";
+import { useContext } from "react";
+import { SettingsContext } from "../../context/SettingsContext";
 
 interface CustomTextFieldProps {
   value: string;
@@ -9,11 +10,12 @@ interface CustomTextFieldProps {
   error?: { message?: string };
   label: string;
   placeholder?: string;
-  adornmentText?: string | null;
+  adornmentTextFlag?: boolean;
   maxLength?: number;
+  isDisabled?: boolean;
 }
 
-const ModalTextField: React.FC<CustomTextFieldProps> = ({
+const ModalTextField = ({
   value,
   onChange,
   onBlur,
@@ -21,8 +23,11 @@ const ModalTextField: React.FC<CustomTextFieldProps> = ({
   label,
   maxLength,
   placeholder = "",
-  adornmentText = null,
-}) => {
+  adornmentTextFlag = true,
+  isDisabled = false,
+}: CustomTextFieldProps) => {
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
+
   return (
     <Box>
       <Typography
@@ -34,6 +39,7 @@ const ModalTextField: React.FC<CustomTextFieldProps> = ({
         {label}
       </Typography>
       <TextField
+        disabled={isDisabled}
         value={value}
         onChange={onChange}
         onBlur={onBlur}
@@ -49,6 +55,9 @@ const ModalTextField: React.FC<CustomTextFieldProps> = ({
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: theme.palette.primary.main,
             },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.primary.main,
+            },
           },
           "& .MuiOutlinedInput-notchedOutline": {
             borderRadius: "8px",
@@ -58,20 +67,24 @@ const ModalTextField: React.FC<CustomTextFieldProps> = ({
         slotProps={{
           input: {
             autoComplete: "off",
-            ...(adornmentText && {
+            ...(adornmentTextFlag && {
               startAdornment: (
                 <InputAdornment position="start">
                   <Typography
                     color={theme.palette.primary.light}
                     fontSize="14px"
                   >
-                    {adornmentText}
+                    {currencySymbol}
                   </Typography>
                 </InputAdornment>
               ),
             }),
+            style: {
+              caretColor: theme.palette.primary.main, // explicitly set caret color
+              color: theme.palette.primary.main, // ensure text color is visible
+            },
           },
-          ...(maxLength ? { maxLength } : { maxLength }),
+          ...(maxLength ? { maxLength } : {}),
         }}
       />
     </Box>

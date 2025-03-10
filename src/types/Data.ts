@@ -1,3 +1,5 @@
+import { Currencies, DisplayedModules, Fonts } from "./settingsData";
+
 export interface Balance {
     current: number;
     income: number;
@@ -13,7 +15,7 @@ export interface Transaction {
     theme: string;
     amount: number;
     recurring: boolean;
-    recurringId?: true;
+    recurringId?: string;
 }
 
 export interface RecurringBill {
@@ -50,10 +52,12 @@ export interface MarkerTheme {
 }
 
 export interface Category {
+
     name: string;
     id: string;
     usedInBudgets: boolean;
-}
+    type: "standard" | "custom";
+  }
 
 export interface Pot {
     name: string;
@@ -61,10 +65,17 @@ export interface Pot {
     total: number;
     theme: string;
 }
+
+export interface Settings {
+    font: Fonts;
+    currency: Currencies;
+    displayedModules: DisplayedModules;
+  }
   
 export interface DataType {
     userId: string;
     dataId: string;
+    settings: Settings;
     balance: Balance;
     transactions: Transaction[];
     budgets: Budget[];

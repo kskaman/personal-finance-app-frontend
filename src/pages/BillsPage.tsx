@@ -3,17 +3,29 @@ import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import { useContext, useState } from "react";
-import { RecurringDataContext } from "../context/RecurringContext";
+import {
+  RecurringActionContext,
+  RecurringDataContext,
+} from "../context/RecurringContext";
 import Total from "../components/billsComponents/Total";
 import Summary from "../components/billsComponents/Summary";
 import BillsTable from "../components/billsComponents/BillsTable";
 import SubContainer from "../utilityComponents/SubContainer";
 import Filter from "../utilityComponents/Filter";
-import { RecurringBill } from "../types/Data";
+import { RecurringBill, Transaction } from "../types/Data";
 import useParentWidth from "../customHooks/useParentWidth";
 import { SM_BREAK, XL_BREAK } from "../data/widthConstants";
+import DeleteModal from "../components/modalComponents/DeleteModal";
+import useModal from "../customHooks/useModal";
+import AddEditBillModal, {
+  BillFormValues,
+} from "../components/modalComponents/AddEditBillModal";
+import Button from "../utilityComponents/Button";
+import { v4 as uuidv4 } from "uuid";
+import { getRandomColor } from "../utils/utilityFunctions";
+import { BalanceTransactionsActionContext } from "../context/BalanceTransactionsContext";
 
-// Function to filter & sort bills
+// Function to filter & sort bills.
 const filterAndSortBills = (
   bills: RecurringBill[],
   searchName: string,
@@ -49,6 +61,9 @@ const BillsPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
 
   const { recurringBills } = useContext(RecurringDataContext);
+  const { setRecurringBills } = useContext(RecurringActionContext);
+  // If bill changes should propagate to transactions:
+  const { setTransactions } = useContext(BalanceTransactionsActionContext);
 
   const [searchName, setSearchName] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("Latest");
@@ -58,21 +73,114 @@ const BillsPage = () => {
   );
   const filteredBills = filterAndSortBills(recurringBills, searchName, sortBy);
 
+  // Modal management hooks.
+  const {
+    isOpen: isDeleteModalOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
+
+  const {
+    isOpen: isEditModalOpen,
+    openModal: openEditModal,
+    closeModal: closeEditModal,
+  } = useModal();
+
+  const {
+    isOpen: isAddModalOpen,
+    openModal: openAddModal,
+    closeModal: closeAddModal,
+  } = useModal();
+
+  // Local state for the selected bill (for edit or delete)
+  const [selectedBill, setSelectedBill] = useState<RecurringBill | null>(null);
+
+  // Delete handler.
+  const handleBillDelete = (billId: string) => {
+    if (!billId) return;
+    const newBills = recurringBills.filter(
+      (bill: RecurringBill) => bill.id !== billId
+    );
+    setRecurringBills(newBills);
+    setSelectedBill(null);
+  };
+
+  // Function to add a new recurring bill.
+  const handleAddBill = (formData: BillFormValues) => {
+    const newBill: RecurringBill = {
+      id: uuidv4(),
+      name: formData.name,
+      category: formData.category,
+      amount: -parseFloat(formData.amount), // store as negative
+      dueDate: formData.dueDate,
+      recurring: true,
+      lastPaid: "", // No payments yet.
+      theme: getRandomColor(),
+    };
+    setRecurringBills((prevBills: RecurringBill[]) => [...prevBills, newBill]);
+  };
+
+  // Function to edit an existing recurring bill.
+  // Name and category changes will propagate across all related transactions,
+  // while changes to Amount and Due Date affect only future transactions.
+  const handleEditBill = (formData: BillFormValues, billId: string) => {
+    const updatedBills: RecurringBill[] = recurringBills.map((bill) =>
+      bill.id === billId
+        ? {
+            ...bill,
+            name: formData.name,
+            category: formData.category,
+            amount: -parseFloat(formData.amount),
+            dueDate: formData.dueDate,
+          }
+        : bill
+    );
+    setRecurringBills(updatedBills);
+
+    // Update all transactions linked to this recurring bill (for name and category changes).
+    setTransactions((prevTxns: Transaction[]) =>
+      prevTxns.map((txn) =>
+        txn.recurring && txn.recurringId === billId
+          ? { ...txn, name: formData.name, category: formData.category }
+          : txn
+      )
+    );
+  };
+
   return (
     <>
       <SetTitle title="Recurring Bills" />
       <Box ref={containerRef}>
         <PageDiv>
           <Stack direction="column" gap="32px">
-            <Typography
-              width="100%"
-              height="56px"
-              fontSize="32px"
-              fontWeight="bold"
-              color={theme.palette.primary.main}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
             >
-              Recurring Bills
-            </Typography>
+              <Typography
+                width="100%"
+                height="56px"
+                fontSize="32px"
+                fontWeight="bold"
+                color={theme.palette.primary.main}
+              >
+                Recurring Bills
+              </Typography>
+              <Button
+                height="53px"
+                padding="16px"
+                backgroundColor={theme.palette.primary.main}
+                color={theme.palette.text.primary}
+                onClick={openAddModal}
+                hoverColor={theme.palette.text.primary}
+                hoverBgColor={theme.palette.primary.light}
+              >
+                <Typography noWrap fontSize="14px" fontWeight="bold">
+                  + Add New Bill
+                </Typography>
+              </Button>
+            </Stack>
             <Stack
               direction={parentWidth < XL_BREAK ? "column" : "row"}
               gap="24px"
@@ -102,12 +210,71 @@ const BillsPage = () => {
                     sortBy={sortBy}
                     setSortBy={setSortBy}
                   />
-                  <BillsTable parentWidth={parentWidth} bills={filteredBills} />
+                  <BillsTable
+                    parentWidth={parentWidth}
+                    bills={filteredBills}
+                    setDeleteModalOpen={(bill: RecurringBill) => {
+                      setSelectedBill(bill);
+                      openDeleteModal();
+                    }}
+                    setEditModalOpen={(bill: RecurringBill) => {
+                      setSelectedBill(bill);
+                      openEditModal();
+                    }}
+                  />
                 </Stack>
               </SubContainer>
             </Stack>
           </Stack>
         </PageDiv>
+
+        {/* Delete Modal */}
+        {selectedBill && isDeleteModalOpen && (
+          <DeleteModal
+            open={isDeleteModalOpen}
+            onClose={() => {
+              setSelectedBill(null);
+              closeDeleteModal();
+            }}
+            handleDelete={() => handleBillDelete(selectedBill.id)}
+            label={"Recurring Bill"}
+            type="bill"
+          />
+        )}
+
+        {/* Edit Bill Modal (AddEditBillModal in edit mode) */}
+        {selectedBill && isEditModalOpen && (
+          <AddEditBillModal
+            open={isEditModalOpen}
+            onClose={() => {
+              setSelectedBill(null);
+              closeEditModal();
+            }}
+            onSubmit={(formData: BillFormValues) => {
+              handleEditBill(formData, selectedBill.id);
+              closeEditModal();
+            }}
+            billData={{
+              id: selectedBill.id,
+              name: selectedBill.name,
+              category: selectedBill.category,
+              amount: Math.abs(selectedBill.amount),
+              dueDate: selectedBill.dueDate,
+            }}
+          />
+        )}
+
+        {/* Add Bill Modal (AddEditBillModal in add mode) */}
+        {isAddModalOpen && (
+          <AddEditBillModal
+            open={isAddModalOpen}
+            onClose={closeAddModal}
+            onSubmit={(formData: BillFormValues) => {
+              handleAddBill(formData);
+              closeAddModal();
+            }}
+          />
+        )}
       </Box>
     </>
   );

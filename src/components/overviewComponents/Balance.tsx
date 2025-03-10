@@ -5,9 +5,11 @@ import theme from "../../theme/theme";
 import { formatNumber } from "../../utils/utilityFunctions";
 import { useContext } from "react";
 import { BalanceTransactionsDataContext } from "../../context/BalanceTransactionsContext";
+import { SettingsContext } from "../../context/SettingsContext";
 
 const Balance = ({ isParentSm }: { isParentSm: boolean }) => {
   const balance = useContext(BalanceTransactionsDataContext).balance;
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <>
@@ -32,7 +34,7 @@ const Balance = ({ isParentSm }: { isParentSm: boolean }) => {
             Current Balance
           </Typography>
           <Typography fontSize="32px" color={theme.palette.text.primary}>
-            ${formatNumber(balance.current)}
+            {`${currencySymbol}${formatNumber(balance.current)}`}
           </Typography>
         </Stack>
         <Stack
@@ -48,7 +50,7 @@ const Balance = ({ isParentSm }: { isParentSm: boolean }) => {
             Income
           </Typography>
           <Typography fontSize="32px" color={theme.palette.primary.main}>
-            ${formatNumber(balance.income)}
+            {`${currencySymbol}${formatNumber(balance.income)}`}
           </Typography>
         </Stack>
         <Stack
@@ -64,7 +66,7 @@ const Balance = ({ isParentSm }: { isParentSm: boolean }) => {
             Expenses
           </Typography>
           <Typography fontSize="32px" color={theme.palette.primary.main}>
-            ${formatNumber(balance.expenses)}
+            {`${currencySymbol}${formatNumber(balance.expenses)}`}
           </Typography>
         </Stack>
       </Stack>

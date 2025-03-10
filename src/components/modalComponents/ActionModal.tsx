@@ -15,10 +15,12 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
     <Modal open={open} onClose={onClose}>
       <Stack
         gap="20px"
+        maxHeight="95vh"
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
+          overFlowY: "hidden",
           transform: "translate(-50%, -50%)",
           width: { xs: "90%", sm: "560px" },
           bgcolor: theme.palette.text.primary,
@@ -36,8 +38,15 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
           direction="row"
           justifyContent="space-between"
           alignItems="center"
+          sx={{
+            overFlowY: "auto",
+          }}
         >
-          <Typography fontSize="20px" fontWeight="bold">
+          <Typography
+            fontSize="20px"
+            fontWeight="bold"
+            color={theme.palette.primary.main}
+          >
             {heading}
           </Typography>
 

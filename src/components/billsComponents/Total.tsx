@@ -4,6 +4,8 @@ import theme from "../../theme/theme";
 import BillsIcon from "../../Icons/BillsIcon";
 import { formatNumber } from "../../utils/utilityFunctions";
 import { SM_BREAK } from "../../data/widthConstants";
+import { useContext } from "react";
+import { SettingsContext } from "../../context/SettingsContext";
 
 interface TotalProps {
   parentWidth: number;
@@ -11,6 +13,8 @@ interface TotalProps {
 }
 
 const Total = ({ parentWidth, totalBill }: TotalProps) => {
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
+
   return (
     <SubContainer
       direction={parentWidth < SM_BREAK ? "row" : "column"}
@@ -42,7 +46,7 @@ const Total = ({ parentWidth, totalBill }: TotalProps) => {
           fontSize="32px"
           fontWeight="bold"
         >
-          ${formatNumber(totalBill)}
+          {`${currencySymbol}${formatNumber(totalBill)}`}
         </Typography>
       </Box>
     </SubContainer>

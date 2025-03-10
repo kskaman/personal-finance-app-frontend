@@ -5,13 +5,15 @@ import {
   Stack,
   Typography,
   IconButton,
+  Box,
 } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import SearchInput from "./SearchInput";
 import CustomDropdown from "./CustomDropdown";
 import SearchIcon from "../Icons/SearchIcon";
 import FilterIcon from "../Icons/FilterIcon";
 import theme from "../theme/theme";
-import { MD_BREAK } from "../data/widthConstants";
+import { XL_BREAK, MD_BREAK, MD_SM_BREAK } from "../data/widthConstants";
 
 interface FilterProps {
   parentWidth: number;
@@ -21,6 +23,9 @@ interface FilterProps {
   setCategory?: React.Dispatch<React.SetStateAction<string>>;
   sortBy: string;
   setSortBy: React.Dispatch<React.SetStateAction<string>>;
+  selectedMonth?: string;
+  setSelectedMonth?: React.Dispatch<React.SetStateAction<string>>;
+  monthOptions?: string[];
 }
 
 const sortOptions = [
@@ -36,39 +41,39 @@ const FilterOption = ({
   label,
   options,
   value,
-  width,
-  justifyContent,
+  width = "50%",
   onChange,
 }: {
   label: string;
   options: string[];
   value: string;
-  width: string;
-  justifyContent?: string;
+  width?: string;
   onChange: (event: SelectChangeEvent) => void;
 }) => (
-  <Stack
-    width={width}
-    direction="row"
-    alignItems="center"
-    gap="8px"
-    justifyContent={justifyContent || "flex-start"}
-  >
-    <Typography
-      fontSize="14px"
-      color={theme.palette.primary.light}
-      whiteSpace="nowrap"
+  <Box width={width}>
+    <Stack
+      width="100%"
+      direction="row"
+      alignItems="center"
+      gap="8px"
+      justifyContent="space-between"
     >
-      {label}
-    </Typography>
-    <CustomDropdown
-      width="fit-content"
-      color={theme.palette.primary.main}
-      options={options}
-      value={value}
-      onChange={onChange}
-    />
-  </Stack>
+      <Typography
+        fontSize="14px"
+        color={theme.palette.primary.light}
+        whiteSpace="nowrap"
+      >
+        {label}
+      </Typography>
+      <CustomDropdown
+        width="80%"
+        color={theme.palette.primary.main}
+        options={options}
+        value={value}
+        onChange={onChange}
+      />
+    </Stack>
+  </Box>
 );
 
 const Filter = ({
@@ -79,80 +84,244 @@ const Filter = ({
   setCategory,
   sortBy,
   setSortBy,
+  selectedMonth,
+  setSelectedMonth,
+  monthOptions,
 }: FilterProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const isParentMd = parentWidth < MD_BREAK;
+  // Determine if extra filters (category and month) are provided.
+  // If not, then we treat this as a sort-only table.
+  const hasExtraFilters =
+    category !== undefined &&
+    setCategory !== undefined &&
+    selectedMonth !== undefined &&
+    setSelectedMonth !== undefined &&
+    monthOptions !== undefined;
 
-  return (
-    <>
-      <Stack
-        direction="row"
-        height="45px"
-        gap="24px"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <SearchInput
-          placeholder="Search Transaction"
-          value={searchName}
-          width={{ xs: "100%", sm: "375px" }}
-          Icon={SearchIcon}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchName(event.target.value)
-          }
-        />
-        {isParentMd ? (
-          <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
-            <FilterIcon color={theme.palette.primary.main} />
-          </IconButton>
-        ) : (
-          <Stack direction="row" gap="24px" alignItems="center">
+  // Prepend "All" to month options if provided
+  const monthDropdownOptions = monthOptions ? ["All", ...monthOptions] : [];
+
+  // Render extra filters (for tables with category and month)
+  const renderExtraFilters = () => {
+    if (parentWidth > XL_BREAK) {
+      return (
+        <Grid container spacing={2} justifyContent="space-between">
+          <Grid>
             <FilterOption
-              width="177px"
               label="Sort By"
               options={sortOptions}
               value={sortBy}
-              onChange={(event) => {
-                setSortBy(event.target.value);
-              }}
+              width="250px"
+              onChange={(event) => setSortBy(event.target.value)}
             />
-            {category && setCategory && (
-              <FilterOption
-                width="245px"
-                label="Category"
-                options={["All Transactions", ...categories]}
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-              />
-            )}
-          </Stack>
-        )}
-      </Stack>
-      {isFilterOpen && isParentMd && (
-        <Stack direction="column" gap="16px" marginTop="8px" width="100%">
+          </Grid>
+          <Grid>
+            <FilterOption
+              label="Category"
+              options={["All Transactions", ...categories]}
+              value={category!}
+              width="250px"
+              onChange={(event) => setCategory!(event.target.value)}
+            />
+          </Grid>
+          <Grid>
+            <FilterOption
+              label="Month"
+              options={monthDropdownOptions}
+              value={selectedMonth!}
+              width="250px"
+              onChange={(event) => setSelectedMonth!(event.target.value)}
+            />
+          </Grid>
+        </Grid>
+      );
+    } else if (parentWidth >= MD_SM_BREAK && parentWidth <= XL_BREAK) {
+      return (
+        <Grid container spacing={2}>
+          <Grid size={6}>
+            <FilterOption
+              label="Sort By"
+              options={sortOptions}
+              value={sortBy}
+              width="100%"
+              onChange={(event) => setSortBy(event.target.value)}
+            />
+          </Grid>
+          <Grid size={6}>
+            <FilterOption
+              label="Category"
+              options={["All Transactions", ...categories]}
+              value={category!}
+              width="100%"
+              onChange={(event) => setCategory!(event.target.value)}
+            />
+          </Grid>
+          <Grid size={6}>
+            <FilterOption
+              label="Month"
+              options={monthDropdownOptions}
+              value={selectedMonth!}
+              width="100%"
+              onChange={(event) => setSelectedMonth!(event.target.value)}
+            />
+          </Grid>
+        </Grid>
+      );
+    } else {
+      return (
+        <Stack direction="column" gap="16px">
           <FilterOption
-            width={"100%"}
             label="Sort By"
             options={sortOptions}
             value={sortBy}
-            justifyContent="space-between"
+            width="100%"
             onChange={(event) => setSortBy(event.target.value)}
           />
-          {category && setCategory && (
-            <FilterOption
-              width={"100%"}
-              label="Category"
-              options={["All Transactions", ...categories]}
-              value={category}
-              justifyContent="space-between"
-              onChange={(event) => setCategory(event.target.value)}
+          <FilterOption
+            label="Category"
+            options={["All Transactions", ...categories]}
+            value={category!}
+            width="100%"
+            onChange={(event) => setCategory!(event.target.value)}
+          />
+          <FilterOption
+            label="Month"
+            options={monthDropdownOptions}
+            value={selectedMonth!}
+            width="100%"
+            onChange={(event) => setSelectedMonth!(event.target.value)}
+          />
+        </Stack>
+      );
+    }
+  };
+
+  // Render layout for sort-only table (only sort filter provided)
+  const renderSortOnly = () => {
+    if (parentWidth >= MD_BREAK) {
+      return (
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <SearchInput
+            placeholder="Search Transaction"
+            value={searchName}
+            width={{ xs: "100%", sm: "375px" }}
+            Icon={SearchIcon}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchName(event.target.value)
+            }
+          />
+          <FilterOption
+            label="Sort By"
+            options={sortOptions}
+            value={sortBy}
+            width="250px"
+            onChange={(event) => setSortBy(event.target.value)}
+          />
+        </Stack>
+      );
+    } else {
+      return (
+        <Stack direction="column">
+          <Stack
+            direction="row"
+            height="45px"
+            gap="24px"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <SearchInput
+              placeholder="Search Transaction"
+              value={searchName}
+              width={{ xs: "100%", sm: "375px" }}
+              Icon={SearchIcon}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchName(event.target.value)
+              }
             />
+            <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+              <FilterIcon color={theme.palette.primary.main} />
+            </IconButton>
+          </Stack>
+          {isFilterOpen && (
+            <Stack direction="column" gap="16px" marginTop="24px" width="100%">
+              <FilterOption
+                label="Sort By"
+                options={sortOptions}
+                value={sortBy}
+                width="100%"
+                onChange={(event) => setSortBy(event.target.value)}
+              />
+            </Stack>
           )}
         </Stack>
-      )}
-    </>
-  );
+      );
+    }
+  };
+
+  // Main render branching based on table type:
+  if (hasExtraFilters) {
+    // This is the table with all three filters
+    if (parentWidth > 1350) {
+      // Show search input and filters inline
+      return (
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <SearchInput
+            placeholder="Search Transaction"
+            value={searchName}
+            width={{ xs: "100%", sm: "375px" }}
+            Icon={SearchIcon}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchName(event.target.value)
+            }
+          />
+          {renderExtraFilters()}
+        </Stack>
+      );
+    } else {
+      // Use toggle button to show/hide filters as in your current layout
+      return (
+        <Stack direction="column">
+          <Stack
+            direction="row"
+            height="45px"
+            gap="24px"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <SearchInput
+              placeholder="Search Transaction"
+              value={searchName}
+              width={{ xs: "100%", sm: "375px" }}
+              Icon={SearchIcon}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchName(event.target.value)
+              }
+            />
+            <IconButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+              <FilterIcon color={theme.palette.primary.main} />
+            </IconButton>
+          </Stack>
+          {isFilterOpen && (
+            <Stack direction="column" gap="16px" marginTop="24px" width="100%">
+              {renderExtraFilters()}
+            </Stack>
+          )}
+        </Stack>
+      );
+    }
+  } else {
+    // This is the sort-only table
+    return renderSortOnly();
+  }
 };
 
 export default Filter;

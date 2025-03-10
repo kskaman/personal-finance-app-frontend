@@ -1,4 +1,5 @@
 import { Box, Stack, Typography } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 import SetTitle from "../components/SetTitle";
 import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
@@ -6,57 +7,163 @@ import SubContainer from "../utilityComponents/SubContainer";
 import Filter from "../utilityComponents/Filter";
 import TransactionsTable from "../components/transactionsComponents/TransactionsTable";
 import PageNav from "../components/transactionsComponents/PageNav";
-import { useContext, useState } from "react";
-import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
-import { Transaction } from "../types/Data";
+import { useContext, useMemo, useState } from "react";
+import {
+  BalanceTransactionsActionContext,
+  BalanceTransactionsDataContext,
+} from "../context/BalanceTransactionsContext";
+import { RecurringBill, Transaction } from "../types/Data";
 import useParentWidth from "../customHooks/useParentWidth";
 import Button from "../utilityComponents/Button";
+import useModal from "../customHooks/useModal";
+import DeleteModal from "../components/modalComponents/DeleteModal";
+import {
+  RecurringActionContext,
+  RecurringDataContext,
+} from "../context/RecurringContext";
+import AddEditTransactionModal from "../components/modalComponents/AddEditTransactionModal";
+import {
+  convertDateToISOString,
+  formatDecimalNumber,
+  formatISODateToDDMMYYYY,
+  getRandomColor,
+} from "../utils/utilityFunctions";
+import { SettingsContext } from "../context/SettingsContext";
 
+// Interfaces and Props
+interface FormValues {
+  txnName: string;
+  category: string;
+  date: string;
+  amount: string;
+  paymentType: "oneTime" | "recurring";
+  paymentDirection: "paid" | "received";
+  recurringId?: string;
+  dueDate?: string;
+}
+
+// Helper function: generate month options from earliest transaction date until current month
+const getMonthYearOptions = (transactions: Transaction[]): string[] => {
+  if (transactions.length === 0) return [];
+  // Find the earliest transaction date
+  const dates = transactions.map((txn) => new Date(txn.date));
+  const earliest = new Date(Math.min(...dates.map((d) => d.getTime())));
+  const current = new Date();
+  const options = [];
+  const iterDate = new Date(earliest.getFullYear(), earliest.getMonth(), 1);
+  while (
+    iterDate.getFullYear() < current.getFullYear() ||
+    (iterDate.getFullYear() === current.getFullYear() &&
+      iterDate.getMonth() <= current.getMonth())
+  ) {
+    options.push(
+      iterDate.toLocaleString("default", { month: "long", year: "numeric" })
+    );
+    iterDate.setMonth(iterDate.getMonth() + 1);
+  }
+  return options.reverse();
+};
+
+// Helper function : filter transaction as per search, sort by , category and month
 const filterAndSortTransactions = (
   transactions: Transaction[],
   searchName: string,
   category: string,
-  sortBy: string
+  sortBy: string,
+  selectedMonth: string
 ): Transaction[] => {
   const filteredTx = transactions.filter((txn) => {
     const matchesSearch = searchName
       ? txn.name.toLowerCase().includes(searchName.toLowerCase().trim())
       : true;
-
     const matchesCategory =
       category === "All Transactions" || txn.category === category;
-
-    return matchesSearch && matchesCategory;
+    let matchesMonth = true;
+    if (selectedMonth && selectedMonth !== "All") {
+      const txnDate = new Date(txn.date);
+      const txnMonthYear = txnDate.toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      });
+      matchesMonth = txnMonthYear === selectedMonth;
+    }
+    return matchesSearch && matchesCategory && matchesMonth;
   });
 
   // Sorting Logic
   return filteredTx.sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+
     switch (sortBy) {
-      case "Latest":
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      case "Oldest":
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      case "Latest": {
+        // Primary sort: descending by date (so b - a)
+        const dateDiff = dateB - dateA;
+        if (dateDiff !== 0) {
+          return dateDiff;
+        }
+        // If dates tie, fallback to name A–Z
+        return a.name.localeCompare(b.name);
+      }
+
+      case "Oldest": {
+        // Primary sort: ascending by date (so a - b)
+        const dateDiff = dateA - dateB;
+        if (dateDiff !== 0) {
+          return dateDiff;
+        }
+        // If dates tie, fallback to name A–Z
+        return a.name.localeCompare(b.name);
+      }
+
       case "A to Z":
         return a.name.localeCompare(b.name);
+
       case "Z to A":
         return b.name.localeCompare(a.name);
+
       case "Highest":
         return a.amount - b.amount;
+
       case "Lowest":
         return b.amount - a.amount;
+
       default:
         return 0;
     }
   });
 };
 
+// Main Page component
 const TransactionsPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
 
   const [pageNum, setPageNum] = useState<number>(() => 1);
 
-  const transactions = useContext(BalanceTransactionsDataContext).transactions;
-  const numPages = Math.ceil(transactions.length / 10);
+  const { transactions, balance } = useContext(BalanceTransactionsDataContext);
+  const { setTransactions, setBalance } = useContext(
+    BalanceTransactionsActionContext
+  );
+
+  const recurringBills = useContext(RecurringDataContext).recurringBills;
+  const { setRecurringBills } = useContext(RecurringActionContext);
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
+
+  const [searchName, setSearchName] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("Latest");
+  const [category, setCategory] = useState<string>("All Transactions");
+
+  const [selectedMonth, setSelectedMonth] = useState<string>("All");
+
+  const filteredTx: Transaction[] = filterAndSortTransactions(
+    transactions,
+    searchName,
+    category,
+    sortBy,
+    selectedMonth
+  );
+
+  const numPages = Math.ceil(filteredTx.length / 10);
 
   const numbers = Array.from({ length: numPages }, (_, i) => i + 1);
 
@@ -66,19 +173,253 @@ const TransactionsPage = () => {
     }
   };
 
-  const [searchName, setSearchName] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("Latest");
-  const [category, setCategory] = useState<string>("All Transactions");
-
-  const filteredTx: Transaction[] = filterAndSortTransactions(
-    transactions,
-    searchName,
-    category,
-    sortBy
-  );
-
   const i = pageNum * 10;
-  const selectedTx = filteredTx.slice(i - 10, i);
+  const selectedTnxs = filteredTx.slice(i - 10, i);
+
+  // Modal management hooks
+  const {
+    isOpen: isDeleteModalOpen,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
+
+  const {
+    isOpen: isEditModalOpen,
+    openModal: openEditModal,
+    closeModal: closeEditModal,
+  } = useModal();
+
+  const {
+    isOpen: isAddModalOpen,
+    openModal: openAddModal,
+    closeModal: closeAddModal,
+  } = useModal();
+
+  const recurringOptions = recurringBills.map((bill: RecurringBill) => {
+    return {
+      value: `${bill.id}`,
+      label: `${bill.name} - ${currencySymbol}${Math.abs(bill.amount)}`,
+      dueDate: bill.dueDate,
+      category: bill.category,
+      name: bill.name,
+      amount: formatDecimalNumber(Math.abs(bill.amount)),
+    };
+  });
+
+  const [selectedTnx, setSelectedTnx] = useState<Transaction | null>(null);
+
+  // Handle transaction delete functionality
+  const handleDeleteTnx = () => {
+    if (selectedTnx === null) return;
+
+    // Remove the deleted transaction from the list.
+    const newTnxs = transactions.filter(
+      (tnx: Transaction) => tnx.id !== selectedTnx.id
+    );
+
+    const amount = selectedTnx.amount;
+    const isNegative = amount < 0;
+    setBalance({
+      ...balance,
+      current: isNegative ? balance.current + amount : balance.current - amount,
+      income: isNegative ? balance.income : balance.income - amount,
+      expenses: isNegative ? balance.expenses + amount : balance.expenses,
+    });
+
+    setTransactions(newTnxs);
+
+    // If the deleted transaction was recurring, update the recurring bill.
+    if (selectedTnx.recurring && selectedTnx.recurringId) {
+      // Use the updated transactions list for related transactions.
+      const relatedTxns = newTnxs.filter(
+        (txn) => txn.recurring && txn.recurringId === selectedTnx.recurringId
+      );
+
+      let updatedRecurringBills;
+      if (relatedTxns.length === 0) {
+        // If no related transactions remain, clear the lastPaid date.
+        updatedRecurringBills = recurringBills.map((bill) => {
+          if (bill.id === selectedTnx.recurringId) {
+            return { ...bill, lastPaid: "" };
+          }
+          return bill;
+        });
+      } else {
+        // Find the transaction with the latest date.
+        const latestTxn = relatedTxns.reduce((prev, current) =>
+          new Date(current.date) > new Date(prev.date) ? current : prev
+        );
+        updatedRecurringBills = recurringBills.map((bill) => {
+          if (bill.id === selectedTnx.recurringId) {
+            return { ...bill, lastPaid: latestTxn.date };
+          }
+          return bill;
+        });
+      }
+      setRecurringBills(updatedRecurringBills);
+    }
+  };
+
+  // Function to add a transaction.
+  const handleAddTransaction = (formData: FormValues) => {
+    let transaction: Transaction;
+    let billTheme = getRandomColor();
+    // Convert the provided form date (dd/mm/yyyy) to ISO string.
+    const isoDate = convertDateToISOString(formData.date);
+
+    if (formData.paymentType === "oneTime") {
+      // For one-time, use the entered payment direction and the provided date.
+      transaction = {
+        id: uuidv4(),
+        name: formData.txnName,
+        category: formData.category,
+        date: isoDate,
+        amount:
+          formData.paymentDirection === "paid"
+            ? -parseFloat(formData.amount)
+            : parseFloat(formData.amount),
+        recurring: false,
+        theme: billTheme,
+      };
+    } else {
+      // For recurring transactions, force paymentDirection to "paid"
+      let recurringId = formData.recurringId;
+      if (!recurringId || recurringId === "new") {
+        // Create new recurring bill if none exists or "new" was chosen.
+        const newBill: RecurringBill = {
+          id: uuidv4(),
+          name: formData.txnName,
+          category: formData.category,
+          amount: -parseFloat(formData.amount),
+          recurring: true,
+          lastPaid: isoDate,
+          dueDate: formData.dueDate!, // dueDate is required in recurring mode
+          theme: billTheme,
+        };
+        // Update recurring bills state: assume setRecurringBills adds the new bill.
+        setRecurringBills((prevBills: RecurringBill[]) => [
+          ...prevBills,
+          newBill,
+        ]);
+        recurringId = newBill.id;
+        billTheme = newBill.theme;
+      } else if (recurringId) {
+        const updatedBills: RecurringBill[] = recurringBills.map((bill) => {
+          if (bill.id === recurringId) {
+            billTheme = bill.theme;
+            return { ...bill, lastPaid: isoDate };
+          }
+          return bill;
+        });
+        setRecurringBills([...updatedBills]);
+      }
+      transaction = {
+        id: uuidv4(),
+        name: formData.txnName,
+        category: formData.category,
+        date: isoDate,
+        // Force amount to be negative for recurring payments (bills)
+        amount: -parseFloat(formData.amount),
+        recurring: true,
+        recurringId,
+        theme: billTheme,
+      };
+    }
+    // Update transactions state (prepend to the list)
+    setTransactions((prevTxns: Transaction[]) => [transaction, ...prevTxns]);
+  };
+
+  // Function to edit a transaction.
+  const handleEditTransaction = (formData: FormValues) => {
+    if (!selectedTnx) return; // safety check
+
+    // Convert the form date to ISO string.
+    const isoDate = convertDateToISOString(formData.date);
+
+    setTransactions((prevTxns: Transaction[]) =>
+      prevTxns.map((txn) => {
+        if (txn.id !== selectedTnx.id) return txn; // not the one being edited
+
+        // CASE 1: Editing a one-time transaction (or switching to one-time)
+        if (formData.paymentType === "oneTime") {
+          return {
+            ...txn,
+            name: formData.txnName,
+            category: formData.category,
+            date: isoDate,
+            amount:
+              formData.paymentDirection === "paid"
+                ? -parseFloat(formData.amount)
+                : parseFloat(formData.amount),
+            recurring: false,
+            recurringId: undefined, // clear recurring link
+            theme: txn.theme || getRandomColor(),
+          };
+        } else {
+          // CASE 2: Editing a recurring transaction
+          // Subcase a): If originally recurring, only update the instance date.
+          // Subcase b): If switching from one-time to recurring, follow the full recurring logic.
+          let recurringId = formData.recurringId;
+          let billTheme = getRandomColor();
+
+          if (selectedTnx.recurring) {
+            // Transaction was already recurring – update only the date.
+            return {
+              ...txn,
+              date: isoDate,
+            };
+          } else {
+            // Switching from one-time to recurring:
+            if (!recurringId || recurringId === "new") {
+              // Create new recurring bill.
+              const newBill: RecurringBill = {
+                id: uuidv4(),
+                name: formData.txnName,
+                category: formData.category,
+                amount: -parseFloat(formData.amount),
+                recurring: true,
+                lastPaid: isoDate,
+                dueDate: formData.dueDate!, // validated as present in recurring mode
+                theme: getRandomColor(),
+              };
+              setRecurringBills((prevBills: RecurringBill[]) => [
+                ...prevBills,
+                newBill,
+              ]);
+              recurringId = newBill.id;
+              billTheme = newBill.theme;
+            } else if (recurringId) {
+              const updatedBills: RecurringBill[] = recurringBills.map(
+                (bill) => {
+                  if (bill.id === recurringId) {
+                    billTheme = bill.theme;
+                    return { ...bill, lastPaid: isoDate };
+                  }
+                  return bill;
+                }
+              );
+              setRecurringBills([...updatedBills]);
+            }
+            return {
+              ...txn,
+              name: formData.txnName,
+              category: formData.category,
+              date: isoDate,
+              amount: -parseFloat(formData.amount),
+              recurring: true,
+              recurringId,
+              theme: billTheme,
+            };
+          }
+        }
+      })
+    );
+  };
+
+  const monthOptions = useMemo(
+    () => getMonthYearOptions(transactions),
+    [transactions]
+  );
 
   return (
     <>
@@ -101,7 +442,7 @@ const TransactionsPage = () => {
                 padding="16px"
                 backgroundColor={theme.palette.primary.main}
                 color={theme.palette.text.primary}
-                onClick={() => console.log("clicked Add New Transaction")}
+                onClick={openAddModal}
                 hoverColor={theme.palette.text.primary}
                 hoverBgColor={theme.palette.primary.light}
               >
@@ -119,9 +460,23 @@ const TransactionsPage = () => {
                 setCategory={setCategory}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+                monthOptions={monthOptions}
               />
 
-              <TransactionsTable txns={selectedTx} parentWidth={parentWidth} />
+              <TransactionsTable
+                txns={selectedTnxs}
+                parentWidth={parentWidth}
+                setDeleteModalOpen={(txn: Transaction) => {
+                  setSelectedTnx(txn);
+                  openDeleteModal();
+                }}
+                setEditModalOpen={(txn: Transaction) => {
+                  setSelectedTnx(txn);
+                  openEditModal();
+                }}
+              />
 
               <PageNav
                 numbers={numbers}
@@ -132,6 +487,57 @@ const TransactionsPage = () => {
             </SubContainer>
           </Stack>
         </PageDiv>
+
+        {selectedTnx && isDeleteModalOpen && (
+          <DeleteModal
+            open={isDeleteModalOpen}
+            onClose={() => {
+              setSelectedTnx(null);
+              closeDeleteModal();
+            }}
+            handleDelete={() => handleDeleteTnx()}
+            label="Transaction"
+            type="transaction"
+          />
+        )}
+
+        {isAddModalOpen && (
+          <AddEditTransactionModal
+            open={isAddModalOpen}
+            onClose={closeAddModal}
+            onSubmit={(formData: FormValues) => {
+              handleAddTransaction(formData);
+              closeAddModal();
+            }}
+            recurringOptions={recurringOptions}
+          />
+        )}
+
+        {selectedTnx && isEditModalOpen && (
+          <AddEditTransactionModal
+            open={isEditModalOpen}
+            onClose={() => {
+              setSelectedTnx(null);
+              closeEditModal();
+            }}
+            onSubmit={(formData: FormValues) => {
+              handleEditTransaction(formData);
+              closeEditModal();
+            }}
+            recurringOptions={recurringOptions}
+            txnData={{
+              txnName: selectedTnx.name,
+              category: selectedTnx.category,
+              date: formatISODateToDDMMYYYY(selectedTnx.date),
+              amount: formatDecimalNumber(
+                Math.abs(selectedTnx.amount)
+              ).toString(),
+              paymentDirection: selectedTnx.amount < 0 ? "paid" : "received",
+              paymentType: selectedTnx.recurring ? "recurring" : "oneTime",
+              recurringId: selectedTnx.recurringId || "",
+            }}
+          />
+        )}
       </Box>
     </>
   );

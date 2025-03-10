@@ -20,6 +20,8 @@ import { Budget, Transaction } from "../../types/Data";
 import OptionsButton from "../modalComponents/OptionsButton";
 import BudgetTransactionsModal from "../modalComponents/BudgetTransactionsModal";
 import useModal from "../../customHooks/useModal";
+import { SettingsContext } from "../../context/SettingsContext";
+import { useContext } from "react";
 
 interface BudgetItemProps {
   budget: Budget;
@@ -41,6 +43,8 @@ const BudgetsItem = ({
     openModal: openDetails,
     closeModal: closeDetails,
   } = useModal();
+
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <>
@@ -74,7 +78,11 @@ const BudgetsItem = ({
         />
         <SubContainer bgColor={theme.palette.background.default}>
           <Stack direction="row">
-            <Typography fontWeight="bold" fontSize="16px">
+            <Typography
+              fontWeight="bold"
+              fontSize="16px"
+              color={theme.palette.primary.main}
+            >
               Latest Spending
             </Typography>
             <Stack
@@ -103,7 +111,7 @@ const BudgetsItem = ({
           <List>
             {transactionsForCategory.slice(0, 3).map((transaction, index) => {
               return (
-                <div key={transaction.date}>
+                <div key={transaction.id}>
                   <ListItem
                     sx={{
                       display: "flex",
@@ -142,7 +150,10 @@ const BudgetsItem = ({
                           fontWeight="bold"
                           color={theme.palette.secondary.main}
                         >
-                          +${formatNumber(transaction.amount)}
+                          +
+                          {`${currencySymbol}${formatNumber(
+                            transaction.amount
+                          )}`}
                         </Typography>
                       ) : (
                         <Typography
@@ -150,8 +161,10 @@ const BudgetsItem = ({
                           fontWeight="bold"
                           color={theme.palette.primary.main}
                         >
-                          -$
-                          {formatNumber(Math.abs(transaction.amount))}
+                          -
+                          {`${currencySymbol}${formatNumber(
+                            Math.abs(transaction.amount)
+                          )}`}
                         </Typography>
                       )}
                       <Typography

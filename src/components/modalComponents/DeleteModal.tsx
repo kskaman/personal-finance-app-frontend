@@ -1,8 +1,8 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, lighten, Stack, Typography } from "@mui/material";
 import ActionModal from "./ActionModal";
 import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
-import { capitalizeSentence, hexToRGBA } from "../../utils/utilityFunctions";
+import { capitalizeSentence } from "../../utils/utilityFunctions";
 
 interface Props {
   open: boolean;
@@ -10,9 +10,17 @@ interface Props {
   handleDelete: () => void;
   label: string;
   type: string;
+  warningText?: string;
 }
 
-const DeleteModal = ({ open, onClose, handleDelete, label, type }: Props) => {
+const DeleteModal = ({
+  open,
+  onClose,
+  handleDelete,
+  warningText,
+  label,
+  type,
+}: Props) => {
   const typedToken = capitalizeSentence(label);
 
   const onDelete = () => {
@@ -28,8 +36,10 @@ const DeleteModal = ({ open, onClose, handleDelete, label, type }: Props) => {
     >
       <Stack gap="32px">
         <Typography fontSize="14px" color={theme.palette.primary.light}>
-          Are you sure you want to delete this {type}? This action cannot be
-          reversed and all the data inside it will be removed forever.
+          {warningText
+            ? warningText
+            : `Are you sure you want to delete this ${type}? This action cannot be
+          reversed and all the data inside it will be removed forever.`}
         </Typography>
 
         <Box>
@@ -43,7 +53,7 @@ const DeleteModal = ({ open, onClose, handleDelete, label, type }: Props) => {
               onClose();
             }}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.others.red, 0.8)}
+            hoverBgColor={lighten(theme.palette.others.red, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Yes, Confirm Delete

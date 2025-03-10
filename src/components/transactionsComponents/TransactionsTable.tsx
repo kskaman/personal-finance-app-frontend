@@ -18,14 +18,25 @@ import {
 } from "../../utils/utilityFunctions";
 import OptionsButton from "../modalComponents/OptionsButton";
 import { MD_SM_BREAK } from "../../data/widthConstants";
+import { useContext } from "react";
+import { SettingsContext } from "../../context/SettingsContext";
 
 interface Props {
   txns: Transaction[];
   parentWidth: number;
+  setDeleteModalOpen: (txn: Transaction) => void;
+  setEditModalOpen: (txn: Transaction) => void;
 }
 
-const TransactionsTable = ({ txns, parentWidth }: Props) => {
+const TransactionsTable = ({
+  txns,
+  parentWidth,
+  setDeleteModalOpen,
+  setEditModalOpen,
+}: Props) => {
   const isParentWidth = parentWidth < MD_SM_BREAK;
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
+
   return (
     <Table>
       {/* Table Head (Visible only on larger screens) */}
@@ -153,15 +164,15 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
                       marginRight: "8px",
                     }}
                   >
-                    {txn.amount < 0 ? "-" : "+"}$
-                    {formatNumber(Math.abs(txn.amount))}
+                    {txn.amount < 0 ? "-" : "+"}
+                    {`${currencySymbol}${formatNumber(Math.abs(txn.amount))}`}
                   </Typography>
 
                   {/* Action Button */}
                   <OptionsButton
                     type="transaction"
-                    onEdit={() => console.log("Edit Transaction")}
-                    onDelete={() => console.log("Delete Transaction")}
+                    onEdit={() => setEditModalOpen(txn)}
+                    onDelete={() => setDeleteModalOpen(txn)}
                   />
                 </Stack>
 
@@ -236,14 +247,14 @@ const TransactionsTable = ({ txns, parentWidth }: Props) => {
                         : theme.palette.others.green,
                   }}
                 >
-                  {txn.amount < 0 ? "-" : "+"}$
-                  {formatNumber(Math.abs(txn.amount))}
+                  {txn.amount < 0 ? "-" : "+"}
+                  {`${currencySymbol}${formatNumber(Math.abs(txn.amount))}`}
                 </TableCell>
                 <TableCell sx={{ textAlign: "right" }}>
                   <OptionsButton
                     type="transaction"
-                    onEdit={() => console.log("Edit Transaction")}
-                    onDelete={() => console.log("Delete Transaction")}
+                    onEdit={() => setEditModalOpen(txn)}
+                    onDelete={() => setDeleteModalOpen(txn)}
                   />
                 </TableCell>
               </>

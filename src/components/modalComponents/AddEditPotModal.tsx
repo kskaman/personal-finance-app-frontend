@@ -1,12 +1,10 @@
-import { useCallback, useContext, useEffect } from "react";
-import CategoryMarkerContext from "../../context/CategoryMarkerContext";
-import { MarkerTheme } from "../../types/Data";
+import { useCallback, useEffect } from "react";
 import ActionModal from "./ActionModal";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, lighten, Stack, Typography } from "@mui/material";
 import theme from "../../theme/theme";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { formatDecimalNumber, hexToRGBA } from "../../utils/utilityFunctions";
+import { formatDecimalNumber } from "../../utils/utilityFunctions";
 import ModalTextField from "./ModalTextField";
 import Button from "../../utilityComponents/Button";
 import ModalSelectDropdown from "./ModalSelectDropdown";
@@ -26,6 +24,12 @@ interface AddEditPotModalProps {
     target: string;
     markerTheme: string;
   }) => void;
+  themeOptions: {
+    value: string;
+    label: string;
+    used: boolean;
+    colorCode: string;
+  }[];
 }
 
 interface FormValues {
@@ -34,26 +38,28 @@ interface FormValues {
   selectedTheme: string;
 }
 
-interface Option {
-  value: string;
-  label: string;
-  used?: boolean;
-  colorCode: string;
-}
-
 // Yup Schema for Validation
 const buildSchema = (usedPotNames: string[]) =>
   yup.object({
     potName: yup
       .string()
       .required("Pot Name is required")
-
-      .notOneOf(usedPotNames, "Pot name already in use"),
+      .test("unique", "Pot name already in use", function (value) {
+        if (value && usedPotNames.includes(value.toLowerCase())) {
+          return false;
+        }
+        return true;
+      }),
     target: yup
       .string()
       .matches(
         /^\d+(\.\d{0, 2})?$/,
         "Enter a valid number (up to 2 decimal places)."
+      )
+      .test(
+        "positive",
+        "Target must be a positive number",
+        (value) => Number(value) > 0
       )
       .required("Target is required"),
     selectedTheme: yup.string().required("Theme is required"),
@@ -68,41 +74,26 @@ const AddEditPotModal = ({
   mode = "edit",
   potName,
   targetVal,
+  themeOptions,
   markerTheme = "",
 }: AddEditPotModalProps) => {
-  // Access marker themes and categories from context.
-  const { markerThemes } = useContext(CategoryMarkerContext);
-
-  // Create a map for marker name to its lowercased color code.
-  const nameToColorCode = new Map<string, string>(
-    markerThemes.map((m) => [m.name, m.colorCode.toLowerCase()])
-  );
-
   // Get default theme name based on provided markerTheme.
   const getDefaultThemeName = useCallback(() => {
-    const markerObj = markerThemes.find(
-      (m) => m.colorCode.toLowerCase() === markerTheme?.toLowerCase()
+    const defaultTheme = themeOptions.find(
+      (t) =>
+        t.value &&
+        markerTheme &&
+        t.value.toLowerCase() === markerTheme.toLowerCase()
     );
-    return markerObj?.name || "";
-  }, [markerTheme, markerThemes]);
+    return defaultTheme?.value || "";
+  }, [markerTheme, themeOptions]);
 
   const defaultThemeName = getDefaultThemeName();
 
-  // Determine used color codes (for markers already used in budgets).
-  const usedColorCodes = new Set(
-    markerThemes
-      .filter(
-        (b: MarkerTheme) =>
-          b.usedInBudgets &&
-          b.colorCode.toLowerCase() !== markerTheme?.toLowerCase()
-      )
-      .map((b) => b.colorCode.toLowerCase())
-  );
-
   // Setup React Hook Form.
-  const { control, handleSubmit, reset, trigger } = useForm<FormValues>({
+  const { control, handleSubmit, reset } = useForm<FormValues>({
     resolver: yupResolver(buildSchema(potNamesUsed)),
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: {
       potName: potName || "",
       target: targetVal ? formatDecimalNumber(targetVal).toString() : "",
@@ -117,31 +108,17 @@ const AddEditPotModal = ({
       target: targetVal ? formatDecimalNumber(targetVal).toString() : "",
       selectedTheme: getDefaultThemeName(),
     });
-  }, [
-    potName,
-    targetVal,
-    markerTheme,
-    markerThemes,
-    reset,
-    getDefaultThemeName,
-  ]);
-
-  // Build dropdown options for marker themes.
-  const themeOptions: Option[] = markerThemes.map((marker) => ({
-    value: marker.name,
-    label: marker.name,
-    used: usedColorCodes.has(marker.colorCode.toLowerCase()),
-    colorCode: marker.colorCode,
-  }));
+  }, [potName, targetVal, markerTheme, reset, getDefaultThemeName]);
 
   // Form submission handler.
   const onSubmit = (data: FormValues) => {
-    const selectedThemeCode =
-      nameToColorCode.get(data.selectedTheme) || "#fffff";
+    const selectedThemeOption = themeOptions.find(
+      (option) => option.value === data.selectedTheme
+    );
     updatePots({
       potName: data.potName,
       target: data.target,
-      markerTheme: selectedThemeCode,
+      markerTheme: selectedThemeOption?.colorCode || "#ffffff",
     });
     onClose();
   };
@@ -173,15 +150,11 @@ const AddEditPotModal = ({
                       field.onChange(e);
                     }
                   }}
-                  onBlur={() => {
-                    field.onBlur();
-                    if (field.value.trim() !== "") {
-                      trigger(field.name);
-                    }
-                  }}
+                  onBlur={field.onBlur}
                   error={error}
                   label={"Pot Name"}
                   maxLength={30}
+                  adornmentTextFlag={false}
                 />
                 <Typography
                   fontSize="12px"
@@ -204,16 +177,11 @@ const AddEditPotModal = ({
                 <ModalTextField
                   value={field.value}
                   onChange={field.onChange}
-                  onBlur={() => {
-                    field.onBlur();
-                    if (field.value.trim() !== "") {
-                      trigger(field.name);
-                    }
-                  }}
+                  onBlur={field.onBlur}
                   error={error}
                   label="Target"
                   placeholder="0.00"
-                  adornmentText="$"
+                  adornmentTextFlag={true}
                 />
               </Box>
             )}
@@ -246,7 +214,7 @@ const AddEditPotModal = ({
             onClick={() => {}}
             color={theme.palette.text.primary}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Save Changes

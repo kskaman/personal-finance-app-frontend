@@ -26,6 +26,9 @@ const SearchInput = ({ placeholder, value, width, onChange, Icon }: Props) => {
               borderColor: theme.palette.primary.main,
             },
           },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: theme.palette.primary.main,
+          },
         },
         "& .MuiOutlinedInput-notchedOutline": {
           borderRadius: "8px", // Apply border-radius to fieldset (outline)
@@ -40,6 +43,10 @@ const SearchInput = ({ placeholder, value, width, onChange, Icon }: Props) => {
               <Icon color="inherit" />
             </InputAdornment>
           ),
+          style: {
+            caretColor: theme.palette.primary.main, // explicitly set caret color
+            color: theme.palette.primary.main, // ensure text color is visible
+          },
         },
       }}
     />

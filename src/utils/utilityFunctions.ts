@@ -7,6 +7,8 @@ export const formatDecimalNumber = (num: number): string => {
 };
   
 
+
+
 const monthCode: {[key: string]: string} = {
   "01": "Jan",
   "02": "Feb",
@@ -21,6 +23,23 @@ const monthCode: {[key: string]: string} = {
   "11": "Nov",
   "12": "Dec"
 }
+
+
+export const formatISODateToDDMMYYYY = (isoDate : string) =>  {
+  const date = new Date(isoDate);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+
+export const convertDateToISOString = (dateStr: string): string => {
+  const [day, month, year] = dateStr.split("/").map(Number);
+  const dateObj = new Date(year, month - 1, day);
+  return dateObj.toISOString();
+};
+
 
 export const formatDateToReadable = (dateString: string) => {
   const date = dateString.split("T")[0].split("-");
@@ -111,29 +130,6 @@ export const dateSuffix = {
   "30": "th",
   "31": "st"
 };
-
-
-export function hexToRGBA(hex: string, alpha: number): string {
-  // Remove # if present
-  hex = hex.replace(/^#/, "");
-
-  // Convert shorthand hex (e.g., #FFF) to full hex (e.g., #FFFFFF)
-  if (hex.length === 3) {
-    hex = hex
-      .split("")
-      .map((char) => char + char)
-      .join("");
-  }
-
-  // Parse r, g, b values
-  const bigint = parseInt(hex, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-
-  // Return RGBA color with specified opacity
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
 
 
 

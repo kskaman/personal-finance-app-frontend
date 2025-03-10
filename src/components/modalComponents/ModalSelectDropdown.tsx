@@ -21,7 +21,7 @@ interface ModalSelectDropdownProps {
   onChange: (event: SelectChangeEvent<string>) => void;
   options: Option[];
   label?: string;
-  disabled?: boolean;
+  isDisabled?: boolean;
   isTheme?: boolean;
   error?: { message?: string };
 }
@@ -32,7 +32,7 @@ const ModalSelectDropdown = ({
   options,
   label = "",
   error,
-  disabled = false,
+  isDisabled = false,
   isTheme = false,
 }: ModalSelectDropdownProps) => {
   // Sort options: used items are pushed to the bottom.
@@ -56,7 +56,7 @@ const ModalSelectDropdown = ({
       <Select
         value={value}
         onChange={onChange}
-        disabled={disabled}
+        disabled={isDisabled}
         fullWidth
         error={!!error}
         sx={{
@@ -64,13 +64,16 @@ const ModalSelectDropdown = ({
           height: "45px",
           display: "flex",
           alignItems: "center",
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          color: theme.palette.primary.main,
+
+          "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.primary.main,
           },
         }}
         MenuProps={{
           PaperProps: {
             sx: {
+              backgroundColor: theme.palette.primary.contrastText,
               minHeight: "auto",
               maxHeight: "250px",
               overflowY: "auto",
@@ -129,7 +132,12 @@ const ModalSelectDropdown = ({
         ))}
       </Select>
       {error && (
-        <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+        <Typography
+          marginLeft="12px"
+          variant="caption"
+          color="error"
+          sx={{ mt: 1 }}
+        >
           {error.message}
         </Typography>
       )}

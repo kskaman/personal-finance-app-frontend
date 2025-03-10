@@ -1,16 +1,14 @@
-import { useContext, useEffect, useCallback } from "react";
-import { Box, Typography, Stack } from "@mui/material";
+import { useEffect, useCallback, useMemo } from "react";
+import { Box, Typography, Stack, lighten } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ActionModal from "./ActionModal";
 import theme from "../../theme/theme";
-import CategoryMarkerContext from "../../context/CategoryMarkerContext";
-import { Category, MarkerTheme } from "../../types/Data";
 import Button from "../../utilityComponents/Button";
-import { formatDecimalNumber, hexToRGBA } from "../../utils/utilityFunctions";
 import ModalSelectDropdown from "./ModalSelectDropdown";
 import ModalTextField from "./ModalTextField";
+import { formatDecimalNumber } from "../../utils/utilityFunctions";
 
 // Types & Interfaces
 interface AddEditBudgetModalProps {
@@ -25,6 +23,14 @@ interface AddEditBudgetModalProps {
   markerTheme?: string;
   maximumSpend?: number;
   mode?: "edit" | "add" | null;
+  // New props for options
+  categoryOptions: { value: string; label: string; used?: boolean }[];
+  themeOptions: {
+    value: string;
+    label: string;
+    used?: boolean;
+    colorCode?: string;
+  }[];
 }
 
 interface FormValues {
@@ -33,25 +39,22 @@ interface FormValues {
   selectedTheme: string;
 }
 
-interface Option {
-  value: string;
-  label: string;
-  used?: boolean;
-  colorCode?: string;
-}
-
-// Yup Schema for Validation
+// Yup Schema for Validation remains the same.
 const buildSchema = () =>
   yup.object({
     category: yup.string().required("Category is required"),
     maxSpend: yup
       .string()
       .matches(/^\d+(\.\d{0,2})?$/, "Enter a valid number (up to 2 decimals).")
+      .test(
+        "positive",
+        "Maximum spend must be a positive number",
+        (value) => Number(value) > 0
+      )
       .required("Maximum spend is required"),
     selectedTheme: yup.string().required("Theme is required"),
   });
 
-// Add/Edit Budget Modal Component
 const AddEditBudgetModal = ({
   open,
   onClose,
@@ -60,47 +63,24 @@ const AddEditBudgetModal = ({
   markerTheme,
   maximumSpend,
   mode = "edit",
+  categoryOptions,
+  themeOptions,
 }: AddEditBudgetModalProps) => {
-  // Access marker themes and categories from context.
-  const { markerThemes, categories } = useContext(CategoryMarkerContext);
-
-  // Create a map for marker name to its lowercased color code.
-  const nameToColorCode = new Map<string, string>(
-    markerThemes.map((m) => [m.name, m.colorCode.toLowerCase()])
-  );
-
-  // Get default theme name based on provided markerTheme.
   const getDefaultThemeName = useCallback(() => {
-    const markerObj = markerThemes.find(
-      (m) => m.colorCode.toLowerCase() === markerTheme?.toLowerCase()
+    const defaultTheme = themeOptions.find(
+      (t) =>
+        t.value &&
+        markerTheme &&
+        t.value.toLowerCase() === markerTheme.toLowerCase()
     );
-    return markerObj?.name || "";
-  }, [markerTheme, markerThemes]);
+    return defaultTheme?.value || "";
+  }, [markerTheme, themeOptions]);
 
   const defaultThemeName = getDefaultThemeName();
 
-  // Determine used color codes (for markers already used in budgets).
-  const usedColorCodes = new Set(
-    markerThemes
-      .filter(
-        (b: MarkerTheme) =>
-          b.usedInBudgets &&
-          b.colorCode.toLowerCase() !== markerTheme?.toLowerCase()
-      )
-      .map((b) => b.colorCode.toLowerCase())
-  );
-
-  // Determine categories already used (except current one).
-  const UsedCategoriesNames = new Set(
-    categories
-      .filter((c: Category) => c.name !== category && c.usedInBudgets)
-      .map((c) => c.name)
-  );
-
-  // Setup React Hook Form.
-  const { control, handleSubmit, reset, trigger } = useForm<FormValues>({
+  const { control, handleSubmit, reset } = useForm<FormValues>({
     resolver: yupResolver(buildSchema()),
-    mode: "onSubmit",
+    mode: "onChange",
     defaultValues: {
       category: category || "",
       maxSpend: maximumSpend
@@ -110,28 +90,61 @@ const AddEditBudgetModal = ({
     },
   });
 
-  // Reset form when props change.
+  // Compute filtered category options
+  const filteredCategoryOptions = useMemo(() => {
+    return categoryOptions.map((cat) => {
+      // Example logic: If it's the currently selected category in 'edit' mode,
+      // mark it as unused so the user can still see & pick it
+      if (mode === "edit" && cat.value === category) {
+        return { ...cat, used: false };
+      }
+      // Otherwise, return cat as is (or update 'used' per your logic)
+      return cat;
+    });
+  }, [categoryOptions, category, mode]);
+
+  // Compute filtered theme options
+  const filteredThemeOptions = useMemo(() => {
+    return themeOptions.map((themeOpt) => {
+      // If this theme is the currently selected theme,
+      // ensure it's allowed (e.g. "used: false") so user can keep it
+      if (
+        mode === "edit" &&
+        markerTheme &&
+        themeOpt.value.toLowerCase() === markerTheme.toLowerCase()
+      ) {
+        return { ...themeOpt, used: false };
+      }
+      // Otherwise return as is (or adjust as needed)
+      return themeOpt;
+    });
+  }, [themeOptions, markerTheme, mode]);
+
   useEffect(() => {
     reset({
       category: category || "",
       maxSpend: maximumSpend
         ? formatDecimalNumber(maximumSpend).toString()
-        : "0.00",
+        : "",
+
       selectedTheme: getDefaultThemeName(),
     });
   }, [
     category,
     maximumSpend,
     markerTheme,
-    markerThemes,
     reset,
     getDefaultThemeName,
+    categoryOptions,
   ]);
 
-  // Form submission handler.
   const onSubmit = (data: FormValues) => {
-    const selectedThemeCode =
-      nameToColorCode.get(data.selectedTheme) || "#ffffff";
+    // Convert selected theme to color code using the passed in options.
+    const selectedThemeOption = themeOptions.find(
+      (option) => option.value === data.selectedTheme
+    );
+    const selectedThemeCode = selectedThemeOption?.colorCode || "#ffffff";
+
     updateBudgets({
       category: data.category,
       maxSpend: data.maxSpend,
@@ -139,21 +152,6 @@ const AddEditBudgetModal = ({
     });
     onClose();
   };
-
-  // Build dropdown options for categories.
-  const categoryOptions: Option[] = categories.map((c) => ({
-    value: c.name,
-    label: c.name,
-    used: UsedCategoriesNames.has(c.name),
-  }));
-
-  // Build dropdown options for marker themes.
-  const themeOptions: Option[] = markerThemes.map((marker) => ({
-    value: marker.name,
-    label: marker.name,
-    used: usedColorCodes.has(marker.colorCode.toLowerCase()),
-    colorCode: marker.colorCode,
-  }));
 
   return (
     <ActionModal
@@ -173,14 +171,15 @@ const AddEditBudgetModal = ({
           <Controller
             name="category"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <Box>
                 <ModalSelectDropdown
                   value={field.value}
                   onChange={field.onChange}
-                  options={categoryOptions}
-                  disabled={mode === "edit"}
+                  options={filteredCategoryOptions}
+                  isDisabled={mode === "edit"}
                   label={"Budget Category"}
+                  error={error}
                 />
               </Box>
             )}
@@ -190,38 +189,36 @@ const AddEditBudgetModal = ({
           <Controller
             name="maxSpend"
             control={control}
-            render={({ field, fieldState: { error } }) => (
-              <Box>
-                <ModalTextField
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={() => {
-                    field.onBlur();
-                    if (field.value.trim() !== "") {
-                      trigger(field.name);
-                    }
-                  }}
-                  error={error}
-                  label="Maximum Spend"
-                  placeholder="0.00"
-                  adornmentText="$"
-                />
-              </Box>
-            )}
+            render={({ field, fieldState: { error } }) => {
+              return (
+                <Box>
+                  <ModalTextField
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    error={error}
+                    label="Maximum Spend"
+                    placeholder="0.00"
+                    adornmentTextFlag={true}
+                  />
+                </Box>
+              );
+            }}
           />
 
           {/* THEME SELECTION FIELD */}
           <Controller
             name="selectedTheme"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <Box>
                 <ModalSelectDropdown
                   value={field.value}
                   onChange={field.onChange}
-                  options={themeOptions}
+                  options={filteredThemeOptions}
                   isTheme={true}
                   label={"Theme"}
+                  error={error}
                 />
               </Box>
             )}
@@ -236,7 +233,7 @@ const AddEditBudgetModal = ({
             onClick={() => {}}
             color={theme.palette.text.primary}
             hoverColor={theme.palette.text.primary}
-            hoverBgColor={hexToRGBA(theme.palette.primary.main, 0.8)}
+            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Save Changes

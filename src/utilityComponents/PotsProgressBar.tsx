@@ -1,6 +1,8 @@
 import { Box, LinearProgress, Stack, Typography } from "@mui/material";
 import theme from "../theme/theme";
 import { formatNumber } from "../utils/utilityFunctions";
+import { useContext } from "react";
+import { SettingsContext } from "../context/SettingsContext";
 
 interface PotsProgressBarProps {
   value: number;
@@ -17,6 +19,7 @@ const PotsProgressBar = ({
 }: PotsProgressBarProps) => {
   const fraction = (value / target) * 100;
 
+  const currencySymbol = useContext(SettingsContext).selectedCurrency;
   return (
     <Box
       sx={{
@@ -38,12 +41,14 @@ const PotsProgressBar = ({
           Total Saved
         </Typography>
         <Typography fontSize="32px" color={theme.palette.primary.main}>
-          ${formatNumber(value)}
+          {value < 0
+            ? `-${currencySymbol}${formatNumber(Math.abs(value))}`
+            : `${currencySymbol}${formatNumber(value)}`}
         </Typography>
       </Stack>
       <LinearProgress
         variant="determinate"
-        value={fraction}
+        value={fraction >= 100 ? 100 : fraction}
         sx={{
           height: "8px",
           borderRadius: "4px",
@@ -64,7 +69,7 @@ const PotsProgressBar = ({
           {fraction.toFixed(2)} %
         </Typography>
         <Typography fontSize="12px" color={theme.palette.primary.light}>
-          Target of ${formatNumber(target)}
+          Target of {`${currencySymbol}${formatNumber(target)}`}
         </Typography>
       </Stack>
     </Box>

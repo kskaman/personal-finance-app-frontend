@@ -10,4 +10,3 @@ export const categories : string[] = [
     "Bills",
     "Shopping",
 ]
-  
