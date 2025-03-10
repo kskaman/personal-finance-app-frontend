@@ -20,6 +20,7 @@ import {
   BalanceTransactionsActionContext,
   BalanceTransactionsDataContext,
 } from "../context/BalanceTransactionsContext";
+import EmptyStatePage from "../utilityComponents/EmptyStatePage";
 
 const PotsPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
@@ -154,6 +155,44 @@ const PotsPage = () => {
   const sortedPots = useMemo(() => {
     return pots.slice().sort((a, b) => a.name.localeCompare(b.name));
   }, [pots]);
+
+  if (sortedPots.length === 0) {
+    return (
+      <>
+        <EmptyStatePage
+          message="No Pots Yet"
+          subText="Create your first pot to set aside money for a goal or expense."
+          buttonLabel="Create a Pot"
+          onButtonClick={() => {
+            setMode("add");
+            openAddEditModal();
+          }}
+        />
+        {isAddEditModalOpen && (
+          <AddEditPotModal
+            open={isAddEditModalOpen}
+            onClose={() => {
+              closeAddEditModal();
+              setSelectedPot(null);
+              setMode(null);
+            }}
+            updatePots={
+              mode === "edit"
+                ? handleEditPot
+                : mode === "add"
+                ? handleAddPot
+                : () => {}
+            }
+            mode={mode}
+            potNamesUsed={potNamesUsed.filter(
+              (potName) => potName !== selectedPot?.name
+            )}
+            themeOptions={themeOptions}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <>

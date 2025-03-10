@@ -832,6 +832,24 @@
   {
     "userId": "550e8400-e29b-41d4-a716-446655440001",
     "dataId": "11111111-1111-4111-8111-111111111001",
+    "settings": {
+      "font": "public-sans",
+      "currency": "$",
+      "displayedModules" : {
+        "pots": {
+          "label": "Pots",
+          "using": true
+        },
+        "recurringBills": {
+          "label": "Recurring Bills",
+          "using": true
+        },
+        "budgets": {
+          "label": "Budgets",
+          "using": true
+        }
+      }
+    },
     "balance": {
       "current": 0,
       "income": 0,

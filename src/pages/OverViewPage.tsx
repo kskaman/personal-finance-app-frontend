@@ -9,6 +9,13 @@ import BillsOverview from "../components/overviewComponents/BillsOverview";
 import PageDiv from "../utilityComponents/PageDiv";
 import useParentWidth from "../customHooks/useParentWidth";
 import { LG_BREAK, SM_BREAK } from "../data/widthConstants";
+import EmptyStatePage from "../utilityComponents/EmptyStatePage";
+import { useContext } from "react";
+import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
+import { PotsDataContext } from "../context/PotsContext";
+import { BudgetsDataContext } from "../context/BudgetsContext";
+import { RecurringDataContext } from "../context/RecurringContext";
+import { useNavigate } from "react-router";
 
 const OverViewPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
@@ -16,6 +23,44 @@ const OverViewPage = () => {
   const isParentSm = parentWidth < SM_BREAK;
 
   const theme = useTheme();
+
+  const navigate = useNavigate();
+
+  // Grabbing data from your contexts
+  const { balance, transactions } = useContext(BalanceTransactionsDataContext);
+  const { pots } = useContext(PotsDataContext);
+  const { budgets } = useContext(BudgetsDataContext);
+  const { recurringBills } = useContext(RecurringDataContext);
+
+  // Decide if there is any data at all
+  const hasNonZeroBalance =
+    balance.current !== 0 || balance.income !== 0 || balance.expenses !== 0;
+
+  const hasTransactions = transactions.length > 0;
+  const hasPots = pots.length > 0;
+  const hasBudgets = budgets.length > 0;
+  const hasBills = recurringBills.length > 0;
+
+  const hasAnyData =
+    hasNonZeroBalance || hasTransactions || hasPots || hasBudgets || hasBills;
+
+  // If absolutely everything is empty, show a single empty-state layout:
+  if (!hasAnyData) {
+    return (
+      <>
+        <SetTitle title="Overview" />
+        <EmptyStatePage
+          message="No Data Yet"
+          subText="You haven't added any balances, transactions, pots, budgets or bills. Let's get started!"
+          buttonLabel="Go to Transactions Page"
+          onButtonClick={() => {
+            navigate("/transactions");
+          }}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <SetTitle title="OverView" />
@@ -43,16 +88,16 @@ const OverViewPage = () => {
                 gap="24px"
                 width={isParentLg ? "100%" : "50%"}
               >
-                <PotsOverview />
-                <TransactionsOverview />
+                {hasPots && <PotsOverview />}
+                {hasTransactions && <TransactionsOverview />}
               </Stack>
               <Stack
                 direction="column"
                 gap="24px"
                 width={isParentLg ? "100%" : "50%"}
               >
-                <BudgetsOverview />
-                <BillsOverview />
+                {hasBudgets && <BudgetsOverview />}
+                {hasBills && <BillsOverview />}
               </Stack>
             </Stack>
           </Stack>

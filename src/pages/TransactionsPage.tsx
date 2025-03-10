@@ -29,6 +29,7 @@ import {
   getRandomColor,
 } from "../utils/utilityFunctions";
 import { SettingsContext } from "../context/SettingsContext";
+import EmptyStatePage from "../utilityComponents/EmptyStatePage";
 
 // Interfaces and Props
 interface FormValues {
@@ -264,11 +265,9 @@ const TransactionsPage = () => {
   const handleAddTransaction = (formData: FormValues) => {
     let transaction: Transaction;
     let billTheme = getRandomColor();
-    // Convert the provided form date (dd/mm/yyyy) to ISO string.
     const isoDate = convertDateToISOString(formData.date);
 
     if (formData.paymentType === "oneTime") {
-      // For one-time, use the entered payment direction and the provided date.
       transaction = {
         id: uuidv4(),
         name: formData.txnName,
@@ -282,10 +281,9 @@ const TransactionsPage = () => {
         theme: billTheme,
       };
     } else {
-      // For recurring transactions, force paymentDirection to "paid"
+      // Recurring transaction logic (similar to what you already have)
       let recurringId = formData.recurringId;
       if (!recurringId || recurringId === "new") {
-        // Create new recurring bill if none exists or "new" was chosen.
         const newBill: RecurringBill = {
           id: uuidv4(),
           name: formData.txnName,
@@ -293,10 +291,9 @@ const TransactionsPage = () => {
           amount: -parseFloat(formData.amount),
           recurring: true,
           lastPaid: isoDate,
-          dueDate: formData.dueDate!, // dueDate is required in recurring mode
+          dueDate: formData.dueDate!,
           theme: billTheme,
         };
-        // Update recurring bills state: assume setRecurringBills adds the new bill.
         setRecurringBills((prevBills: RecurringBill[]) => [
           ...prevBills,
           newBill,
@@ -318,52 +315,71 @@ const TransactionsPage = () => {
         name: formData.txnName,
         category: formData.category,
         date: isoDate,
-        // Force amount to be negative for recurring payments (bills)
-        amount: -parseFloat(formData.amount),
+        amount: -parseFloat(formData.amount), // force negative for recurring
         recurring: true,
         recurringId,
         theme: billTheme,
       };
     }
-    // Update transactions state (prepend to the list)
+
+    // Update transactions state
     setTransactions((prevTxns: Transaction[]) => [transaction, ...prevTxns]);
+
+    // Update balance state based on transaction amount
+    if (transaction.amount < 0) {
+      // "Paid" transaction: subtract from current balance and add to expenses
+      setBalance({
+        ...balance,
+        current: balance.current + transaction.amount, // transaction.amount is negative
+        expenses: balance.expenses + Math.abs(transaction.amount),
+      });
+    } else {
+      // "Received" transaction: add to current balance and income
+      setBalance({
+        ...balance,
+        current: balance.current + transaction.amount,
+        income: balance.income + transaction.amount,
+      });
+    }
   };
 
   // Function to edit a transaction.
   const handleEditTransaction = (formData: FormValues) => {
     if (!selectedTnx) return; // safety check
 
-    // Convert the form date to ISO string.
     const isoDate = convertDateToISOString(formData.date);
+    // Determine new amount based on the updated form data
+    const newAmount =
+      formData.paymentType === "oneTime"
+        ? formData.paymentDirection === "paid"
+          ? -parseFloat(formData.amount)
+          : parseFloat(formData.amount)
+        : -parseFloat(formData.amount); // recurring is forced negative
 
+    // Calculate the difference from the original amount
+    const diff = newAmount - selectedTnx.amount;
+
+    // Update the transactions list
     setTransactions((prevTxns: Transaction[]) =>
       prevTxns.map((txn) => {
-        if (txn.id !== selectedTnx.id) return txn; // not the one being edited
-
-        // CASE 1: Editing a one-time transaction (or switching to one-time)
+        if (txn.id !== selectedTnx.id) return txn;
         if (formData.paymentType === "oneTime") {
           return {
             ...txn,
             name: formData.txnName,
             category: formData.category,
             date: isoDate,
-            amount:
-              formData.paymentDirection === "paid"
-                ? -parseFloat(formData.amount)
-                : parseFloat(formData.amount),
+            amount: newAmount,
             recurring: false,
-            recurringId: undefined, // clear recurring link
+            recurringId: undefined,
             theme: txn.theme || getRandomColor(),
           };
         } else {
-          // CASE 2: Editing a recurring transaction
-          // Subcase a): If originally recurring, only update the instance date.
-          // Subcase b): If switching from one-time to recurring, follow the full recurring logic.
           let recurringId = formData.recurringId;
           let billTheme = getRandomColor();
 
           if (selectedTnx.recurring) {
-            // Transaction was already recurring – update only the date.
+            // If already recurring, update only the date.
             return {
               ...txn,
               date: isoDate,
@@ -371,7 +387,6 @@ const TransactionsPage = () => {
           } else {
             // Switching from one-time to recurring:
             if (!recurringId || recurringId === "new") {
-              // Create new recurring bill.
               const newBill: RecurringBill = {
                 id: uuidv4(),
                 name: formData.txnName,
@@ -379,7 +394,7 @@ const TransactionsPage = () => {
                 amount: -parseFloat(formData.amount),
                 recurring: true,
                 lastPaid: isoDate,
-                dueDate: formData.dueDate!, // validated as present in recurring mode
+                dueDate: formData.dueDate!,
                 theme: getRandomColor(),
               };
               setRecurringBills((prevBills: RecurringBill[]) => [
@@ -405,7 +420,7 @@ const TransactionsPage = () => {
               name: formData.txnName,
               category: formData.category,
               date: isoDate,
-              amount: -parseFloat(formData.amount),
+              amount: newAmount,
               recurring: true,
               recurringId,
               theme: billTheme,
@@ -414,12 +429,56 @@ const TransactionsPage = () => {
         }
       })
     );
+
+    // Update balance state using the difference between new and old amounts
+    if (diff < 0) {
+      // More money paid than before, subtract the difference
+      setBalance({
+        ...balance,
+        current: balance.current + diff, // diff is negative
+        expenses: balance.expenses + Math.abs(diff),
+      });
+    } else {
+      // More money received than before, add the difference
+      setBalance({
+        ...balance,
+        current: balance.current + diff,
+        income: balance.income + diff,
+      });
+    }
   };
 
   const monthOptions = useMemo(
     () => getMonthYearOptions(transactions),
     [transactions]
   );
+
+  {
+    /* Empty Page for no transactions */
+  }
+  if (filteredTx.length === 0) {
+    return (
+      <>
+        <EmptyStatePage
+          message="No Transactions Yet"
+          subText="Add your first transaction..."
+          buttonLabel="Add Transaction"
+          onButtonClick={() => openAddModal()}
+        />
+        {isAddModalOpen && (
+          <AddEditTransactionModal
+            open={isAddModalOpen}
+            onClose={closeAddModal}
+            onSubmit={(formData: FormValues) => {
+              handleAddTransaction(formData);
+              closeAddModal();
+            }}
+            recurringOptions={recurringOptions}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <>

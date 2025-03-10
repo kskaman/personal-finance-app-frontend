@@ -24,6 +24,7 @@ import Button from "../utilityComponents/Button";
 import { v4 as uuidv4 } from "uuid";
 import { getRandomColor } from "../utils/utilityFunctions";
 import { BalanceTransactionsActionContext } from "../context/BalanceTransactionsContext";
+import EmptyStatePage from "../utilityComponents/EmptyStatePage";
 
 // Function to filter & sort bills.
 const filterAndSortBills = (
@@ -146,6 +147,32 @@ const BillsPage = () => {
       )
     );
   };
+
+  if (BillsPage.length === 0) {
+    return (
+      <>
+        <EmptyStatePage
+          message="No Bills Yet"
+          subText="Track your recurring expenses by adding your first bill."
+          buttonLabel="Create a Bill"
+          onButtonClick={() => {
+            openAddModal();
+          }}
+        />
+        {/* Add Bill Modal (AddEditBillModal in add mode) */}
+        {isAddModalOpen && (
+          <AddEditBillModal
+            open={isAddModalOpen}
+            onClose={closeAddModal}
+            onSubmit={(formData: BillFormValues) => {
+              handleAddBill(formData);
+              closeAddModal();
+            }}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <>

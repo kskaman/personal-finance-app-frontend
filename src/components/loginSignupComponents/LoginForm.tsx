@@ -43,7 +43,7 @@ const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
       email: userEmail || "",
       password: userPassword || "",
     });
-  });
+  }, [userEmail, userPassword, reset]);
 
   const onSubmit = async (data: FormValues) => {
     setErrorMessage("");

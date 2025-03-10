@@ -22,6 +22,7 @@ import useModal from "../customHooks/useModal";
 import CategoryMarkerContext from "../context/CategoryMarkerContext";
 import { updateUsedStatuses } from "../utils/budgetUtils";
 import { SettingsContext } from "../context/SettingsContext";
+import EmptyStatePage from "../utilityComponents/EmptyStatePage";
 
 const BudgetsPage = () => {
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
@@ -150,6 +151,43 @@ const BudgetsPage = () => {
   const sortedBudgets = useMemo(() => {
     return budgets.slice().sort((a, b) => a.category.localeCompare(b.category));
   }, [budgets]);
+
+  if (budgets.length === 0) {
+    return (
+      <>
+        <EmptyStatePage
+          message="No Budgets Yet"
+          subText="Create your first budget..."
+          buttonLabel="Create a Budget"
+          onButtonClick={() => {
+            setMode("add");
+            openAddEditModal();
+          }}
+        />
+        {/* Edit Modal Component */}
+        {isAddEditModalOpen && (
+          <AddEditBudgetModal
+            mode={mode}
+            open={isAddEditModalOpen}
+            onClose={() => {
+              closeAddEditModal();
+              setSelectedBudget(null);
+              setMode(null);
+            }}
+            updateBudgets={
+              mode === "edit"
+                ? handleEditBudget
+                : mode === "add"
+                ? handleAddBudget
+                : () => {}
+            }
+            categoryOptions={categoryOptions}
+            themeOptions={themeOptions}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <>
@@ -304,41 +342,45 @@ const BudgetsPage = () => {
         </PageDiv>
 
         {/* Delete Modal Component */}
-        <DeleteModal
-          open={isDeleteModalOpen}
-          onClose={() => {
-            setSelectedBudget(null);
-            closeDeleteModal();
-          }}
-          handleDelete={() =>
-            handleBudgetDelete(selectedBudget?.category || "")
-          }
-          label={selectedBudget?.category || ""}
-          type="budget"
-        />
+        {isDeleteModalOpen && (
+          <DeleteModal
+            open={isDeleteModalOpen}
+            onClose={() => {
+              setSelectedBudget(null);
+              closeDeleteModal();
+            }}
+            handleDelete={() =>
+              handleBudgetDelete(selectedBudget?.category || "")
+            }
+            label={selectedBudget?.category || ""}
+            type="budget"
+          />
+        )}
 
         {/* Edit Modal Component */}
-        <AddEditBudgetModal
-          mode={mode}
-          open={isAddEditModalOpen}
-          onClose={() => {
-            closeAddEditModal();
-            setSelectedBudget(null);
-            setMode(null);
-          }}
-          updateBudgets={
-            mode === "edit"
-              ? handleEditBudget
-              : mode === "add"
-              ? handleAddBudget
-              : () => {}
-          }
-          category={selectedBudget?.category}
-          maximumSpend={selectedBudget?.maximum}
-          markerTheme={selectedBudget?.theme}
-          categoryOptions={categoryOptions}
-          themeOptions={themeOptions}
-        />
+        {isAddEditModalOpen && (
+          <AddEditBudgetModal
+            mode={mode}
+            open={isAddEditModalOpen}
+            onClose={() => {
+              closeAddEditModal();
+              setSelectedBudget(null);
+              setMode(null);
+            }}
+            updateBudgets={
+              mode === "edit"
+                ? handleEditBudget
+                : mode === "add"
+                ? handleAddBudget
+                : () => {}
+            }
+            category={selectedBudget?.category}
+            maximumSpend={selectedBudget?.maximum}
+            markerTheme={selectedBudget?.theme}
+            categoryOptions={categoryOptions}
+            themeOptions={themeOptions}
+          />
+        )}
       </Box>
     </>
   );
