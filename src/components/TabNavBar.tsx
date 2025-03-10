@@ -9,12 +9,15 @@ import BudgetsIcon from "../Icons/BudgetsIcon";
 import PotsIcon from "../Icons/PotsIcon";
 import BillsIcon from "../Icons/BillsIcon";
 import SettingsIcon from "../Icons/SettingsIcon";
+import { useContext } from "react";
+import { SettingsContext } from "../context/SettingsContext";
 
 interface TabNavBarProps {
   isMobile: boolean;
 }
 
 const TabNavBar = ({ isMobile }: TabNavBarProps) => {
+  const { displayedModules } = useContext(SettingsContext);
   return (
     <Stack
       direction="row"
@@ -39,19 +42,33 @@ const TabNavBar = ({ isMobile }: TabNavBarProps) => {
         text="Transactions"
         isMobile={isMobile}
       />
-      <TabNavItem
-        to="/budgets"
-        Icon={BudgetsIcon}
-        text="Budgets"
-        isMobile={isMobile}
-      />
-      <TabNavItem to="/pots" Icon={PotsIcon} text="Pots" isMobile={isMobile} />
-      <TabNavItem
-        to="/bills"
-        Icon={BillsIcon}
-        text="Recurring Bills"
-        isMobile={isMobile}
-      />
+      {displayedModules.budgets.using && (
+        <TabNavItem
+          to="/budgets"
+          Icon={BudgetsIcon}
+          text="Budgets"
+          isMobile={isMobile}
+        />
+      )}
+
+      {displayedModules.pots.using && (
+        <TabNavItem
+          to="/pots"
+          Icon={PotsIcon}
+          text="Pots"
+          isMobile={isMobile}
+        />
+      )}
+
+      {displayedModules.recurringBills.using && (
+        <TabNavItem
+          to="/bills"
+          Icon={BillsIcon}
+          text="Recurring Bills"
+          isMobile={isMobile}
+        />
+      )}
+
       <TabNavItem
         to="/settings"
         Icon={SettingsIcon}

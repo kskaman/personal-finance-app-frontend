@@ -5,12 +5,18 @@ import Button from "../utilityComponents/Button";
 import SetTitle from "../components/SetTitle";
 import LogoutIcon from "../Icons/LogoutIcon";
 import SubContainer from "../utilityComponents/SubContainer";
-import { Currencies, Fonts, SettingsRadioOption } from "../types/settingsData";
+import {
+  Currencies,
+  DisplayedModules,
+  Fonts,
+  SettingsRadioOption,
+} from "../types/settingsData";
 import SettingsOptionGroup from "../components/settingsComponents/SettingsOptionGroup";
 import useParentWidth from "../customHooks/useParentWidth";
 import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
 import CategorySettings from "../components/settingsComponents/CategorySettings";
+import DisplayModulesGroup from "../components/settingsComponents/DisplayModulesGroup";
 
 const fontOptions: SettingsRadioOption[] = [
   {
@@ -181,7 +187,20 @@ const SettingsPage = () => {
     setSelectedFont,
     selectedCurrency,
     setSelectedCurrency,
+    displayedModules,
+    setDisplayedModules,
   } = useContext(SettingsContext);
+
+  // Handler to toggle the "using" property for a given module
+  const handleModuleToggle = (moduleKey: keyof DisplayedModules) => {
+    setDisplayedModules((prev: DisplayedModules) => ({
+      ...prev,
+      [moduleKey]: {
+        ...prev[moduleKey],
+        using: !prev[moduleKey].using,
+      },
+    }));
+  };
 
   return (
     <>
@@ -253,6 +272,16 @@ const SettingsPage = () => {
 
             {/* Category Option container */}
             <CategorySettings parentWidth={parentWidth} />
+
+            {/* Display Modules Group */}
+            <SubContainer>
+              <DisplayModulesGroup
+                heading="Display Features"
+                displayOptions={displayedModules}
+                onChange={handleModuleToggle}
+                parentWidth={parentWidth}
+              />
+            </SubContainer>
           </Stack>
         </Stack>
       </PageDiv>

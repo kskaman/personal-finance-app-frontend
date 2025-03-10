@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Stack } from "@mui/material";
 
 import theme from "../theme/theme";
@@ -15,8 +15,10 @@ import BillsIcon from "../Icons/BillsIcon";
 import NavItem from "../utilityComponents/NavItem";
 import MinimizeButton from "../utilityComponents/MinimizeButton";
 import SettingsIcon from "../Icons/SettingsIcon";
+import { SettingsContext } from "../context/SettingsContext";
 
 const Navbar = () => {
+  const { displayedModules } = useContext(SettingsContext);
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
 
   const handleToggleMinimize = () => {
@@ -60,24 +62,30 @@ const Navbar = () => {
           text="Transactions"
           isMinimized={isMinimized}
         />
-        <NavItem
-          to="/budgets"
-          Icon={BudgetsIcon}
-          text="Budgets"
-          isMinimized={isMinimized}
-        />
-        <NavItem
-          to="/pots"
-          Icon={PotsIcon}
-          text="Pots"
-          isMinimized={isMinimized}
-        />
-        <NavItem
-          to="/bills"
-          Icon={BillsIcon}
-          text="Recurring Bills"
-          isMinimized={isMinimized}
-        />
+        {displayedModules.budgets.using && (
+          <NavItem
+            to="/budgets"
+            Icon={BudgetsIcon}
+            text="Budgets"
+            isMinimized={isMinimized}
+          />
+        )}
+        {displayedModules.pots.using && (
+          <NavItem
+            to="/pots"
+            Icon={PotsIcon}
+            text="Pots"
+            isMinimized={isMinimized}
+          />
+        )}
+        {displayedModules.recurringBills.using && (
+          <NavItem
+            to="/bills"
+            Icon={BillsIcon}
+            text="Recurring Bills"
+            isMinimized={isMinimized}
+          />
+        )}
       </Stack>
 
       <NavItem

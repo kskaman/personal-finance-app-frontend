@@ -71,7 +71,15 @@ interface DataProviderProps {
 
 const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [data, setData] = useState<DataType>(() => ({
-    settings: { font: "public-sans", currency: "$" },
+    settings: {
+      font: "public-sans",
+      currency: "$",
+      displayedModules: {
+        pots: { label: "Pots", using: true },
+        recurringBills: { label: "Recurring Bills", using: true },
+        budgets: { label: "Budgets", using: true },
+      },
+    },
     balance: {
       current: 0,
       income: 0,
@@ -155,6 +163,7 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     <SettingsProvider
       font={data.settings.font}
       currency={data.settings.currency}
+      displayedModules={data.settings.displayedModules}
     >
       <CategoryMarkerProvider
         categories={data.categories}

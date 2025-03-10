@@ -1,7 +1,21 @@
 {
   "settings": {
     "font": "public-sans",
-    "currency": "$"
+    "currency": "$",
+    "displayedModules" : {
+      "pots": {
+        "label": "Pots",
+        "using": true
+      },
+      "recurringBills": {
+        "label": "Recurring Bills",
+        "using": true
+      },
+      "budgets": {
+        "label": "Budgets",
+        "using": true
+      }
+    }
   },
   "balance": {
     "current": 4836.0,

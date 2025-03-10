@@ -1,8 +1,7 @@
-import { Box, Typography, Stack } from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 import Button from "../utilityComponents/Button";
 import theme from "../theme/theme";
 interface EmptyStatePageProps {
-  imageUrl: string;
   message: string;
   subText: string;
   buttonLabel: string;
@@ -14,7 +13,6 @@ interface EmptyStatePageProps {
  * a main message, an optional description, and a CTA button.
  */
 const EmptyStatePage = ({
-  imageUrl,
   message,
   subText,
   buttonLabel,
@@ -28,22 +26,6 @@ const EmptyStatePage = ({
       justifyContent="center"
       overflow="hidden"
     >
-      {/* Semi-transparent background image */}
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundImage: `url(${imageUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: 0.5,
-          zIndex: 0,
-        }}
-      />
-
       {/* Foreground content (text + button) */}
       <Stack
         direction="column"

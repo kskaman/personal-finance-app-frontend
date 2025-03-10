@@ -1,3 +1,5 @@
+import { Currencies, DisplayedModules, Fonts } from "./settingsData";
+
 export interface Balance {
     current: number;
     income: number;
@@ -64,9 +66,10 @@ export interface Pot {
 }
 
 export interface Settings {
-    font: "public-sans" | "noto-serif" | "source-code";
-    currency: "$" | "C$" | "€";
-}
+    font: Fonts;
+    currency: Currencies;
+    displayedModules: DisplayedModules;
+  }
   
 export interface DataType {
     settings: Settings;

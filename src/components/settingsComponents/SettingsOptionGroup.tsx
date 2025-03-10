@@ -69,7 +69,7 @@ const SettingsOptionGroup = ({
                 bgcolor={
                   selectedValue === option.value
                     ? theme.palette.background.default
-                    : theme.palette.text.primary
+                    : theme.palette.primary.contrastText
                 }
                 borderRadius="8px"
                 padding={1}
