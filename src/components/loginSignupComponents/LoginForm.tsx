@@ -1,12 +1,14 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Stack, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-
 import * as yup from "yup";
 import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
 import theme from "../../theme/theme";
 import { hexToRGBA } from "../../utils/utilityFunctions";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { User } from "../../types/User";
 
 interface FormValues {
   email: string;
@@ -20,21 +22,51 @@ const buildSchema = () =>
   });
 
 interface LoginFormProps {
-  handleLogin: (email: string, password: string) => void;
+  formToggle: () => void;
+  userEmail?: string;
+  userPassword?: string;
 }
 
-const LoginForm = ({ handleLogin }: LoginFormProps) => {
-  const { control, handleSubmit, trigger } = useForm<FormValues>({
+const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
+  const { control, handleSubmit, trigger, reset } = useForm<FormValues>({
     resolver: yupResolver(buildSchema()),
     mode: "onSubmit",
     defaultValues: {
-      email: "",
-      password: "",
+      email: userEmail || "",
+      password: userPassword || "",
     },
   });
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const onSubmit = (data: FormValues) => {
-    handleLogin(data.email, data.password);
+  // Reset form when props change
+  useEffect(() => {
+    reset({
+      email: userEmail || "",
+      password: userPassword || "",
+    });
+  });
+
+  const onSubmit = async (data: FormValues) => {
+    setErrorMessage("");
+    try {
+      const response = await axios.get("./users.json");
+
+      const users: User[] = response.data.users;
+
+      // Find a user whose credentials match
+      const foundUser = users.find(
+        (u) => u.email === data.email && u.password === data.password
+      );
+      if (foundUser) {
+        localStorage.setItem("userToken", foundUser.id);
+        window.location.reload();
+      } else {
+        setErrorMessage("Invalid email or password.");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      setErrorMessage("Login failed. Please try again later.");
+    }
   };
 
   return (
@@ -42,9 +74,13 @@ const LoginForm = ({ handleLogin }: LoginFormProps) => {
       <Typography fontSize="32px" fontWeight="bold">
         Login
       </Typography>
+      {errorMessage && (
+        <Typography color="error" mb={2}>
+          {errorMessage}
+        </Typography>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="32px">
-          {/* Email */}
           <Controller
             name="email"
             control={control}
@@ -64,8 +100,6 @@ const LoginForm = ({ handleLogin }: LoginFormProps) => {
               />
             )}
           />
-
-          {/* Password */}
           <Controller
             name="password"
             control={control}
@@ -85,8 +119,6 @@ const LoginForm = ({ handleLogin }: LoginFormProps) => {
               />
             )}
           />
-
-          {/* SAVE BUTTON */}
           <Button
             type="submit"
             width="100%"
@@ -103,12 +135,18 @@ const LoginForm = ({ handleLogin }: LoginFormProps) => {
           </Button>
         </Stack>
       </form>
-
       <Stack gap={1} margin="auto" direction="row">
         <Typography fontSize="14px" color={theme.palette.primary.light}>
           Need to create an account?
         </Typography>{" "}
-        <a>Sign Up</a>
+        <Typography
+          onClick={formToggle}
+          fontWeight="bold"
+          color={theme.palette.primary.main}
+          sx={{ cursor: "pointer", textDecoration: "underline" }}
+        >
+          SignUp
+        </Typography>
       </Stack>
     </>
   );

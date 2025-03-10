@@ -51,7 +51,7 @@ export interface MarkerTheme {
 
 export interface Category {
     name: string;
-    id: number;
+    id: string;
     usedInBudgets: boolean;
 }
 
@@ -63,6 +63,8 @@ export interface Pot {
 }
   
 export interface DataType {
+    userId: string;
+    dataId: string;
     balance: Balance;
     transactions: Transaction[];
     budgets: Budget[];

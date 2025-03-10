@@ -1,12 +1,13 @@
+// SignupForm.tsx
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Stack, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-
 import * as yup from "yup";
 import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
 import theme from "../../theme/theme";
 import { hexToRGBA } from "../../utils/utilityFunctions";
+import { useState } from "react";
 
 interface FormValues {
   name: string;
@@ -21,11 +22,11 @@ const buildSchema = () =>
     password: yup.string().required("Password is required"),
   });
 
-interface LoginFormProps {
-  handleSignup: (name: string, email: string, password: string) => void;
+interface SignupFormProps {
+  formToggle: () => void;
 }
 
-const SignupForm = ({ handleSignup }: LoginFormProps) => {
+const SignupForm = ({ formToggle }: SignupFormProps) => {
   const { control, handleSubmit, trigger } = useForm<FormValues>({
     resolver: yupResolver(buildSchema()),
     mode: "onSubmit",
@@ -35,9 +36,15 @@ const SignupForm = ({ handleSignup }: LoginFormProps) => {
       password: "",
     },
   });
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const onSubmit = (data: FormValues) => {
-    handleSignup(data.name, data.email, data.password);
+  const onSubmit = async (data: FormValues) => {
+    setErrorMessage("");
+    // For now, signup is disabled. Later you can replace this logic with an API call.
+    setErrorMessage(
+      "Signup is currently disabled. Please login with default credentials."
+    );
+    console.log(data);
   };
 
   return (
@@ -45,9 +52,14 @@ const SignupForm = ({ handleSignup }: LoginFormProps) => {
       <Typography fontSize="32px" fontWeight="bold">
         Sign Up
       </Typography>
+      {errorMessage && (
+        <Typography color="error" mb={2}>
+          {errorMessage}
+        </Typography>
+      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack gap="32px">
-          {/* Name */}
+          {/* Name Field */}
           <Controller
             name="name"
             control={control}
@@ -67,8 +79,7 @@ const SignupForm = ({ handleSignup }: LoginFormProps) => {
               />
             )}
           />
-
-          {/* Email */}
+          {/* Email Field */}
           <Controller
             name="email"
             control={control}
@@ -88,8 +99,7 @@ const SignupForm = ({ handleSignup }: LoginFormProps) => {
               />
             )}
           />
-
-          {/* Password */}
+          {/* Password Field */}
           <Controller
             name="password"
             control={control}
@@ -109,8 +119,7 @@ const SignupForm = ({ handleSignup }: LoginFormProps) => {
               />
             )}
           />
-
-          {/* SAVE BUTTON */}
+          {/* Signup Button */}
           <Button
             type="submit"
             width="100%"
@@ -127,12 +136,18 @@ const SignupForm = ({ handleSignup }: LoginFormProps) => {
           </Button>
         </Stack>
       </form>
-
-      <Stack gap={1} margin="auto" direction="row">
+      <Stack gap={1} margin="auto" direction="row" mt={2}>
         <Typography fontSize="14px" color={theme.palette.primary.light}>
-          Already have an Account?
-        </Typography>{" "}
-        <a>Login</a>
+          Already have an account?
+        </Typography>
+        <Typography
+          onClick={formToggle}
+          fontWeight="bold"
+          color={theme.palette.primary.main}
+          sx={{ cursor: "pointer", textDecoration: "underline" }}
+        >
+          Login
+        </Typography>
       </Stack>
     </>
   );

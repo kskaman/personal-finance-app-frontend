@@ -1,4 +1,8 @@
 {
+  "data" : [
+    {
+      "userId": "550e8400-e29b-41d4-a716-446655440000",
+      "dataId": "11111111-1111-4111-8111-111111111000",
     "balance": {
       "current": 4836.0,
       "income": 3814.25,
@@ -654,52 +658,52 @@
     "categories": [
     {
       "name": "General",
-      "id": 1,
+      "id": "general",
       "usedInBudgets": false
     },
     {
       "name": "Dining Out",
-      "id": 2,
+      "id": "diningOut",
       "usedInBudgets": true
     },
     {
       "name": "Groceries",
-      "id": 3,
+      "id": "groceries",
       "usedInBudgets": false
     },
     {
       "name": "Entertainment",
-      "id": 4,
+      "id": "entertainment",
       "usedInBudgets": true
     },
     {
       "name": "Transportation",
-      "id": 5,
+      "id": "transactions",
       "usedInBudgets": false
     },
     {
       "name": "Lifestyle",
-      "id": 6,
+      "id": "lifestyle",
       "usedInBudgets": false
     },
     {
       "name": "Personal Care",
-      "id": 7,
+      "id": "personalCare",
       "usedInBudgets": true
     },
     {
       "name": "Education",
-      "id": 8,
+      "id": "education",
       "usedInBudgets": false
     },
     {
       "name": "Bills",
-      "id": 9,
+      "id": "bills",
       "usedInBudgets": true
     },
     {
       "name": "Shopping",
-      "id": 10,
+      "id": "shopping",
       "usedInBudgets": false
     }
     ],
@@ -794,6 +798,49 @@
       "usedInBudgets": true,
       "usedInPots": true
     }
-  ]
-}
+    ]
+  },
+  {
+    "userId": "550e8400-e29b-41d4-a716-446655440001",
+    "dataId": "11111111-1111-4111-8111-111111111001",
+    "balance": {
+      "current": 0,
+      "income": 0,
+      "expenses": 0
+    },
+    "transactions": [],
+    "budgets": [],
+    "pots": [],
+    "recurringBills": [],
+    "categories": [
+      { "name": "General", "id": "groceries", "usedInBudgets": false },
+      { "name": "Dining Out", "id": "diningOut", "usedInBudgets": false },
+      { "name": "Groceries", "id": "groceries", "usedInBudgets": false },
+      { "name": "Entertainment", "id": "entertainment", "usedInBudgets": false },
+      { "name": "Transportation", "id": "transportation", "usedInBudgets": false },
+      { "name": "Lifestyle", "id": "lifestyle", "usedInBudgets": false },
+      { "name": "Personal Care", "id": "personalCare", "usedInBudgets": false },
+      { "name": "Education", "id": "education", "usedInBudgets": false },
+      { "name": "Bills", "id": "bills", "usedInBudgets": false },
+      { "name": "Shopping", "id":"shopping", "usedInBudgets": false }
+    ],
+    "markerThemes": [
+      { "name": "Pink", "colorCode": "#af81ba", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Turquoise", "colorCode": "#597c7c", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Brown", "colorCode": "#93674f", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Magenta", "colorCode": "#934f6f", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Blue", "colorCode": "#3f82b2", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Navy Grey", "colorCode": "#97a0ac", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Army Green", "colorCode": "#7f9161", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Gold", "colorCode": "#cab361", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Orange", "colorCode": "#be6c49", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Purple", "colorCode": "#826cb0", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Navy", "colorCode": "#626070", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Green", "colorCode": "#277c78", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Cyan", "colorCode": "#82c9d7", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Red", "colorCode": "#c94736", "usedInBudgets": false, "usedInPots": false },
+      { "name": "Yellow", "colorCode": "#f2cdac", "usedInBudgets": false, "usedInPots": false }
+    ]
+  }
+]}
   

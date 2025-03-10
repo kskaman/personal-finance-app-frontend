@@ -12,22 +12,13 @@ interface DataProviderProps {
 }
 
 const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-  const [data, setData] = useState<DataType>(() => ({
-    balance: {
-      current: 0,
-      income: 0,
-      expenses: 0,
-    },
-    transactions: [],
-    budgets: [],
-    pots: [],
-    recurringBills: [],
-    categories: [],
-    markerThemes: [],
-  }));
+  const [data, setData] = useState<DataType | null>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Retrieve the user token (which is the user's UUID) from localStorage
+  const userToken = localStorage.getItem("userToken");
 
   useEffect(() => {
     // Create an AbortController to cancel the request if the component unmounts
@@ -36,15 +27,20 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get("/data.json", {
-          // pass the signal to axios
           signal: controller.signal,
         });
-        setData(response.data);
+
+        const allData: DataType[] = response.data.data;
+        const userData = allData.find((d) => d.userId === userToken);
+        if (userData) {
+          setData(userData);
+        } else {
+          setError("No data found for the current user.");
+        }
         setLoading(false);
-      } catch (error) {
-        // Only log the error if it's not an axios cancel
-        if (!axios.isCancel(error)) {
-          console.error("Error fetching data:", error);
+      } catch (err) {
+        if (!axios.isCancel(err)) {
+          console.error("Error fetching data:", err);
           setError("Failed to load data");
         }
       }
@@ -56,7 +52,7 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [userToken]);
 
   if (error)
     return (
@@ -87,6 +83,22 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         Loading...
       </div>
     );
+
+  if (!data) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        Error: No data available.
+      </div>
+    );
+  }
 
   return (
     <CategoryMarkerProvider

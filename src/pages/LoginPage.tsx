@@ -1,23 +1,14 @@
 import { Box, Stack, Typography } from "@mui/material";
-import illustrationImage from "../assets/images/illustration-authentication.svg";
-import logoIcon from "../assets/images/logo-large.svg";
-
-import theme from "../theme/theme";
 import { useState } from "react";
 import LoginForm from "../components/loginSignupComponents/LoginForm";
 import SignupForm from "../components/loginSignupComponents/SignupForm";
 import SubContainer from "../utilityComponents/SubContainer";
+import illustrationImage from "../assets/images/illustration-authentication.svg";
+import logoIcon from "../assets/images/logo-large.svg";
+import theme from "../theme/theme";
 
 const LoginPage = () => {
-  const [isLogOpen, setLogOpen] = useState<boolean>(true);
-
-  const handleLogin = (email: string, password: string) => {
-    console.log(`email : ${email}\npassword : ${password}`);
-  };
-
-  const handleSignup = (name: string, email: string, password: string) => {
-    console.log(`name : ${name}\nemail : ${email}\npassword : ${password}`);
-  };
+  const [isLoginOpen, setLoginOpen] = useState<boolean>(true);
 
   return (
     <Stack
@@ -85,10 +76,14 @@ const LoginPage = () => {
       {/* Login / Signup Form Container */}
       <Stack flex={1} justifyContent="center" alignItems="center" height="100%">
         <SubContainer width="min(560px, 90%)">
-          {isLogOpen ? (
-            <LoginForm handleLogin={handleLogin} />
+          {isLoginOpen ? (
+            <LoginForm
+              formToggle={() => setLoginOpen(false)}
+              userEmail={"john@example.com"}
+              userPassword={"password123"}
+            />
           ) : (
-            <SignupForm handleSignup={handleSignup} />
+            <SignupForm formToggle={() => setLoginOpen(true)} />
           )}
         </SubContainer>
       </Stack>
