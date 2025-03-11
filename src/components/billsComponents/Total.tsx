@@ -1,6 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import SubContainer from "../../utilityComponents/SubContainer";
-import theme from "../../theme/theme";
 import BillsIcon from "../../Icons/BillsIcon";
 import { formatNumber } from "../../utils/utilityFunctions";
 import { SM_BREAK } from "../../data/widthConstants";
@@ -13,6 +12,7 @@ interface TotalProps {
 }
 
 const Total = ({ parentWidth, totalBill }: TotalProps) => {
+  const theme = useTheme();
   const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (

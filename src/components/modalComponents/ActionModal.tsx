@@ -1,5 +1,4 @@
-import { Modal, Typography, Stack } from "@mui/material";
-import theme from "../../theme/theme";
+import { Modal, Typography, Stack, useTheme } from "@mui/material";
 import Button from "../../utilityComponents/Button";
 import CloseModalIcon from "../../Icons/CloseModalIcon";
 
@@ -11,6 +10,7 @@ interface Props {
 }
 
 const ActionModal = ({ open, onClose, children, heading }: Props) => {
+  const theme = useTheme();
   return (
     <Modal open={open} onClose={onClose}>
       <Stack

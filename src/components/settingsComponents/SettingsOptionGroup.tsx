@@ -6,10 +6,10 @@ import {
   RadioGroup,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { SettingsRadioOption } from "../../types/settingsData";
-import theme from "../../theme/theme";
 import { MD_BREAK } from "../../data/widthConstants";
 
 interface SettingOptionGroupProp {
@@ -28,6 +28,7 @@ const SettingsOptionGroup = ({
   onChange,
   parentWidth,
 }: SettingOptionGroupProp) => {
+  const theme = useTheme();
   const isParentWidth = parentWidth < MD_BREAK;
   const gridTemplateColumns = isParentWidth
     ? "1fr"

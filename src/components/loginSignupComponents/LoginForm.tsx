@@ -4,7 +4,6 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
-import theme from "../../theme/theme";
 
 import { useContext, useEffect } from "react";
 
@@ -12,6 +11,7 @@ import PasswordTextField from "./PasswordTextField";
 
 import { AuthContext } from "../../context/AuthProvider";
 import { useNavigate } from "react-router";
+import { grey500, grey900, white } from "../../theme/colors";
 
 interface FormValues {
   email: string;
@@ -93,6 +93,8 @@ const LoginForm = ({
                 label="Email"
                 placeholder=""
                 adornmentTextFlag={false}
+                color={grey900}
+                adornmentColor={grey500}
               />
             )}
           />
@@ -113,11 +115,11 @@ const LoginForm = ({
             type="submit"
             width="100%"
             height="53px"
-            backgroundColor={theme.palette.primary.main}
+            backgroundColor={grey900}
             onClick={() => {}}
-            color={theme.palette.text.primary}
-            hoverColor={theme.palette.text.primary}
-            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
+            color={white}
+            hoverColor={white}
+            hoverBgColor={lighten(grey900, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Login
@@ -129,20 +131,20 @@ const LoginForm = ({
         <Typography
           onClick={forgotPasswordFormToggle}
           fontWeight="bold"
-          color={theme.palette.primary.main}
+          color={grey900}
           sx={{ cursor: "pointer", textDecoration: "underline" }}
         >
           Forgot Password?
         </Typography>
       </Stack>
       <Stack gap={1} margin="auto" direction="row">
-        <Typography fontSize="14px" color={theme.palette.primary.light}>
+        <Typography fontSize="14px" color={grey500}>
           Need to create an account?
         </Typography>{" "}
         <Typography
           onClick={formToggle}
           fontWeight="bold"
-          color={theme.palette.primary.main}
+          color={grey900}
           sx={{ cursor: "pointer", textDecoration: "underline" }}
         >
           SignUp

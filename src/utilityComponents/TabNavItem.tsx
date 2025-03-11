@@ -1,7 +1,6 @@
 // TabNavItem.tsx (unchanged from your snippet, except we confirm it’s imported in TabNavBar)
-import { Typography, Box, Stack } from "@mui/material";
+import { Typography, Box, Stack, useTheme } from "@mui/material";
 import { NavLink } from "react-router";
-import theme from "../theme/theme";
 
 interface TabNavItemProps {
   Icon: React.FC<{ color: string }>;
@@ -11,6 +10,7 @@ interface TabNavItemProps {
 }
 
 const TabNavItem = ({ to, Icon, text, isMobile }: TabNavItemProps) => {
+  const theme = useTheme();
   return (
     <Stack
       component={NavLink}
@@ -19,7 +19,7 @@ const TabNavItem = ({ to, Icon, text, isMobile }: TabNavItemProps) => {
       alignItems="center"
       spacing={0}
       sx={{
-        width: isMobile ? "68.6px" : "104px",
+        width: isMobile ? "68.6px" : "108px",
         height: isMobile ? "44px" : "66px",
         padding: isMobile ? "9px 0 15px 0" : "7px 0 13px 0",
         color: theme.palette.background.paper,
@@ -54,6 +54,7 @@ const TabNavItem = ({ to, Icon, text, isMobile }: TabNavItemProps) => {
       </Box>
       {!isMobile && (
         <Typography
+          noWrap
           sx={{
             height: "18px",
             padding: "3px 0 3px 0",

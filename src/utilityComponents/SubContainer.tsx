@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import theme from "../theme/theme";
-import { Stack } from "@mui/material";
+import { Stack, useTheme } from "@mui/material";
 
 interface SubContainerProps {
   children: ReactNode;
@@ -23,6 +22,7 @@ const SubContainer = ({
   width,
   direction = "column",
 }: SubContainerProps) => {
+  const theme = useTheme();
   return (
     <Stack
       direction={direction}

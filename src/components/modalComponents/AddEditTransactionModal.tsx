@@ -9,12 +9,12 @@ import {
   RadioGroup,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ActionModal from "./ActionModal";
 import ModalSelectDropdown from "./ModalSelectDropdown";
-import theme from "../../theme/theme";
 import ModalTextField from "./ModalTextField";
 import Button from "../../utilityComponents/Button";
 import { categories } from "../../data/categories";
@@ -126,6 +126,7 @@ const AddEditTransactionModal = ({
   txnData,
   recurringOptions,
 }: AddEditTransactionModalProps) => {
+  const theme = useTheme();
   const {
     control,
     handleSubmit,

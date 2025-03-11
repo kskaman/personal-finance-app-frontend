@@ -1,10 +1,9 @@
 import { useEffect, useCallback, useMemo } from "react";
-import { Box, Typography, Stack, lighten } from "@mui/material";
+import { Box, Typography, Stack, lighten, useTheme } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ActionModal from "./ActionModal";
-import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
 import ModalSelectDropdown from "./ModalSelectDropdown";
 import ModalTextField from "./ModalTextField";
@@ -66,6 +65,7 @@ const AddEditBudgetModal = ({
   categoryOptions,
   themeOptions,
 }: AddEditBudgetModalProps) => {
+  const theme = useTheme();
   const getDefaultThemeName = useCallback(() => {
     const defaultTheme = themeOptions.find(
       (t) =>

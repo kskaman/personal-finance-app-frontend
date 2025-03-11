@@ -1,6 +1,5 @@
 import Button from "../../utilityComponents/Button";
-import theme from "../../theme/theme";
-import { Box, Menu, MenuItem, Typography } from "@mui/material";
+import { Box, Menu, MenuItem, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
 
 interface OptionsButtonProps {
@@ -28,6 +27,7 @@ const OptionsButton = ({
   borderColor,
   marginLeft,
 }: OptionsButtonProps) => {
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {

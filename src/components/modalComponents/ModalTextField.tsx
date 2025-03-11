@@ -1,5 +1,10 @@
-import { TextField, InputAdornment, Typography, Box } from "@mui/material";
-import theme from "../../theme/theme";
+import {
+  TextField,
+  InputAdornment,
+  Typography,
+  Box,
+  useTheme,
+} from "@mui/material";
 import { useContext } from "react";
 import { SettingsContext } from "../../context/SettingsContext";
 
@@ -13,6 +18,8 @@ interface CustomTextFieldProps {
   adornmentTextFlag?: boolean;
   maxLength?: number;
   isDisabled?: boolean;
+  color?: string;
+  adornmentColor?: string;
 }
 
 const ModalTextField = ({
@@ -21,18 +28,21 @@ const ModalTextField = ({
   onBlur,
   error,
   label,
+  color,
+  adornmentColor,
   maxLength,
   placeholder = "",
   adornmentTextFlag = true,
   isDisabled = false,
 }: CustomTextFieldProps) => {
+  const theme = useTheme();
   const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
     <Box>
       <Typography
         fontSize="12px"
-        color={theme.palette.primary.light}
+        color={adornmentColor || theme.palette.primary.light}
         fontWeight="bold"
         sx={{ marginBottom: "2px" }}
       >
@@ -53,10 +63,10 @@ const ModalTextField = ({
             borderRadius: "8px",
             height: "45px",
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.primary.main,
+              borderColor: color || theme.palette.primary.main,
             },
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.primary.main,
+              borderColor: color || theme.palette.primary.main,
             },
           },
           "& .MuiOutlinedInput-notchedOutline": {
@@ -71,7 +81,7 @@ const ModalTextField = ({
               startAdornment: (
                 <InputAdornment position="start">
                   <Typography
-                    color={theme.palette.primary.light}
+                    color={adornmentColor || theme.palette.primary.light}
                     fontSize="14px"
                   >
                     {currencySymbol}
@@ -80,8 +90,8 @@ const ModalTextField = ({
               ),
             }),
             style: {
-              caretColor: theme.palette.primary.main, // explicitly set caret color
-              color: theme.palette.primary.main, // ensure text color is visible
+              caretColor: color || theme.palette.primary.main, // explicitly set caret color
+              color: color || theme.palette.primary.main, // ensure text color is visible
             },
           },
           ...(maxLength ? { maxLength } : {}),

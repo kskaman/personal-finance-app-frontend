@@ -2,10 +2,10 @@ import { lighten, Stack, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
-import theme from "../../theme/theme";
 import { useState } from "react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { green, grey500, grey900, white } from "../../theme/colors";
 
 interface FormValues {
   email: string;
@@ -46,7 +46,7 @@ const ForgotPasswordForm = ({
   return (
     <>
       {infoMessage && (
-        <Typography margin={"auto"} color={theme.palette.others.green}>
+        <Typography margin={"auto"} color={green}>
           {infoMessage}
         </Typography>
       )}
@@ -64,6 +64,8 @@ const ForgotPasswordForm = ({
                 placeholder=""
                 error={error}
                 adornmentTextFlag={false}
+                color={grey900}
+                adornmentColor={grey500}
               />
             )}
           />
@@ -71,11 +73,11 @@ const ForgotPasswordForm = ({
             type="submit"
             width="100%"
             height="53px"
-            backgroundColor={theme.palette.primary.main}
+            backgroundColor={grey900}
             onClick={() => {}}
-            color={theme.palette.text.primary}
-            hoverColor={theme.palette.text.primary}
-            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
+            color={white}
+            hoverColor={white}
+            hoverBgColor={lighten(grey900, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Request Password
@@ -85,13 +87,13 @@ const ForgotPasswordForm = ({
       </form>
 
       <Stack gap={1} margin="auto" direction="row" alignItems={"center"}>
-        <Typography fontSize="14px" color={theme.palette.primary.light}>
+        <Typography fontSize="14px" color={grey900}>
           Go to
         </Typography>{" "}
         <Typography
           onClick={forgotPasswordFormToggle}
           fontWeight="bold"
-          color={theme.palette.primary.main}
+          color={grey900}
           sx={{ cursor: "pointer", textDecoration: "underline" }}
         >
           Login

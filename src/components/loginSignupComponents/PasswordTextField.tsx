@@ -3,7 +3,7 @@ import { Box, Typography, TextField, InputAdornment } from "@mui/material";
 import Button from "../../utilityComponents/Button";
 import VisibilityOnIcon from "../../Icons/VisibilityOnIcon";
 import VisibilityOffIcon from "../../Icons/VisibilityOffIcon";
-import theme from "../../theme/theme";
+import { grey500, grey900, white } from "../../theme/colors";
 
 interface PasswordTextFieldProps {
   value: string;
@@ -30,7 +30,7 @@ const PasswordTextField = ({
     <Box>
       <Typography
         fontSize="12px"
-        color={theme.palette.primary.light}
+        color={grey500}
         fontWeight="bold"
         sx={{ marginBottom: "2px" }}
       >
@@ -50,10 +50,10 @@ const PasswordTextField = ({
             borderRadius: "8px",
             height: "45px",
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.primary.main,
+              borderColor: grey900,
             },
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.primary.main,
+              borderColor: grey900,
             },
           },
           "& .MuiOutlinedInput-notchedOutline": {
@@ -61,25 +61,27 @@ const PasswordTextField = ({
           },
           width: "100%",
         }}
-        InputProps={{
-          autoComplete: "off",
-          endAdornment: (
-            <InputAdornment position="end">
-              <Button
-                color={theme.palette.primary.main}
-                onClick={handleShowPassword}
-                padding="4px"
-                hoverColor={theme.palette.primary.main}
-                hoverBgColor={theme.palette.primary.contrastText}
-                backgroundColor={theme.palette.primary.contrastText}
-              >
-                {showPassword ? <VisibilityOnIcon /> : <VisibilityOffIcon />}
-              </Button>
-            </InputAdornment>
-          ),
-          style: {
-            caretColor: theme.palette.primary.main,
-            color: theme.palette.primary.main,
+        slotProps={{
+          input: {
+            autoComplete: "off",
+            endAdornment: (
+              <InputAdornment position="end">
+                <Button
+                  color={grey900}
+                  onClick={handleShowPassword}
+                  padding="4px"
+                  hoverColor={grey900}
+                  hoverBgColor={white}
+                  backgroundColor={white}
+                >
+                  {showPassword ? <VisibilityOnIcon /> : <VisibilityOffIcon />}
+                </Button>
+              </InputAdornment>
+            ),
+            style: {
+              caretColor: grey900,
+              color: grey900,
+            },
           },
         }}
       />

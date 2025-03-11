@@ -6,6 +6,7 @@ import {
   ListItem,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useContext } from "react";
 
@@ -14,13 +15,13 @@ import {
   formatNumber,
   getInitials,
 } from "../../utils/utilityFunctions";
-import theme from "../../theme/theme";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import SubContainer from "../../utilityComponents/SubContainer";
 import { BalanceTransactionsDataContext } from "../../context/BalanceTransactionsContext";
 import { SettingsContext } from "../../context/SettingsContext";
 
 const TransactionsOverview = () => {
+  const theme = useTheme();
   const latestTransactions = useContext(
     BalanceTransactionsDataContext
   ).transactions.slice(0, 5);

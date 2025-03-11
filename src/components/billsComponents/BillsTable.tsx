@@ -8,9 +8,9 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { RecurringBill } from "../../types/Data";
-import theme from "../../theme/theme";
 import {
   dateSuffix,
   formatNumber,
@@ -58,6 +58,7 @@ const BillsTable = ({
   setDeleteModalOpen: (recurringBill: RecurringBill) => void;
   setEditModalOpen: (recurringBill: RecurringBill) => void;
 }) => {
+  const theme = useTheme();
   const isParentWidth = parentWidth < MD_SM_BREAK;
 
   const currencySymbol = useContext(SettingsContext).selectedCurrency;
@@ -202,7 +203,7 @@ const BillsTable = ({
                     {status === "paid" ? (
                       <PaidIcon />
                     ) : isDue || dueSoon ? (
-                      <DueIcon color={theme.palette.others.red} />
+                      <DueIcon />
                     ) : (
                       ""
                     )}
@@ -280,7 +281,7 @@ const BillsTable = ({
                   {status === "paid" ? (
                     <PaidIcon />
                   ) : isDue || dueSoon ? (
-                    <DueIcon color={theme.palette.others.red} />
+                    <DueIcon />
                   ) : (
                     ""
                   )}

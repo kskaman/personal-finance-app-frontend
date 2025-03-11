@@ -1,7 +1,6 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import SetTitle from "../components/SetTitle";
-import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import { PotsActionContext, PotsDataContext } from "../context/PotsContext";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -23,6 +22,7 @@ import {
 import EmptyStatePage from "../utilityComponents/EmptyStatePage";
 
 const PotsPage = () => {
+  const theme = useTheme();
   const { containerRef, parentWidth } = useParentWidth();
 
   const { pots } = useContext(PotsDataContext);

@@ -4,8 +4,8 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  useTheme,
 } from "@mui/material";
-import theme from "../theme/theme";
 
 interface Props {
   label?: string;
@@ -26,6 +26,7 @@ const CustomDropdown = ({
   color,
   onChange,
 }: Props) => {
+  const theme = useTheme();
   return (
     <FormControl sx={{ width: width, height }}>
       {label && <InputLabel>{label}</InputLabel>}

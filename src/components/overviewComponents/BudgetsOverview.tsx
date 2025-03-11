@@ -1,7 +1,6 @@
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { Box, Link, Stack, Typography, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
-import theme from "../../theme/theme";
 import SubContainer from "../../utilityComponents/SubContainer";
 import { useContext } from "react";
 import { BalanceTransactionsDataContext } from "../../context/BalanceTransactionsContext";
@@ -12,6 +11,7 @@ import useParentWidth from "../../customHooks/useParentWidth";
 import { SettingsContext } from "../../context/SettingsContext";
 
 const BudgetsOverview = () => {
+  const theme = useTheme();
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
   const { monthlySpentByCategory } = useContext(
     BalanceTransactionsDataContext

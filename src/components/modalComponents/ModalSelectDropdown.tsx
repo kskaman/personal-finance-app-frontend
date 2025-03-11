@@ -5,8 +5,8 @@ import {
   SelectChangeEvent,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
-import theme from "../../theme/theme";
 
 // For the reusable dropdown options
 interface Option {
@@ -35,6 +35,7 @@ const ModalSelectDropdown = ({
   isDisabled = false,
   isTheme = false,
 }: ModalSelectDropdownProps) => {
+  const theme = useTheme();
   // Sort options: used items are pushed to the bottom.
   const sortedOptions = [...options].sort((a, b) => {
     const aUsed = !!a.used;

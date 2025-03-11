@@ -1,5 +1,10 @@
-import { Box, LinearProgress, Stack, Typography } from "@mui/material";
-import theme from "../theme/theme";
+import {
+  Box,
+  LinearProgress,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { formatNumber } from "../utils/utilityFunctions";
 import { SettingsContext } from "../context/SettingsContext";
 import { useContext } from "react";
@@ -17,6 +22,8 @@ const BudgetsProgressBar = ({
   color,
   bgColor,
 }: BudgetsProgressBarProps) => {
+  const theme = useTheme();
+
   const isOverBudget = value > total;
   const fraction = isOverBudget
     ? ((value - total) / value) * 100

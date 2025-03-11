@@ -1,6 +1,5 @@
-import { Typography, Stack } from "@mui/material";
+import { Typography, Stack, useTheme } from "@mui/material";
 import Button from "../utilityComponents/Button";
-import theme from "../theme/theme";
 interface EmptyStatePageProps {
   message: string;
   subText: string;
@@ -18,6 +17,7 @@ const EmptyStatePage = ({
   buttonLabel,
   onButtonClick,
 }: EmptyStatePageProps) => {
+  const theme = useTheme();
   return (
     <Stack
       position="relative"

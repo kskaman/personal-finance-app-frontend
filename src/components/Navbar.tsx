@@ -1,7 +1,5 @@
 import { useContext, useState } from "react";
-import { Stack } from "@mui/material";
-
-import theme from "../theme/theme";
+import { Stack, useTheme } from "@mui/material";
 
 import logoIcon from "../assets/images/logo-large.svg";
 import miniLogoIcon from "../assets/images/logo-small.svg";
@@ -18,6 +16,8 @@ import SettingsIcon from "../Icons/SettingsIcon";
 import { SettingsContext } from "../context/SettingsContext";
 
 const Navbar = () => {
+  const theme = useTheme();
+
   const { displayedModules } = useContext(SettingsContext);
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
 

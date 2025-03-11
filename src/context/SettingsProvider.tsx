@@ -1,6 +1,7 @@
 import { useState, ReactNode } from "react";
 import { SettingsContext } from "./SettingsContext";
 import { Currencies, Fonts, DisplayedModules } from "../types/settingsData";
+import { ThemeManager } from "./ThemeManager";
 
 interface SettingsProviderProps {
   children: ReactNode;
@@ -32,7 +33,7 @@ export const SettingsProvider = ({
         setDisplayedModules,
       }}
     >
-      {children}
+      <ThemeManager>{children}</ThemeManager>
     </SettingsContext.Provider>
   );
 };

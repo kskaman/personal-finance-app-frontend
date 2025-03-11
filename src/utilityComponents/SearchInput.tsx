@@ -1,5 +1,4 @@
-import { InputAdornment, TextField } from "@mui/material";
-import theme from "../theme/theme";
+import { InputAdornment, TextField, useTheme } from "@mui/material";
 
 interface Props {
   placeholder: string;
@@ -10,6 +9,7 @@ interface Props {
 }
 
 const SearchInput = ({ placeholder, value, width, onChange, Icon }: Props) => {
+  const theme = useTheme();
   return (
     <TextField
       variant="outlined"

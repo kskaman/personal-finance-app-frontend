@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { lighten, Stack, Typography } from "@mui/material";
+import { lighten, Stack, Typography, useTheme } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ActionModal from "./ActionModal";
 import ModalTextField from "./ModalTextField";
 import ModalSelectDropdown from "./ModalSelectDropdown";
 import Button from "../../utilityComponents/Button";
-import theme from "../../theme/theme";
 import { categories } from "../../data/categories";
 import { dateOptions } from "../../data/dates";
 
@@ -56,6 +55,7 @@ const AddEditBillModal = ({
   onSubmit,
   billData,
 }: AddEditBillModalProps) => {
+  const theme = useTheme();
   const { control, handleSubmit, reset } = useForm<BillFormValues>({
     resolver: yupResolver(buildSchema()),
     mode: "onChange",

@@ -4,9 +4,9 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
-import theme from "../../theme/theme";
 import { useState } from "react";
 import PasswordTextField from "./PasswordTextField";
+import { grey500, grey900, white } from "../../theme/colors";
 
 interface FormValues {
   name: string;
@@ -85,6 +85,8 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
                 label="Name"
                 placeholder=""
                 adornmentTextFlag={false}
+                color={grey900}
+                adornmentColor={grey500}
               />
             )}
           />
@@ -106,6 +108,8 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
                 label="Email"
                 placeholder=""
                 adornmentTextFlag={false}
+                color={grey900}
+                adornmentColor={grey500}
               />
             )}
           />
@@ -123,7 +127,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
             )}
           />
           {/* Password instructions */}
-          <Typography fontSize="14px" color={theme.palette.primary.light}>
+          <Typography fontSize="14px" color={grey500}>
             Your password must be 8 to 20 characters long and include at least
             one uppercase letter, one lowercase letter, one digit, and at least
             one of the following special characters: #, @, or _
@@ -134,11 +138,11 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
             type="submit"
             width="100%"
             height="53px"
-            backgroundColor={theme.palette.primary.main}
+            backgroundColor={grey900}
             onClick={() => {}}
-            color={theme.palette.text.primary}
-            hoverColor={theme.palette.text.primary}
-            hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
+            color={white}
+            hoverColor={white}
+            hoverBgColor={lighten(grey900, 0.2)}
           >
             <Typography fontSize="14px" fontWeight="bold">
               Create Account
@@ -147,13 +151,13 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
         </Stack>
       </form>
       <Stack gap={1} margin="auto" direction="row" alignItems="center">
-        <Typography fontSize="14px" color={theme.palette.primary.light}>
+        <Typography fontSize="14px" color={grey500}>
           Already have an account?
         </Typography>
         <Typography
           onClick={formToggle}
           fontWeight="bold"
-          color={theme.palette.primary.main}
+          color={grey500}
           sx={{ cursor: "pointer", textDecoration: "underline" }}
         >
           Login

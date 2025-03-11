@@ -1,12 +1,12 @@
-import { Divider, List, ListItem, Typography } from "@mui/material";
+import { Divider, List, ListItem, Typography, useTheme } from "@mui/material";
 import SubContainer from "../../utilityComponents/SubContainer";
 import { formatNumber } from "../../utils/utilityFunctions";
-import theme from "../../theme/theme";
 import { useContext } from "react";
 import { RecurringDataContext } from "../../context/RecurringContext";
 import { SettingsContext } from "../../context/SettingsContext";
 
 const Summary = () => {
+  const theme = useTheme();
   const summaryData = {
     paid: { label: "Paid Bills" },
     unpaid: {

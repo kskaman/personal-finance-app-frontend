@@ -1,11 +1,10 @@
-import { lighten, Stack, Typography } from "@mui/material";
+import { lighten, Stack, Typography, useTheme } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import ActionModal from "../modalComponents/ActionModal";
 import PasswordTextField from "../loginSignupComponents/PasswordTextField";
 import Button from "../../utilityComponents/Button";
-import theme from "../../theme/theme";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import { User } from "../../types/User";
@@ -44,6 +43,7 @@ const buildSchema = yup.object({
 });
 
 const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
+  const theme = useTheme();
   const { user, setUser } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState<string>("");
 

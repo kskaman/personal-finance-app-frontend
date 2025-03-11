@@ -1,8 +1,7 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { Pot } from "../../types/Data";
 import SubContainer from "../../utilityComponents/SubContainer";
 import Button from "../../utilityComponents/Button";
-import theme from "../../theme/theme";
 import PotsProgressBar from "../../utilityComponents/PotsProgressBar";
 import OptionsButton from "../modalComponents/OptionsButton";
 
@@ -21,6 +20,7 @@ const PotItem = ({
   setPotAddMoneyModalOpen,
   setPotWithdrawMoneyModalOpen,
 }: Props) => {
+  const theme = useTheme();
   return (
     <SubContainer gap="32px">
       <Stack direction="row" alignItems="center" gap="24px">

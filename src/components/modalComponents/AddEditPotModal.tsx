@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from "react";
 import ActionModal from "./ActionModal";
-import { Box, lighten, Stack, Typography } from "@mui/material";
-import theme from "../../theme/theme";
+import { Box, lighten, Stack, Typography, useTheme } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { formatDecimalNumber } from "../../utils/utilityFunctions";
@@ -70,6 +69,7 @@ const AddEditPotModal = ({
   open,
   onClose,
   updatePots,
+
   potNamesUsed,
   mode = "edit",
   potName,
@@ -77,6 +77,7 @@ const AddEditPotModal = ({
   themeOptions,
   markerTheme = "",
 }: AddEditPotModalProps) => {
+  const theme = useTheme();
   // Get default theme name based on provided markerTheme.
   const getDefaultThemeName = useCallback(() => {
     const defaultTheme = themeOptions.find(

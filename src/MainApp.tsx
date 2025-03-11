@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router";
 
-import { Box, Stack, useMediaQuery } from "@mui/material";
+import { Box, Stack, useMediaQuery, useTheme } from "@mui/material";
 
 import Navbar from "./components/Navbar";
 import OverViewPage from "./pages/OverViewPage";
@@ -9,7 +9,6 @@ import BudgetsPage from "./pages/BudgetsPage";
 import PotsPage from "./pages/PotsPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import TabNavBar from "./components/TabNavBar";
-import theme from "./theme/theme";
 
 import { useContext } from "react";
 import { SettingsContext } from "./context/SettingsContext";
@@ -21,6 +20,8 @@ const MainApp = () => {
   const isTabletOrMobile = useMediaQuery("(max-width:900px)");
 
   const { displayedModules } = useContext(SettingsContext);
+
+  const theme = useTheme();
 
   return (
     <>

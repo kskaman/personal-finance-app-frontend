@@ -5,9 +5,9 @@ import {
   Stack,
   Typography,
   lighten,
+  useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import theme from "../../theme/theme";
 import { MD_BREAK } from "../../data/widthConstants";
 import { DisplayedModules } from "../../types/settingsData";
 import useModal from "../../customHooks/useModal";
@@ -27,6 +27,7 @@ const DisplayModulesGroup = ({
   onChange,
   parentWidth,
 }: DisplayModulesGroupProps) => {
+  const theme = useTheme();
   const isMobile = parentWidth < MD_BREAK;
   const gridTemplateColumns = isMobile
     ? "1fr"

@@ -1,5 +1,4 @@
-import { lighten, Stack, Typography } from "@mui/material";
-import theme from "../../theme/theme";
+import { lighten, Stack, Typography, useTheme } from "@mui/material";
 import Button from "../../utilityComponents/Button";
 import ActionModal from "./ActionModal";
 import { Controller, useForm } from "react-hook-form";
@@ -89,6 +88,7 @@ const PotMoneyModal = ({
   maxLimit,
   updatePotAmount,
 }: PotMoneyModalProps) => {
+  const theme = useTheme();
   // Local state to hold confirmation details
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [exceedFlag, setExceedFlag] = useState<boolean>(false);

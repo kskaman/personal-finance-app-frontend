@@ -1,7 +1,4 @@
-import { Stack } from "@mui/material";
-
-import theme from "../theme/theme";
-
+import { Stack, useTheme } from "@mui/material";
 import TabNavItem from "../utilityComponents/TabNavItem";
 import OverViewIcon from "../Icons/OverViewIcon";
 import TransactionsIcon from "../Icons/TransactionsIcon";
@@ -17,17 +14,20 @@ interface TabNavBarProps {
 }
 
 const TabNavBar = ({ isMobile }: TabNavBarProps) => {
+  const theme = useTheme();
+
   const { displayedModules } = useContext(SettingsContext);
   return (
     <Stack
       direction="row"
       alignItems="flex-end"
-      justifyContent="space-evenly"
+      justifyContent="space-between"
       height={isMobile ? "52px" : "74px"}
       sx={{
         backgroundColor: theme.palette.primary.main,
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",
+        px: "4px",
       }}
     >
       <TabNavItem

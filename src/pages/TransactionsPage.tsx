@@ -1,7 +1,6 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import SetTitle from "../components/SetTitle";
-import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import SubContainer from "../utilityComponents/SubContainer";
 import Filter from "../utilityComponents/Filter";
@@ -137,6 +136,7 @@ const filterAndSortTransactions = (
 
 // Main Page component
 const TransactionsPage = () => {
+  const theme = useTheme();
   const { containerRef, parentWidth } = useParentWidth();
 
   const [pageNum, setPageNum] = useState<number>(() => 1);

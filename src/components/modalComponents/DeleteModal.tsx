@@ -1,6 +1,5 @@
-import { Box, lighten, Stack, Typography } from "@mui/material";
+import { Box, lighten, Stack, Typography, useTheme } from "@mui/material";
 import ActionModal from "./ActionModal";
-import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
 import { capitalizeSentence } from "../../utils/utilityFunctions";
 
@@ -21,6 +20,7 @@ const DeleteModal = ({
   label,
   type,
 }: Props) => {
+  const theme = useTheme();
   const typedToken = capitalizeSentence(label);
 
   const onDelete = () => {

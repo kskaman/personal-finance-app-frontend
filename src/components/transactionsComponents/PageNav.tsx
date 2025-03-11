@@ -1,6 +1,5 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, useTheme } from "@mui/material";
 import CaretLeftIcon from "../../Icons/CaretLeftIcon";
-import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
 import { SM_BREAK } from "../../data/widthConstants";
@@ -18,6 +17,7 @@ const PageNav = ({
   handlePageSelect,
   parentWidth,
 }: Props) => {
+  const theme = useTheme();
   const isMobile = parentWidth < SM_BREAK;
   const lastIndex = numbers.length - 1;
 

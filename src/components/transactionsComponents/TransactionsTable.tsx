@@ -8,9 +8,9 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { Transaction } from "../../types/Data";
-import theme from "../../theme/theme";
 import {
   formatDate,
   formatNumber,
@@ -34,6 +34,7 @@ const TransactionsTable = ({
   setDeleteModalOpen,
   setEditModalOpen,
 }: Props) => {
+  const theme = useTheme();
   const isParentWidth = parentWidth < MD_SM_BREAK;
   const currencySymbol = useContext(SettingsContext).selectedCurrency;
 

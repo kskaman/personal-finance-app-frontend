@@ -6,9 +6,9 @@ import {
   ListItem,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import SubContainer from "../../utilityComponents/SubContainer";
-import theme from "../../theme/theme";
 import {
   formatDateToReadable,
   formatNumber,
@@ -38,6 +38,8 @@ const BudgetsItem = ({
   setDeleteModalOpen,
   setEditModalOpen,
 }: BudgetItemProps) => {
+  const theme = useTheme();
+
   const {
     isOpen: isDetailOpen,
     openModal: openDetails,

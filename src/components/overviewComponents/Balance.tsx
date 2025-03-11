@@ -1,13 +1,11 @@
-import { Typography, Stack } from "@mui/material";
-
-import theme from "../../theme/theme";
-
+import { Typography, Stack, useTheme } from "@mui/material";
 import { formatNumber } from "../../utils/utilityFunctions";
 import { useContext } from "react";
 import { BalanceTransactionsDataContext } from "../../context/BalanceTransactionsContext";
 import { SettingsContext } from "../../context/SettingsContext";
 
 const Balance = ({ isParentSm }: { isParentSm: boolean }) => {
+  const theme = useTheme();
   const balance = useContext(BalanceTransactionsDataContext).balance;
   const currencySymbol = useContext(SettingsContext).selectedCurrency;
 

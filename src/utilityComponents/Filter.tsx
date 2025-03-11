@@ -6,13 +6,13 @@ import {
   Typography,
   IconButton,
   Box,
+  useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import SearchInput from "./SearchInput";
 import CustomDropdown from "./CustomDropdown";
 import SearchIcon from "../Icons/SearchIcon";
 import FilterIcon from "../Icons/FilterIcon";
-import theme from "../theme/theme";
 import { XL_BREAK, MD_BREAK, MD_SM_BREAK } from "../data/widthConstants";
 
 interface FilterProps {
@@ -49,32 +49,35 @@ const FilterOption = ({
   value: string;
   width?: string;
   onChange: (event: SelectChangeEvent) => void;
-}) => (
-  <Box width={width}>
-    <Stack
-      width="100%"
-      direction="row"
-      alignItems="center"
-      gap="8px"
-      justifyContent="space-between"
-    >
-      <Typography
-        fontSize="14px"
-        color={theme.palette.primary.light}
-        whiteSpace="nowrap"
+}) => {
+  const theme = useTheme();
+  return (
+    <Box width={width}>
+      <Stack
+        width="100%"
+        direction="row"
+        alignItems="center"
+        gap="8px"
+        justifyContent="space-between"
       >
-        {label}
-      </Typography>
-      <CustomDropdown
-        width="80%"
-        color={theme.palette.primary.main}
-        options={options}
-        value={value}
-        onChange={onChange}
-      />
-    </Stack>
-  </Box>
-);
+        <Typography
+          fontSize="14px"
+          color={theme.palette.primary.light}
+          whiteSpace="nowrap"
+        >
+          {label}
+        </Typography>
+        <CustomDropdown
+          width="80%"
+          color={theme.palette.primary.main}
+          options={options}
+          value={value}
+          onChange={onChange}
+        />
+      </Stack>
+    </Box>
+  );
+};
 
 const Filter = ({
   parentWidth,
@@ -88,6 +91,7 @@ const Filter = ({
   setSelectedMonth,
   monthOptions,
 }: FilterProps) => {
+  const theme = useTheme();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // Determine if extra filters (category and month) are provided.

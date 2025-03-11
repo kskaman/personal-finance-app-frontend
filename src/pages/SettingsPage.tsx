@@ -1,6 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import PageDiv from "../utilityComponents/PageDiv";
-import theme from "../theme/theme";
 import Button from "../utilityComponents/Button";
 import SetTitle from "../components/SetTitle";
 import LogoutIcon from "../Icons/LogoutIcon";
@@ -21,167 +20,8 @@ import UserAccountInfo from "../components/settingsComponents/UserAccountInfo";
 import { AuthContext } from "../context/AuthProvider";
 import { useNavigate } from "react-router";
 
-const fontOptions: SettingsRadioOption[] = [
-  {
-    value: "source-code",
-    symbol: (
-      <Typography
-        fontSize="14px"
-        color={theme.palette.primary.main}
-        fontFamily="source-code"
-      >
-        Aa
-      </Typography>
-    ),
-    label: (
-      <Typography
-        fontFamily="source-code"
-        fontSize="14px"
-        color={theme.palette.primary.main}
-      >
-        Source Code
-      </Typography>
-    ),
-  },
-  {
-    value: "noto-serif",
-    symbol: (
-      <Typography
-        fontSize="14px"
-        color={theme.palette.primary.main}
-        fontFamily="noto-serif"
-      >
-        Aa
-      </Typography>
-    ),
-    label: (
-      <Typography
-        fontSize="14px"
-        fontFamily="noto-serif"
-        color={theme.palette.primary.main}
-      >
-        Noto Serif
-      </Typography>
-    ),
-  },
-  {
-    value: "public-sans",
-    symbol: (
-      <Typography
-        fontSize="14px"
-        color={theme.palette.primary.main}
-        fontFamily="public-sans"
-      >
-        Aa
-      </Typography>
-    ),
-    label: (
-      <Typography
-        fontFamily="public-sans"
-        fontSize="14px"
-        color={theme.palette.primary.main}
-      >
-        Public Sans
-      </Typography>
-    ),
-  },
-];
-
-const currencyOptions: SettingsRadioOption[] = [
-  {
-    value: "$",
-    symbol: (
-      <Typography color={theme.palette.primary.main} fontSize="14px">
-        $
-      </Typography>
-    ),
-    label: (
-      <Typography fontSize="14px" color={theme.palette.primary.main}>
-        U.S. Dollar
-      </Typography>
-    ),
-  },
-  {
-    value: "C$",
-    symbol: (
-      <Typography fontSize="14px" color={theme.palette.primary.main}>
-        C$
-      </Typography>
-    ),
-    label: (
-      <Typography fontSize="14px" color={theme.palette.primary.main}>
-        Canadian Dollar
-      </Typography>
-    ),
-  },
-  {
-    value: "€",
-    symbol: (
-      <Typography color={theme.palette.primary.main} fontSize="14px">
-        €
-      </Typography>
-    ),
-    label: (
-      <Typography fontSize="14px" color={theme.palette.primary.main}>
-        Euro
-      </Typography>
-    ),
-  },
-  {
-    value: "₹",
-    symbol: (
-      <Typography color={theme.palette.primary.main} fontSize="14px">
-        ₹
-      </Typography>
-    ),
-    label: (
-      <Typography fontSize="14px" color={theme.palette.primary.main}>
-        Indian Rupees
-      </Typography>
-    ),
-  },
-  {
-    value: "£",
-    symbol: (
-      <Typography color={theme.palette.primary.main} fontSize="14px">
-        £
-      </Typography>
-    ),
-    label: (
-      <Typography fontSize="14px" color={theme.palette.primary.main}>
-        British Pound Sterling
-      </Typography>
-    ),
-  },
-  {
-    value: "A$",
-    symbol: (
-      <Typography color={theme.palette.primary.main} fontSize="14px">
-        A$
-      </Typography>
-    ),
-    label: (
-      <Typography fontSize="14px" color={theme.palette.primary.main}>
-        Australian Dollar
-      </Typography>
-    ),
-  },
-  {
-    value: "¥",
-    symbol: (
-      <Typography color={theme.palette.primary.main} fontSize="14px">
-        ¥
-      </Typography>
-    ),
-    label: (
-      <Typography fontSize="14px" color={theme.palette.primary.main}>
-        Chinese Yuan
-      </Typography>
-    ),
-  },
-];
-
 const SettingsPage = () => {
+  const theme = useTheme();
   const { parentWidth, containerRef } = useParentWidth();
   const {
     selectedFont,
@@ -205,6 +45,166 @@ const SettingsPage = () => {
       },
     }));
   };
+
+  const fontOptions: SettingsRadioOption[] = [
+    {
+      value: "source-code",
+      symbol: (
+        <Typography
+          fontSize="14px"
+          color={theme.palette.primary.main}
+          fontFamily="source-code"
+        >
+          Aa
+        </Typography>
+      ),
+      label: (
+        <Typography
+          fontFamily="source-code"
+          fontSize="14px"
+          color={theme.palette.primary.main}
+        >
+          Source Code
+        </Typography>
+      ),
+    },
+    {
+      value: "noto-serif",
+      symbol: (
+        <Typography
+          fontSize="14px"
+          color={theme.palette.primary.main}
+          fontFamily="noto-serif"
+        >
+          Aa
+        </Typography>
+      ),
+      label: (
+        <Typography
+          fontSize="14px"
+          fontFamily="noto-serif"
+          color={theme.palette.primary.main}
+        >
+          Noto Serif
+        </Typography>
+      ),
+    },
+    {
+      value: "public-sans",
+      symbol: (
+        <Typography
+          fontSize="14px"
+          color={theme.palette.primary.main}
+          fontFamily="public-sans"
+        >
+          Aa
+        </Typography>
+      ),
+      label: (
+        <Typography
+          fontFamily="public-sans"
+          fontSize="14px"
+          color={theme.palette.primary.main}
+        >
+          Public Sans
+        </Typography>
+      ),
+    },
+  ];
+
+  const currencyOptions: SettingsRadioOption[] = [
+    {
+      value: "$",
+      symbol: (
+        <Typography color={theme.palette.primary.main} fontSize="14px">
+          $
+        </Typography>
+      ),
+      label: (
+        <Typography fontSize="14px" color={theme.palette.primary.main}>
+          U.S. Dollar
+        </Typography>
+      ),
+    },
+    {
+      value: "C$",
+      symbol: (
+        <Typography fontSize="14px" color={theme.palette.primary.main}>
+          C$
+        </Typography>
+      ),
+      label: (
+        <Typography fontSize="14px" color={theme.palette.primary.main}>
+          Canadian Dollar
+        </Typography>
+      ),
+    },
+    {
+      value: "€",
+      symbol: (
+        <Typography color={theme.palette.primary.main} fontSize="14px">
+          €
+        </Typography>
+      ),
+      label: (
+        <Typography fontSize="14px" color={theme.palette.primary.main}>
+          Euro
+        </Typography>
+      ),
+    },
+    {
+      value: "₹",
+      symbol: (
+        <Typography color={theme.palette.primary.main} fontSize="14px">
+          ₹
+        </Typography>
+      ),
+      label: (
+        <Typography fontSize="14px" color={theme.palette.primary.main}>
+          Indian Rupees
+        </Typography>
+      ),
+    },
+    {
+      value: "£",
+      symbol: (
+        <Typography color={theme.palette.primary.main} fontSize="14px">
+          £
+        </Typography>
+      ),
+      label: (
+        <Typography fontSize="14px" color={theme.palette.primary.main}>
+          British Pound Sterling
+        </Typography>
+      ),
+    },
+    {
+      value: "A$",
+      symbol: (
+        <Typography color={theme.palette.primary.main} fontSize="14px">
+          A$
+        </Typography>
+      ),
+      label: (
+        <Typography fontSize="14px" color={theme.palette.primary.main}>
+          Australian Dollar
+        </Typography>
+      ),
+    },
+    {
+      value: "¥",
+      symbol: (
+        <Typography color={theme.palette.primary.main} fontSize="14px">
+          ¥
+        </Typography>
+      ),
+      label: (
+        <Typography fontSize="14px" color={theme.palette.primary.main}>
+          Chinese Yuan
+        </Typography>
+      ),
+    },
+  ];
 
   return (
     <>

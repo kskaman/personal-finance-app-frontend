@@ -1,8 +1,7 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { PieChart } from "@mui/x-charts";
 import { formatNumber } from "../utils/utilityFunctions";
-import { darken, lighten } from "@mui/system"; // Now importing darken as well
-import theme from "../theme/theme";
+import { darken, lighten } from "@mui/system";
 import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
 
@@ -17,6 +16,7 @@ const BudgetsPieChart = ({
   limit,
   colors,
 }: BudgetsPieChartProps) => {
+  const theme = useTheme();
   const total = spendings.reduce((acc, cur) => acc + cur, 0);
   const currencySymbol = useContext(SettingsContext).selectedCurrency;
 

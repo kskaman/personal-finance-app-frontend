@@ -5,8 +5,8 @@ import SignupForm from "../components/loginSignupComponents/SignupForm";
 import SubContainer from "../utilityComponents/SubContainer";
 import illustrationImage from "../assets/images/illustration-authentication.svg";
 import logoIcon from "../assets/images/logo-large.svg";
-import theme from "../theme/theme";
 import ForgotPasswordForm from "../components/loginSignupComponents/ForgotPasswordForm";
+import { beige100, grey900, white } from "../theme/colors";
 
 const LoginPage = () => {
   const [isLoginOpen, setLoginOpen] = useState<boolean>(true);
@@ -17,7 +17,7 @@ const LoginPage = () => {
       direction={{ xs: "column", md: "row" }}
       height="100vh"
       width="100vw"
-      bgcolor={theme.palette.background.default}
+      bgcolor={beige100}
       overflow="auto"
     >
       {/* illustration image for screens  >= 900px */}
@@ -44,16 +44,12 @@ const LoginPage = () => {
             role="heading"
             fontSize="32px"
             fontWeight="bold"
-            color={theme.palette.text.primary}
+            color={white}
             width="87%"
           >
             Keep track of your money and save for your future
           </Typography>
-          <Typography
-            width="87%"
-            fontSize="14px"
-            color={theme.palette.text.primary}
-          >
+          <Typography width="87%" fontSize="14px" color={white}>
             Personal finance app puts you in control of your spending. Track
             transactions, set budgets, and add to savings pots easily.
           </Typography>
@@ -63,7 +59,7 @@ const LoginPage = () => {
       {/* Logo header for screen sizes < 900px */}
       <Stack
         display={{ xs: "flex", md: "none" }}
-        bgcolor={theme.palette.primary.main}
+        bgcolor={grey900}
         justifyContent="center"
         alignItems="center"
         height="69.76px"

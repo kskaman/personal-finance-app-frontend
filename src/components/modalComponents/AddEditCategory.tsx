@@ -6,9 +6,8 @@ import { useContext, useEffect } from "react";
 import CategoryMarkerContext from "../../context/CategoryMarkerContext";
 import { Category } from "../../types/Data";
 import ActionModal from "./ActionModal";
-import { lighten, Stack, Typography } from "@mui/material";
+import { lighten, Stack, Typography, useTheme } from "@mui/material";
 import ModalTextField from "./ModalTextField";
-import theme from "../../theme/theme";
 import Button from "../../utilityComponents/Button";
 
 // Interface and Props
@@ -41,9 +40,11 @@ const buildSchema = (existingCategories: string[]) =>
 const AddEditCategoryModal = ({
   open,
   onClose,
+
   categoryName,
   updateCategories,
 }: AddEditCategoryModalProps) => {
+  const theme = useTheme();
   const existingCategories = useContext(CategoryMarkerContext).categories.map(
     (category: Category) => {
       return category.name.toLowerCase();

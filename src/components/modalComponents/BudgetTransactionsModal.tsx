@@ -5,8 +5,8 @@ import {
   ListItem,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
-import theme from "../../theme/theme";
 import {
   formatDateToReadable,
   formatNumber,
@@ -25,9 +25,11 @@ const BudgetTransactionsModal = ({
 }: {
   open: boolean;
   onClose: () => void;
+
   transactionsForCategory: Transaction[];
   categoryLabel: string;
 }) => {
+  const theme = useTheme();
   const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (

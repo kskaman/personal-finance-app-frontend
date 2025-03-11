@@ -1,6 +1,5 @@
-import { Typography, Box, Stack } from "@mui/material";
+import { Typography, Box, Stack, useTheme } from "@mui/material";
 import Button from "@mui/material/Button";
-import theme from "../theme/theme";
 
 import MinimizeIcon from "../Icons/MinimizeIcon";
 
@@ -10,6 +9,7 @@ interface MinimizeButtonProps {
 }
 
 const MinimizeButton = ({ onClick, isMinimized }: MinimizeButtonProps) => {
+  const theme = useTheme();
   return (
     <>
       <Button

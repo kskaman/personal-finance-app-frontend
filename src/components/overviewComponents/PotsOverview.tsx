@@ -1,6 +1,5 @@
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { Box, Link, Stack, Typography, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import theme from "../../theme/theme";
 import { useContext } from "react";
 import PotIcon from "../../Icons/PotIcon";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
@@ -12,6 +11,7 @@ import { SM_BREAK } from "../../data/widthConstants";
 import { SettingsContext } from "../../context/SettingsContext";
 
 const PotsOverview = () => {
+  const theme = useTheme();
   const pots = useContext(PotsDataContext).pots;
 
   const totalSaved = pots.reduce((sum, pot) => sum + pot.total, 0);

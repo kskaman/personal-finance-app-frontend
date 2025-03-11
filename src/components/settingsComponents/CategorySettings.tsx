@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
-import { Box, lighten, Stack, Typography } from "@mui/material";
+import { Box, lighten, Stack, Typography, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import theme from "../../theme/theme";
 import { MD_BREAK } from "../../data/widthConstants";
 import SubContainer from "../../utilityComponents/SubContainer";
 import EditIcon from "../../Icons/EditIcon.tsx";
@@ -32,6 +31,7 @@ const toCamelCase = (str: string): string => {
 
 // Main component
 const CategorySettings = ({ parentWidth }: CategorySettingsProps) => {
+  const theme = useTheme();
   const { categories, setCategories } = useContext(CategoryMarkerContext);
   const { setTransactions } = useContext(BalanceTransactionsActionContext);
   const {

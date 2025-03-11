@@ -1,6 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import SetTitle from "../components/SetTitle";
-import theme from "../theme/theme";
 import PageDiv from "../utilityComponents/PageDiv";
 import { useContext, useState } from "react";
 import {
@@ -59,6 +58,7 @@ const filterAndSortBills = (
 };
 
 const BillsPage = () => {
+  const theme = useTheme();
   const { containerRef, parentWidth } = useParentWidth();
 
   const { recurringBills } = useContext(RecurringDataContext);

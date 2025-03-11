@@ -5,16 +5,17 @@ import {
   IconButton,
   TextField,
   lighten,
+  useTheme,
 } from "@mui/material";
 import EditIcon from "../../Icons/EditIcon";
 import Button from "../../utilityComponents/Button";
 import SubContainer from "../../utilityComponents/SubContainer";
 import ChangePasswordModal from "../modalComponents/ChangePasswordModal";
-import theme from "../../theme/theme";
 import { AuthContext } from "../../context/AuthProvider";
 import { User } from "../../types/User";
 
 const UserAccountInfo = () => {
+  const theme = useTheme();
   const { user, setUser } = useContext(AuthContext);
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
   const [editedName, setEditedName] = useState<string>(user?.name || "");

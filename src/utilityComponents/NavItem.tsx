@@ -1,7 +1,5 @@
-import { Typography, Box, Stack } from "@mui/material";
+import { Typography, Box, Stack, useTheme } from "@mui/material";
 import { NavLink } from "react-router";
-
-import theme from "../theme/theme";
 
 interface NavItemProps {
   Icon: React.FC<{ color: string }>;
@@ -11,6 +9,7 @@ interface NavItemProps {
 }
 
 const NavItem = ({ to, Icon, text, isMinimized }: NavItemProps) => {
+  const theme = useTheme();
   return (
     <Stack
       component={NavLink}

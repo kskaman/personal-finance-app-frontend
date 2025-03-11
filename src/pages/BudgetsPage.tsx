@@ -1,6 +1,13 @@
-import { Box, Divider, List, ListItem, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  List,
+  ListItem,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import SetTitle from "../components/SetTitle";
-import theme from "../theme/theme";
 import BudgetsPieChart from "../utilityComponents/BudgetsPieChart";
 import PageDiv from "../utilityComponents/PageDiv";
 import SubContainer from "../utilityComponents/SubContainer";
@@ -25,6 +32,7 @@ import { SettingsContext } from "../context/SettingsContext";
 import EmptyStatePage from "../utilityComponents/EmptyStatePage";
 
 const BudgetsPage = () => {
+  const theme = useTheme();
   const { budgets, budgetsTotal } = useContext(BudgetsDataContext);
   const { setBudgets } = useContext(BudgetsActionContext);
   const { transactions, monthlySpentByCategory } = useContext(

@@ -1,6 +1,5 @@
-import { Link, Stack, Typography } from "@mui/material";
+import { Link, Stack, Typography, useTheme } from "@mui/material";
 import CaretRightIcon from "../../Icons/CaretRightIcon";
-import theme from "../../theme/theme";
 import SubContainer from "../../utilityComponents/SubContainer";
 import { useContext } from "react";
 import { RecurringDataContext } from "../../context/RecurringContext";
@@ -8,6 +7,7 @@ import { formatNumber } from "../../utils/utilityFunctions";
 import { SettingsContext } from "../../context/SettingsContext";
 
 const BillsOverview = () => {
+  const theme = useTheme();
   const { recurringSummary } = useContext(RecurringDataContext);
 
   const summaryData = {
