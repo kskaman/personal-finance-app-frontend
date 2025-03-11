@@ -97,7 +97,13 @@ const UserAccountInfo = () => {
           hoverColor={theme.palette.text.primary}
           hoverBgColor={lighten(theme.palette.primary.main, 0.2)}
         >
-          Change Password
+          <Typography
+            fontSize="14px"
+            fontWeight="bold"
+            color={theme.palette.text.primary}
+          >
+            Change Password
+          </Typography>
         </Button>
       </Stack>
 
