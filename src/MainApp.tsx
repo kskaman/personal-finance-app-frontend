@@ -31,7 +31,7 @@ const MainApp = () => {
       <Stack
         bgcolor={theme.palette.background.default}
         direction={isTabletOrMobile ? "column" : "row"}
-        sx={{ height: "100%", width: "100%" }}
+        sx={{ height: "100%", width: "100%", overflowY: "auto" }}
       >
         {!isTabletOrMobile && <Navbar />}
         <Box sx={{ flex: 1, overflow: "auto" }}>

@@ -34,6 +34,7 @@ const SubContainer = ({
       gap={gap}
       sx={{
         padding,
+        overFlowY: "auto",
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import theme from "../../theme/theme";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { User } from "../../types/User";
+import PasswordTextField from "./PasswordTextField";
 
 interface FormValues {
   email: string;
@@ -22,11 +23,17 @@ const buildSchema = () =>
 
 interface LoginFormProps {
   formToggle: () => void;
+  forgotPasswordFormToggle: () => void;
   userEmail?: string;
   userPassword?: string;
 }
 
-const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
+const LoginForm = ({
+  formToggle,
+  forgotPasswordFormToggle,
+  userEmail,
+  userPassword,
+}: LoginFormProps) => {
   const { control, handleSubmit, trigger, reset } = useForm<FormValues>({
     resolver: yupResolver(buildSchema()),
     mode: "onSubmit",
@@ -79,7 +86,7 @@ const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
         </Typography>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack gap="32px">
+        <Stack gap="20px">
           <Controller
             name="email"
             control={control}
@@ -104,22 +111,15 @@ const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
             name="password"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <ModalTextField
+              <PasswordTextField
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={() => {
-                  field.onBlur();
-                  if (field.value.trim() !== "") {
-                    trigger(field.name);
-                  }
-                }}
+                onBlur={field.onBlur}
                 error={error}
-                label="Password"
-                placeholder=""
-                adornmentTextFlag={false}
               />
             )}
           />
+
           <Button
             type="submit"
             width="100%"
@@ -136,6 +136,16 @@ const LoginForm = ({ formToggle, userEmail, userPassword }: LoginFormProps) => {
           </Button>
         </Stack>
       </form>
+      <Stack gap={1} margin="auto" direction="row" alignItems="center">
+        <Typography
+          onClick={forgotPasswordFormToggle}
+          fontWeight="bold"
+          color={theme.palette.primary.main}
+          sx={{ cursor: "pointer", textDecoration: "underline" }}
+        >
+          Forgot Password?
+        </Typography>
+      </Stack>
       <Stack gap={1} margin="auto" direction="row">
         <Typography fontSize="14px" color={theme.palette.primary.light}>
           Need to create an account?

@@ -6,9 +6,11 @@ import SubContainer from "../utilityComponents/SubContainer";
 import illustrationImage from "../assets/images/illustration-authentication.svg";
 import logoIcon from "../assets/images/logo-large.svg";
 import theme from "../theme/theme";
+import ForgotPasswordForm from "../components/loginSignupComponents/ForgotPasswordForm";
 
 const LoginPage = () => {
   const [isLoginOpen, setLoginOpen] = useState<boolean>(true);
+  const [forgotPasswordForm, setForgotPasswordForm] = useState<boolean>(false);
 
   return (
     <Stack
@@ -75,13 +77,20 @@ const LoginPage = () => {
 
       {/* Login / Signup Form Container */}
       <Stack flex={1} justifyContent="center" alignItems="center" height="100%">
-        <SubContainer width="min(560px, 90%)">
+        <SubContainer width="min(560px, 90%)" gap="20px">
           {isLoginOpen ? (
-            <LoginForm
-              formToggle={() => setLoginOpen(false)}
-              userEmail={"john@example.com"}
-              userPassword={"password123"}
-            />
+            forgotPasswordForm ? (
+              <ForgotPasswordForm
+                forgotPasswordFormToggle={() => setForgotPasswordForm(false)}
+              />
+            ) : (
+              <LoginForm
+                formToggle={() => setLoginOpen(false)}
+                forgotPasswordFormToggle={() => setForgotPasswordForm(true)}
+                userEmail={"john@example.com"}
+                userPassword={"password123"}
+              />
+            )
           ) : (
             <SignupForm formToggle={() => setLoginOpen(true)} />
           )}

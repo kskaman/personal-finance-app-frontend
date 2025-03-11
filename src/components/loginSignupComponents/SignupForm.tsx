@@ -1,4 +1,3 @@
-// SignupForm.tsx
 import { yupResolver } from "@hookform/resolvers/yup";
 import { lighten, Stack, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
@@ -7,6 +6,7 @@ import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
 import theme from "../../theme/theme";
 import { useState } from "react";
+import PasswordTextField from "./PasswordTextField";
 
 interface FormValues {
   name: string;
@@ -14,11 +14,20 @@ interface FormValues {
   password: string;
 }
 
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@_])[A-Za-z\d#@_]{8,20}$/;
+
 const buildSchema = () =>
   yup.object({
     name: yup.string().required("Name is required"),
-    email: yup.string().required("Email is required"),
-    password: yup.string().required("Password is required"),
+    email: yup
+      .string()
+      .required("Email is required")
+      .email("Enter a valid email"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .matches(passwordRegex, "Password does not meet criteria"),
   });
 
 interface SignupFormProps {
@@ -57,7 +66,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
         </Typography>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack gap="32px">
+        <Stack gap="20px">
           {/* Name Field */}
           <Controller
             name="name"
@@ -105,22 +114,21 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
             name="password"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <ModalTextField
+              <PasswordTextField
                 value={field.value}
                 onChange={field.onChange}
-                onBlur={() => {
-                  field.onBlur();
-                  if (field.value.trim() !== "") {
-                    trigger(field.name);
-                  }
-                }}
+                onBlur={field.onBlur}
                 error={error}
-                label="Create Password"
-                placeholder=""
-                adornmentTextFlag={false}
               />
             )}
           />
+          {/* Password instructions */}
+          <Typography fontSize="14px" color={theme.palette.primary.light}>
+            Your password must be 8 to 20 characters long and include at least
+            one uppercase letter, one lowercase letter, one digit, and at least
+            one of the following special characters: #, @, or _
+          </Typography>
+
           {/* Signup Button */}
           <Button
             type="submit"
@@ -138,7 +146,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
           </Button>
         </Stack>
       </form>
-      <Stack gap={1} margin="auto" direction="row" mt={2}>
+      <Stack gap={1} margin="auto" direction="row" alignItems="center">
         <Typography fontSize="14px" color={theme.palette.primary.light}>
           Already have an account?
         </Typography>
