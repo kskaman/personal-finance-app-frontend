@@ -9,6 +9,7 @@ interface RecurringDataContextProps {
 export const RecurringDataContext = createContext<RecurringDataContextProps>({
   recurringBills: [],
   recurringSummary: {
+    due: { count: 0, total: 0 },
     paid: { count: 0, total: 0 },
     unpaid: { count: 0, total: 0 },
     dueSoon: { count: 0, total: 0 },
