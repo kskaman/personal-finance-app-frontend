@@ -17,6 +17,9 @@ import { useContext } from "react";
 import { SettingsContext } from "../context/SettingsContext";
 import CategorySettings from "../components/settingsComponents/CategorySettings";
 import DisplayModulesGroup from "../components/settingsComponents/DisplayModulesGroup";
+import UserAccountInfo from "../components/settingsComponents/UserAccountInfo";
+import { AuthContext } from "../context/AuthProvider";
+import { useNavigate } from "react-router";
 
 const fontOptions: SettingsRadioOption[] = [
   {
@@ -189,6 +192,9 @@ const SettingsPage = () => {
     setDisplayedModules,
   } = useContext(SettingsContext);
 
+  const navigate = useNavigate();
+
+  const { logout } = useContext(AuthContext);
   // Handler to toggle the "using" property for a given module.
   const handleModuleToggle = (moduleKey: keyof DisplayedModules) => {
     setDisplayedModules((prev: DisplayedModules) => ({
@@ -198,12 +204,6 @@ const SettingsPage = () => {
         using: !prev[moduleKey].using,
       },
     }));
-  };
-
-  // Logout handler: remove token and navigate to login.
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    window.location.reload();
   };
 
   return (
@@ -227,7 +227,10 @@ const SettingsPage = () => {
               padding="16px"
               backgroundColor={theme.palette.primary.main}
               color={theme.palette.text.primary}
-              onClick={handleLogout}
+              onClick={() => {
+                navigate("/login");
+                logout();
+              }}
               hoverColor={theme.palette.text.primary}
               hoverBgColor={theme.palette.primary.light}
             >
@@ -249,6 +252,9 @@ const SettingsPage = () => {
               </Stack>
             </Button>
           </Stack>
+
+          {/* User Account Info */}
+          <UserAccountInfo />
 
           <Stack gap="20px">
             {/* Font Option */}

@@ -5,10 +5,13 @@ import * as yup from "yup";
 import ModalTextField from "../modalComponents/ModalTextField";
 import Button from "../../utilityComponents/Button";
 import theme from "../../theme/theme";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { User } from "../../types/User";
+
+import { useContext, useEffect } from "react";
+
 import PasswordTextField from "./PasswordTextField";
+
+import { AuthContext } from "../../context/AuthProvider";
+import { useNavigate } from "react-router";
 
 interface FormValues {
   email: string;
@@ -34,6 +37,9 @@ const LoginForm = ({
   userEmail,
   userPassword,
 }: LoginFormProps) => {
+  const { login, loginError } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const { control, handleSubmit, trigger, reset } = useForm<FormValues>({
     resolver: yupResolver(buildSchema()),
     mode: "onSubmit",
@@ -42,7 +48,6 @@ const LoginForm = ({
       password: userPassword || "",
     },
   });
-  const [errorMessage, setErrorMessage] = useState<string>("");
 
   // Reset form when props change
   useEffect(() => {
@@ -53,25 +58,9 @@ const LoginForm = ({
   }, [userEmail, userPassword, reset]);
 
   const onSubmit = async (data: FormValues) => {
-    setErrorMessage("");
-    try {
-      const response = await axios.get("./users.json");
-
-      const users: User[] = response.data.users;
-
-      // Find a user whose credentials match
-      const foundUser = users.find(
-        (u) => u.email === data.email && u.password === data.password
-      );
-      if (foundUser) {
-        localStorage.setItem("userToken", foundUser.id);
-        window.location.reload();
-      } else {
-        setErrorMessage("Invalid email or password.");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      setErrorMessage("Login failed. Please try again later.");
+    const success = await login(data.email, data.password);
+    if (success) {
+      navigate("/");
     }
   };
 
@@ -80,9 +69,9 @@ const LoginForm = ({
       <Typography fontSize="32px" fontWeight="bold">
         Login
       </Typography>
-      {errorMessage && (
+      {loginError && (
         <Typography color="error" mb={2}>
-          {errorMessage}
+          {loginError}
         </Typography>
       )}
       <form onSubmit={handleSubmit(onSubmit)}>

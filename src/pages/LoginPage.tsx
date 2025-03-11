@@ -18,7 +18,7 @@ const LoginPage = () => {
       height="100vh"
       width="100vw"
       bgcolor={theme.palette.background.default}
-      overflow="hidden"
+      overflow="auto"
     >
       {/* illustration image for screens  >= 900px */}
       <Stack
@@ -88,7 +88,7 @@ const LoginPage = () => {
                 formToggle={() => setLoginOpen(false)}
                 forgotPasswordFormToggle={() => setForgotPasswordForm(true)}
                 userEmail={"john@example.com"}
-                userPassword={"password123"}
+                userPassword={"johnPass#1"}
               />
             )
           ) : (

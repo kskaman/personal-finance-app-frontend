@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataType } from "../types/Data";
 import BalanceTransactionsProvider from "./BalanceTransactionsProvider";
 import BudgetsProvider from "./BudgetsProvider";
@@ -7,6 +7,7 @@ import RecurringProvider from "./RecurringProvider";
 import { PotsProvider } from "./PotsProvider";
 import CategoryMarkerProvider from "./CategoryMarkerProvider";
 import { SettingsProvider } from "./SettingsProvider";
+import { AuthContext } from "./AuthProvider";
 
 /**
  * Helper function to update rendered data
@@ -75,8 +76,7 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Retrieve the user token (user's UUID) from localStorage.
-  const userToken: string | null = localStorage.getItem("userToken");
+  const userToken = useContext(AuthContext).user?.id;
 
   useEffect(() => {
     const controller = new AbortController();

@@ -9,6 +9,7 @@ const PageDiv = ({ children }: { children: ReactNode }) => {
       sx={{
         px: { xs: 2, sm: 5 },
         py: 4,
+        overflowY: "auto",
       }}
     >
       {children}

@@ -10,7 +10,7 @@ import PotsPage from "./pages/PotsPage";
 import TransactionsPage from "./pages/TransactionsPage";
 import TabNavBar from "./components/TabNavBar";
 import theme from "./theme/theme";
-import DataProvider from "./context/DataProvider";
+
 import { useContext } from "react";
 import { SettingsContext } from "./context/SettingsContext";
 import SettingsPage from "./pages/SettingsPage";
@@ -21,8 +21,9 @@ const MainApp = () => {
   const isTabletOrMobile = useMediaQuery("(max-width:900px)");
 
   const { displayedModules } = useContext(SettingsContext);
+
   return (
-    <DataProvider>
+    <>
       {/**
       If large screen => row layout with side navbar
       If tablet/mobile => column layout with tab navbar
@@ -34,7 +35,7 @@ const MainApp = () => {
         sx={{ height: "100%", width: "100%", overflowY: "auto" }}
       >
         {!isTabletOrMobile && <Navbar />}
-        <Box sx={{ flex: 1, overflow: "auto" }}>
+        <Box sx={{ flex: 1, overflowY: "auto" }}>
           <Routes>
             <Route path="/" element={<OverViewPage />} />
             {/* We will remove Error404 when backend is complete.
@@ -58,7 +59,7 @@ const MainApp = () => {
         </Box>
         {isTabletOrMobile && <TabNavBar isMobile={isMobile} />}
       </Stack>
-    </DataProvider>
+    </>
   );
 };
 
