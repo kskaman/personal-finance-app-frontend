@@ -164,15 +164,23 @@ const BillsTable = ({
                       {bill.name}
                     </Typography>
                   </Box>
-                  <OptionsButton
-                    type="bill"
-                    onEdit={() => {
-                      setEditModalOpen(bill);
-                    }}
-                    onDelete={() => {
-                      setDeleteModalOpen(bill);
-                    }}
-                  />
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    width="100%"
+                    marginLeft={"auto"}
+                  >
+                    <OptionsButton
+                      type="bill"
+                      onEdit={() => {
+                        setEditModalOpen(bill);
+                      }}
+                      onDelete={() => {
+                        setDeleteModalOpen(bill);
+                      }}
+                    />
+                  </Stack>
                 </Stack>
 
                 <Stack
@@ -314,6 +322,7 @@ const BillsTable = ({
                   alignItems="center"
                   justifyContent="flex-end"
                   width="100%"
+                  marginLeft={"auto"}
                 >
                   <OptionsButton
                     type="bill"

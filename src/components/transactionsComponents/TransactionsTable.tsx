@@ -39,7 +39,11 @@ const TransactionsTable = ({
   const currencySymbol = useContext(SettingsContext).selectedCurrency;
 
   return (
-    <Table>
+    <Table
+      sx={{
+        "& td, & th": { paddingX: "0" },
+      }}
+    >
       {/* Table Head (Visible only on larger screens) */}
       <TableHead
         sx={{
@@ -170,11 +174,19 @@ const TransactionsTable = ({
                   </Typography>
 
                   {/* Action Button */}
-                  <OptionsButton
-                    type="transaction"
-                    onEdit={() => setEditModalOpen(txn)}
-                    onDelete={() => setDeleteModalOpen(txn)}
-                  />
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    width="100%"
+                    marginLeft={"auto"}
+                  >
+                    <OptionsButton
+                      type="transaction"
+                      onEdit={() => setEditModalOpen(txn)}
+                      onDelete={() => setDeleteModalOpen(txn)}
+                    />
+                  </Stack>
                 </Stack>
 
                 {/* Category + Date (Below Name) */}
@@ -252,11 +264,19 @@ const TransactionsTable = ({
                   {`${currencySymbol}${formatNumber(Math.abs(txn.amount))}`}
                 </TableCell>
                 <TableCell sx={{ textAlign: "right" }}>
-                  <OptionsButton
-                    type="transaction"
-                    onEdit={() => setEditModalOpen(txn)}
-                    onDelete={() => setDeleteModalOpen(txn)}
-                  />
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="flex-end"
+                    width="100%"
+                    marginLeft={"auto"}
+                  >
+                    <OptionsButton
+                      type="transaction"
+                      onEdit={() => setEditModalOpen(txn)}
+                      onDelete={() => setDeleteModalOpen(txn)}
+                    />
+                  </Stack>
                 </TableCell>
               </>
             )}

@@ -506,7 +506,7 @@ const TransactionsPage = () => {
                 hoverBgColor={theme.palette.primary.light}
               >
                 <Typography noWrap fontSize="14px" fontWeight="bold">
-                  + Add New Transaction
+                  + Add Transaction
                 </Typography>
               </Button>
             </Stack>

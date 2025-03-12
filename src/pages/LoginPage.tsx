@@ -15,10 +15,9 @@ const LoginPage = () => {
   return (
     <Stack
       direction={{ xs: "column", md: "row" }}
-      height="100vh"
-      width="100vw"
       bgcolor={beige100}
       overflow="auto"
+      minHeight={"100%"}
     >
       {/* illustration image for screens  >= 900px */}
       <Stack
@@ -26,7 +25,6 @@ const LoginPage = () => {
         padding="20px"
         width="42%"
         maxWidth="560px"
-        height="100%"
         position="relative"
       >
         <Box
@@ -72,7 +70,12 @@ const LoginPage = () => {
       </Stack>
 
       {/* Login / Signup Form Container */}
-      <Stack flex={1} justifyContent="center" alignItems="center" height="100%">
+      <Stack
+        flex={1}
+        justifyContent="center"
+        alignItems="center"
+        paddingY="48px"
+      >
         <SubContainer width="min(560px, 90%)" gap="20px">
           {isLoginOpen ? (
             forgotPasswordForm ? (

@@ -157,7 +157,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
         <Typography
           onClick={formToggle}
           fontWeight="bold"
-          color={grey500}
+          color={grey900}
           sx={{ cursor: "pointer", textDecoration: "underline" }}
         >
           Login
