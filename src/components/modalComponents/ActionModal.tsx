@@ -12,7 +12,13 @@ interface Props {
 const ActionModal = ({ open, onClose, children, heading }: Props) => {
   const theme = useTheme();
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      sx={{
+        marginY: "20px",
+      }}
+    >
       <Stack
         gap="20px"
         maxHeight={{ xs: "85vh", sm: "95vh" }}
@@ -25,7 +31,6 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
           width: { xs: "90%", sm: "560px" },
           bgcolor: theme.palette.text.primary,
           padding: { xs: "20px 24px", sm: "32px" },
-          margin: "20px",
           borderRadius: "12px",
           overflow: "auto",
           outline: "none",

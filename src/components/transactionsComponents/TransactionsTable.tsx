@@ -123,7 +123,7 @@ const TransactionsTable = ({
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
-                  width="100%"
+                  width="80%"
                 >
                   <Box
                     sx={{
@@ -166,7 +166,6 @@ const TransactionsTable = ({
                           ? theme.palette.primary.main
                           : theme.palette.others.green,
                       marginLeft: "auto",
-                      marginRight: "8px",
                     }}
                   >
                     {txn.amount < 0 ? "-" : "+"}
