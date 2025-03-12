@@ -130,7 +130,7 @@ const TransactionsTable = ({
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "center",
-                      width: "80%",
+                      maxWidth: "80%",
                     }}
                   >
                     <Avatar
