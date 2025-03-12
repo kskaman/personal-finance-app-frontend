@@ -178,8 +178,7 @@ const TransactionsTable = ({
                     direction="row"
                     alignItems="center"
                     justifyContent="flex-end"
-                    width="100%"
-                    marginLeft={"auto"}
+                    marginLeft={"16px"}
                   >
                     <OptionsButton
                       type="transaction"
