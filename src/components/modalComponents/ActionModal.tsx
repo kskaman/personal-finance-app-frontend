@@ -16,7 +16,7 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
       open={open}
       onClose={onClose}
       sx={{
-        marginY: "20px",
+        marginY: "32px",
       }}
     >
       <Stack
@@ -44,9 +44,6 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
           direction="row"
           justifyContent="space-between"
           alignItems="center"
-          sx={{
-            overFlowY: "auto",
-          }}
         >
           <Typography
             fontSize="20px"

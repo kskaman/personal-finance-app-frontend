@@ -118,18 +118,19 @@ const TransactionsTable = ({
                   width: "100%",
                 }}
               >
-                {/* Name + Avatar */}
                 <Stack
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
-                  width="80%"
+                  width="100%"
                 >
+                  {/* Name + Avatar */}
                   <Box
                     sx={{
                       display: "flex",
                       flexDirection: "row",
                       alignItems: "center",
+                      width: "80%",
                     }}
                   >
                     <Avatar
