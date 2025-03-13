@@ -71,6 +71,7 @@ const SignupForm = ({ formToggle }: SignupFormProps) => {
           <Controller
             name="name"
             control={control}
+            //! avoid implcit any
             render={({ field, fieldState: { error } }) => (
               <ModalTextField
                 value={field.value}

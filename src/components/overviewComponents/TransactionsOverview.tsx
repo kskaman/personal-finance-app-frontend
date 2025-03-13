@@ -63,6 +63,7 @@ const TransactionsOverview = () => {
 
       <List>
         {latestTransactions.map((transaction, index) => (
+          //! Two things mentioned in other files, this can be a fragment to remove the unnecessary div and the enter jsx here can be extracted into a TransactionItem component to separate concerns
           <div key={transaction.id}>
             <ListItem
               sx={{
@@ -126,6 +127,9 @@ const TransactionsOverview = () => {
                 </Typography>
               </Stack>
             </ListItem>
+            {/* if you do make a TransactionItem component, you could create a
+            showDivider prop to conditionally render the divider instead of
+            checking for every item */}
             {index < latestTransactions.length - 1 && <Divider />}{" "}
             {/* Add divider between items */}
           </div>

@@ -11,6 +11,7 @@ interface FormValues {
   email: string;
 }
 
+//! This is very minor as it's only a single validation, but I am generally a fan of extracting validation logic into a schema file to keep the form component clean and focused on rendering the form.
 const buildSchema = () =>
   yup.object({
     email: yup
@@ -55,6 +56,7 @@ const ForgotPasswordForm = ({
           <Controller
             name="email"
             control={control}
+            //! Avoid implicit any types
             render={({ field, fieldState: { error } }) => (
               <ModalTextField
                 value={field.value}

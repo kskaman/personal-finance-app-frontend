@@ -90,6 +90,7 @@ const PotsOverview = () => {
             columns={2}
           >
             {fourPots.map((pot, index) => (
+              //! You can keep this component cleaner by extracting whats being mapped into, into a separate PotsItem component. This is generally a good practice to separate concerns and make components more reusable
               <Grid
                 key={index}
                 maxHeight={isParentWidth ? "100%" : "45%"}

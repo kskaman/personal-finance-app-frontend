@@ -56,6 +56,7 @@ const TransactionsTable = ({
         }}
       >
         <TableRow>
+          //! create a custom Header Cell component to reduce repeated code
           <TableCell
             sx={{
               fontSize: "12px",
@@ -156,7 +157,8 @@ const TransactionsTable = ({
                       {txn.name}
                     </Typography>
                   </Box>
-
+                  //! create a renderAmount function to reduce repeated code
+                  wherever amount is needed
                   {/* Transaction Amount */}
                   <Typography
                     sx={{
@@ -172,7 +174,6 @@ const TransactionsTable = ({
                     {txn.amount < 0 ? "-" : "+"}
                     {`${currencySymbol}${formatNumber(Math.abs(txn.amount))}`}
                   </Typography>
-
                   {/* Action Button */}
                   <Stack
                     direction="row"

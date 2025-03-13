@@ -24,6 +24,7 @@ const PotItem = ({
   return (
     <SubContainer gap="32px">
       <Stack direction="row" alignItems="center" gap="24px">
+        //! This Box has no children so you can use self-closing syntax <Box />
         <Box
           width="20px"
           height="20px"

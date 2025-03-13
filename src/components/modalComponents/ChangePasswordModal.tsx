@@ -44,6 +44,7 @@ const buildSchema = yup.object({
 
 const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
   const theme = useTheme();
+  //! For future reference as I know there is no backend yet, but actual password data should never be stored in context
   const { user, setUser } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -72,6 +73,19 @@ const ChangePasswordModal = ({ open, onClose }: ChangePasswordModalProps) => {
     onClose();
   };
 
+  //! password text field is used repeatedly, you could create a reusable renderPasswordTextField function to avoid repetition
+  /** 
+   * example:
+   * const renderPasswordField = (name: keyof FormValues, placeholder: string)  => (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field, fieldState: { error } }) => (
+      <PasswordTextField {...field} error={error} placeholder={placeholder} />
+    )}
+  />
+);
+   */
   return (
     <ActionModal open={open} onClose={onClose} heading="Change Password">
       <form onSubmit={handleSubmit(onSubmit)}>

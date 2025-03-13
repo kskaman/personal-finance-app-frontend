@@ -60,6 +60,7 @@ const BillsOverview = () => {
           .filter(([key]) => key !== "due" || showDue)
           .map(([key, summary]) => {
             const typedKey = key as keyof typeof summaryData;
+            //! you access summaryData[typedKey] more than once, I would set it here as a variable
 
             const isDue = typedKey === "due";
 

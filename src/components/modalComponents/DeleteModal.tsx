@@ -36,6 +36,8 @@ const DeleteModal = ({
     >
       <Stack gap="32px">
         <Typography fontSize="14px" color={theme.palette.primary.light}>
+          //! can be simplified to `warningText || "text"` //! can take a step
+          further and extract it into a variable to keep the jsx cleaner
           {warningText
             ? warningText
             : `Are you sure you want to delete this ${type}? This action cannot be

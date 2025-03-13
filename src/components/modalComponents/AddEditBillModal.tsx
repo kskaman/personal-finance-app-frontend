@@ -68,6 +68,18 @@ const AddEditBillModal = ({
   });
 
   // Reset the form when modal opens or billData changes.
+
+  //! can use optional chaining here to simplify the code
+  /*
+  useEffect(() => {
+    reset({
+      name: billData?.name || "",
+      category: billData?.category || "",
+      amount: billData?.amount?.toFixed(2) || "",
+      dueDate: billData?.dueDate || "",
+      });
+  }, [billData, open, reset]);
+  */
   useEffect(() => {
     if (billData) {
       reset({
@@ -103,6 +115,7 @@ const AddEditBillModal = ({
           <Controller
             name="name"
             control={control}
+            //! Avoid implicit any types
             render={({ field, fieldState: { error } }) => (
               <ModalTextField
                 value={field.value}

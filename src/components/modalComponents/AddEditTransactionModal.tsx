@@ -138,6 +138,17 @@ const AddEditTransactionModal = ({
   } = useForm<FormValues>({
     resolver: yupResolver(buildSchema()),
     mode: "onChange",
+    //! if txnData exists, use it as default values
+    /**
+     * defaultValues: {
+     *  txnName: txnData?.txnName || "",
+     *  category: txnData?.category || "",
+     *  date: txnData?.date || "",
+     *  amount: txnData?.amount || "",
+     *  paymentType: txnData?.paymentType || "oneTime",
+     *  paymentDirection: txnData?.paymentDirection || "paid",
+     * }
+     */
     defaultValues: {
       txnName: "",
       category: "",
@@ -165,6 +176,7 @@ const AddEditTransactionModal = ({
   } | null>(null);
 
   // Reset form on open or when txnData changes.
+  //! can use optional chaining here to simplify the code
   useEffect(() => {
     if (txnData) {
       reset(txnData);
@@ -186,6 +198,7 @@ const AddEditTransactionModal = ({
   const watchPaymentType = watch("paymentType");
   const watchRecurringId = watch("recurringId");
 
+  //! these useEffects can likely be combined into one. They all seem to both are reliant on watchPaymentType and seem to be overall related
   // Force "paid" when recurring is selected.
   useEffect(() => {
     if (watchPaymentType === "recurring") {
