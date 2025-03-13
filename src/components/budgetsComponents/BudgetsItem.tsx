@@ -39,6 +39,8 @@ const BudgetsItem = ({
   setEditModalOpen,
 }: BudgetItemProps) => {
   const theme = useTheme();
+  //! this is an example of where object destructuring is really useful. This file repeatedly uses theme.palette. You can destructure this to cut down on repeated code
+  //! ex: const { primary, secondary, background } = theme.palette;
 
   const {
     isOpen: isDetailOpen,
@@ -110,6 +112,7 @@ const BudgetsItem = ({
               <CaretRightIcon color={theme.palette.primary.light} />
             </Stack>
           </Stack>
+          {/* This is more personal preference and not required, but to simplify this component further, you could extract the Transaction List into it's own component. It doesn't really simplfy any logic, but it cleans up the code a bit */}
           <List>
             {transactionsForCategory.slice(0, 3).map((transaction, index) => {
               return (
@@ -146,6 +149,14 @@ const BudgetsItem = ({
                       justifyContent="center"
                       alignItems="flex-end"
                     >
+                      {/* the logic here can be simplified if we extract the positive check into a variable before the return aboce ie: isPositive = transaction.amount >= 0
+                      
+                      this can then be rendered like:
+                      <Typography fontSize="14px" fontWeight="bold" color={isPositive ? secondary.main : primary.main}>
+                          {isPositive ? "+" : "-"}
+                          {currencySymbol}{formatNumber(Math.abs(transaction.amount))}
+                      </Typography>
+                      */}
                       {transaction.amount >= 0 ? (
                         <Typography
                           fontSize="14px"
@@ -177,6 +188,7 @@ const BudgetsItem = ({
                       </Typography>
                     </Stack>
                   </ListItem>
+                  {/* remember to avoid magic numbers */}
                   {index < 2 && (
                     <Divider
                       sx={{

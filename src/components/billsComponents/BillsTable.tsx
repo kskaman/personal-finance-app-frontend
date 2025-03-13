@@ -23,16 +23,34 @@ import { MD_SM_BREAK } from "../../data/widthConstants";
 import { useContext } from "react";
 import { SettingsContext } from "../../context/SettingsContext";
 
+//! Consider using early returns to avoid deeply nested code
+//! you can also strictly type output as a discriminated union of possible statuses
+//! this will help you avoid typos
 const getBillStatus = (lastPaid: string, dueDate: string) => {
   let status = "unpaid";
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const lastPaidDate = lastPaid ? new Date(lastPaid) : null;
+
+  //! At this point you know you can check for the paid status and return early
+  //! if (lastPaidDate && lastPaidDate >= startOfMonth) return "paid";
+
   const dueDateObj =
     dueDate && !isNaN(Number(dueDate))
       ? new Date(now.getFullYear(), now.getMonth(), Number(dueDate))
       : null;
+
+  //! if there is no due date object, that likely indicates an error in the data, but currently it will default to "unpaid" -- is that necessarily accurate ? Maybe do an early return of "Invalid Due Date" or something similar
+  //! if (!dueDateObj) return "Invalid Due Date";
+
+  //! You can remove some of the following checks with early returns as well
+  /*
+  const diffDays = (dueDateObj.getTime() - now.getTime()) / (1000 * 3600 * 24);
+  if (diffDays <= 0) return "due";
+  if (diffDays <= 3) return "dueSoon";
+  return "unpaid";
+  */
 
   if (lastPaidDate && lastPaidDate >= startOfMonth) {
     status = "paid";
@@ -46,6 +64,24 @@ const getBillStatus = (lastPaid: string, dueDate: string) => {
   }
   return status;
 };
+
+//! Generally cleaner to define an interface for your props
+/*
+interface BillsTableProps {
+  bills: RecurringBill[];
+  parentWidth: number;
+  setDeleteModalOpen: (recurringBill: RecurringBill) => void;
+  setEditModalOpen: (recurringBill: RecurringBill) => void;
+}
+
+const BillsTable = ({
+  bills,
+  parentWidth,
+  setDeleteModalOpen,
+  setEditModalOpen,
+}: BillsTableProps) => {
+  ...
+*/
 
 const BillsTable = ({
   bills,
@@ -73,6 +109,7 @@ const BillsTable = ({
         sx={{ display: isParentWidth ? "none" : "table-header-group" }}
       >
         <TableRow>
+          {/* Your Header Cells both here and in TransactionsTable.tsx always have the same styling, in those cases you should try to reduce duplicate code either by creating a custom <HeaderTableCell /> component,  extracting the common styling into a styles file and import it where needed or by creating a custom Table component where you can set the Headers once and just pass data. Always try to keep in mind to reduce duplicate code where possible */}
           <TableCell
             sx={{
               fontSize: "12px",
@@ -208,6 +245,10 @@ const BillsTable = ({
                         dateSuffix[bill.dueDate as keyof typeof dateSuffix]
                       }`}
                     </Typography>
+                    {/* can avoid the ternary here and just use Short Circuit Rendering
+                    {status === "paid" && <PaidIcon />}
+                    {(isDue || dueSoon) && <DueIcon />}
+                    */}
                     {status === "paid" ? (
                       <PaidIcon />
                     ) : isDue || dueSoon ? (
