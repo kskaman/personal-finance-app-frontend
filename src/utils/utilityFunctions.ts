@@ -1,15 +1,15 @@
 export const formatNumber = (num: number) => {
-    return new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num);
 };
 
 export const formatDecimalNumber = (num: number): string => {
   return num.toFixed(2);
 };
-  
 
-
-
-const monthCode: {[key: string]: string} = {
+const monthCode: { [key: string]: string } = {
   "01": "Jan",
   "02": "Feb",
   "03": "Mar",
@@ -21,25 +21,23 @@ const monthCode: {[key: string]: string} = {
   "09": "Sep",
   "10": "Oct",
   "11": "Nov",
-  "12": "Dec"
-}
+  "12": "Dec",
+};
 
-
-export const formatISODateToDDMMYYYY = (isoDate : string) =>  {
+//! There is a built-in function in JavaScript that can do this for you. You can use the toLocaleDateString method on the Date object to format the date in the desired format, if you choose "en-GB" as the locale, it will format the date in the DD/MM/YYYY format.
+export const formatISODateToDDMMYYYY = (isoDate: string) => {
   const date = new Date(isoDate);
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
   return `${day}/${month}/${year}`;
-}
-
+};
 
 export const convertDateToISOString = (dateStr: string): string => {
   const [day, month, year] = dateStr.split("/").map(Number);
   const dateObj = new Date(year, month - 1, day);
   return dateObj.toISOString();
 };
-
 
 export const formatDateToReadable = (dateString: string) => {
   const date = dateString.split("T")[0].split("-");
@@ -49,14 +47,14 @@ export const formatDateToReadable = (dateString: string) => {
   return `${day} ${month} ${year}`;
 };
 
-
-
-
+//! You could try to handle some edge cases in here such as a name accidentally being entered with a double space ("John  Doe"). Unless that kind of stuff is handled elsewhere already. Also right now it seems that names with more than 2 words will only use the first and last word, is that the intended behavior? It could be argued that name such as "Mary Jane Watson" should have the initials "MJW". But if you need to restrict to 2 characters that is fine as well.
 // Function to get initials from a name
 export const getInitials = (name: string) => {
   const words = name.split(" ");
   if (words.length === 1) return name.charAt(0).toUpperCase(); // Single word name
-  return `${words[0].charAt(0)}${words[words.length - 1].charAt(0)}`.toUpperCase();
+  return `${words[0].charAt(0)}${words[words.length - 1].charAt(
+    0
+  )}`.toUpperCase();
 };
 
 // Function to get a random color from theme.palette.others
@@ -81,11 +79,9 @@ export const getRandomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-
-
 export const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate);
-  
+
   // Convert to local time
   const day = date.getDate();
   const month = date.toLocaleString("en-US", { month: "short" });
@@ -94,9 +90,7 @@ export const formatDate = (isoDate: string): string => {
   return `${day} ${month} ${year}`;
 };
 
-
-
-
+//! fun practice if you're interested ! Try to figure out a function to do the dateSuffix for you without having to hardcode every value.
 export const dateSuffix = {
   "1": "st",
   "2": "nd",
@@ -128,11 +122,8 @@ export const dateSuffix = {
   "28": "th",
   "29": "th",
   "30": "th",
-  "31": "st"
+  "31": "st",
 };
-
-
-
 
 // Function to capitalize the first letter of a single word
 export const capitalizeWord = (word: string): string => {
