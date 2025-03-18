@@ -5,12 +5,16 @@ import MainApp from "./MainApp";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthProvider";
 import DataProvider from "./context/DataProvider";
+import LoadingIndicator from "./utilityComponents/LoadingIndicator";
 
 const App = () => {
   const { user, loading } = useContext(AuthContext);
 
-  //! Could add a nice spinner here if you wanted! If you do, create a simple <LoadingIndicator /> componet for it
-  if (loading) return <div>Loading...</div>;
+  // Recommendation - ! Could add a nice spinner here if
+  // you wanted! If you do, create a simple
+  // < LoadingIndicator /> component for it
+  // Added a loading indicator
+  if (loading) return <LoadingIndicator />;
   return (
     <Routes>
       {/* Public route for login */}
