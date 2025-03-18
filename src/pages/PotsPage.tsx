@@ -223,7 +223,7 @@ const PotsPage = () => {
                 hoverBgColor={theme.palette.primary.light}
               >
                 <Typography noWrap fontSize="14px" fontWeight="bold">
-                  + Add New Pot
+                  {parentWidth < 450 ? "+" : "+ Add New Pot"}
                 </Typography>
               </Button>
             </Stack>

@@ -231,7 +231,7 @@ const BudgetsPage = () => {
                 hoverBgColor={theme.palette.primary.light}
               >
                 <Typography noWrap fontSize="14px" fontWeight="bold">
-                  + Add New Budget
+                  {parentWidth < 450 ? "+" : "+ Add New Budget"}
                 </Typography>
               </Button>
             </Stack>

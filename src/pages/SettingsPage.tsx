@@ -246,7 +246,12 @@ const SettingsPage = () => {
                 >
                   <LogoutIcon color="inherit" />
                 </Box>
-                <Typography noWrap fontSize="14px" fontWeight="bold">
+                <Typography
+                  noWrap
+                  display={parentWidth < 450 ? "none" : "auto"}
+                  fontSize="14px"
+                  fontWeight="bold"
+                >
                   Log Out
                 </Typography>
               </Stack>

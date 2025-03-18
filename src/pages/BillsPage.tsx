@@ -204,7 +204,7 @@ const BillsPage = () => {
                 hoverBgColor={theme.palette.primary.light}
               >
                 <Typography noWrap fontSize="14px" fontWeight="bold">
-                  + Add New Bill
+                  {parentWidth < 450 ? "+" : "+ Add New Bill"}
                 </Typography>
               </Button>
             </Stack>

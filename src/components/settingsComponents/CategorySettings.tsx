@@ -139,7 +139,7 @@ const CategorySettings = ({ parentWidth }: CategorySettingsProps) => {
           backgroundColor={`${theme.palette.primary.main}`}
         >
           <Typography noWrap fontSize="14px" fontWeight="bold">
-            + Add New Category
+            {parentWidth < 450 ? "+" : "+ Add New Category"}
           </Typography>
         </Button>
       </Stack>
