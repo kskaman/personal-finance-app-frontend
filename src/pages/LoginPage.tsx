@@ -16,8 +16,7 @@ const LoginPage = () => {
     <Stack
       direction={{ xs: "column", md: "row" }}
       bgcolor={beige100}
-      overflow="auto"
-      minHeight={"100%"}
+      minHeight={"100vh"}
     >
       {/* illustration image for screens  >= 900px */}
       <Stack
@@ -25,7 +24,9 @@ const LoginPage = () => {
         padding="20px"
         width="42%"
         maxWidth="560px"
+        height={"100vh"}
         position="relative"
+        overflow="hidden"
       >
         <Box
           component="img"
@@ -36,7 +37,7 @@ const LoginPage = () => {
             objectFit: "cover",
             height: "100%",
           }}
-        />
+        ></Box>
         <Stack position="absolute" bottom="20px" gap="24px" padding="20px">
           <Typography
             role="heading"
