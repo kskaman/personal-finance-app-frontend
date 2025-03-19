@@ -22,6 +22,8 @@ const PotsProgressBar = ({
 }: PotsProgressBarProps) => {
   const theme = useTheme();
 
+  //! Seems to be a lot of logic in here around the calculation of the bar. I wonder if this could be cleanly extracted into a custom hook or utility function to clean up the component?
+
   let containerPercentage = 0;
   let blackPercentage = 0;
   let changePercentage = 0;

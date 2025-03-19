@@ -131,6 +131,7 @@ const PotMoneyModal = ({
 
   const onSubmit = (data: FormValues) => {
     const amount = parseFloat(data.amount);
+    //! if you set modifier as a variable of either 1 or -1 based off if type is addMoney, you could simplify the code to only call update once and do an add of " + amount * modifier " so a -1 would subtract and a 1 would add
     if (type === "addMoney") {
       updatePotAmount(potTotal + amount, computedNewTarget, maxLimit - amount);
     } else if (type === "withdraw") {

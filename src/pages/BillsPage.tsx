@@ -25,12 +25,17 @@ import { getRandomColor } from "../utils/utilityFunctions";
 import { BalanceTransactionsActionContext } from "../context/BalanceTransactionsContext";
 import EmptyStatePage from "../utilityComponents/EmptyStatePage";
 
+/**
+ *! I'll leave this note here in regards to basically all of the Page files. They're fine as is, but you could clean them up if you wanted to extracted the utility functions into utils files. This would make the page files a bit cleaner and easier to read. It's not necessary, but it's something to consider. You could also then break out the layouts into their own components. If the layouts are similar enough they could be a reusable component that either takes props to determine what to render or accepts children to render inside of it. Sometimes this feels like it's segmenting the code too much, but it generally makes the code easier to read and maintain.
+ */
+
 // Function to filter & sort bills.
 const filterAndSortBills = (
   bills: RecurringBill[],
   searchName: string,
   sortBy: string
 ): RecurringBill[] => {
+  //! You could add a normalize to this as well so accented characters like é and e are treated the same. This would make the search more robust.
   const filteredBills = bills.filter((bill) =>
     searchName
       ? bill.name.toLowerCase().includes(searchName.toLowerCase().trim())

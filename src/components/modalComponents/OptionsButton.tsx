@@ -39,6 +39,8 @@ const OptionsButton = ({
     setAnchorEl(null);
   };
 
+  //! this seems to exist as a utility function in utilityFunctions.ts
+  //! capitalizeWord
   const optionType = type.charAt(0).toUpperCase() + type.slice(1);
 
   return (

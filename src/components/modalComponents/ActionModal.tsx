@@ -26,7 +26,7 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
           position: "absolute",
           top: "50%",
           left: "50%",
-          overFlowY: "hidden",
+          overFlowY: "hidden", //! typo: overFlowY should be overflowY
           transform: "translate(-50%, -50%)",
           width: { xs: "90%", sm: "560px" },
           bgcolor: theme.palette.text.primary,
@@ -56,8 +56,8 @@ const ActionModal = ({ open, onClose, children, heading }: Props) => {
           <Button
             color={"inherit"}
             onClick={onClose}
-            hoverColor={"none"}
-            hoverBgColor={"none"}
+            hoverColor={"none"} //! I don't think "none" is a valid CSS color declaration, you can pass "transparent" instead and that should work
+            hoverBgColor={"none"} //! same here
             borderColor={theme.palette.text.primary}
           >
             <CloseModalIcon />

@@ -79,6 +79,7 @@ const DisplayModulesGroup = ({
           }}
         >
           {Object.entries(displayOptions).map(([key, module]) => (
+            //! This can be extracted into a separate component to separate concerns
             <Grid key={key}>
               <Stack
                 direction="row"
@@ -128,7 +129,7 @@ const DisplayModulesGroup = ({
           handleProceed={handleModalProceed}
           label={
             selectedModuleKey
-              ? (displayOptions[selectedModuleKey].label as string)
+              ? (displayOptions[selectedModuleKey].label as string) //! I'm not sure this is necessary ? label seems to be properly typed as a string
               : ""
           }
         />

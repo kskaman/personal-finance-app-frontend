@@ -13,6 +13,34 @@ interface Props {
   flex?: number;
 }
 
+//! a lot of your buttons have an empty onClick function because it is a required prop, but you don't need it for submit. You can update your typing to use a discriminated union so that when the type is "submit" the onClick function is omitted, but otherwise it is required.
+
+/*
+example:
+interface BaseProps {
+  height?: string;
+  width?: string;
+  padding?: string;
+  color: string;
+  backgroundColor?: string;
+  children: React.ReactNode;
+  borderColor?: string;
+  hoverColor: string;
+  hoverBgColor: string;
+  flex?: number;
+}
+
+type ButtonProps =
+  | (BaseProps & {
+      type: "button" | "reset";
+      onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    })
+  | (BaseProps & {
+      type: "submit";
+      onClick?: never;
+    });
+*/
+
 const Button = ({
   type = "button",
   flex,

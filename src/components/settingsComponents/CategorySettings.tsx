@@ -153,6 +153,7 @@ const CategorySettings = ({ parentWidth }: CategorySettingsProps) => {
         }}
       >
         {categories.map((category: Category) => (
+          //! This can be extracted into a separate component to separate concerns
           <Grid
             key={category.id}
             onClick={() => {

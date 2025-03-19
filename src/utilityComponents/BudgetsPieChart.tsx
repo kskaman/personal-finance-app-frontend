@@ -11,6 +11,10 @@ interface BudgetsPieChartProps {
   colors: string[];
 }
 
+/**
+ *! You should extract the PieChart logic into a reuseable component, including the box that encompasses it. This will allow you to reuse this component in other places in your app. I think the only things that change between uses here are the data and the outer/inner radius. You could pass those in as props to the component.
+ */
+
 const BudgetsPieChart = ({
   spendings,
   limit,

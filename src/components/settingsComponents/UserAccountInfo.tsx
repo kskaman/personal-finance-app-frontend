@@ -22,6 +22,7 @@ const UserAccountInfo = () => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] =
     useState<boolean>(false);
 
+  //! Unless I am missing it, there should be validation to prevent empty name saves
   const handleNameSave = () => {
     if (!user) return;
     const updatedUser: User = { ...user, name: editedName };

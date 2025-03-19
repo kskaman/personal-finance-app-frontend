@@ -89,6 +89,7 @@ const PageNav = ({
         hoverBgColor={theme.palette.primary.dark}
       >
         <CaretLeftIcon color="inherit" />
+        //! should add boundary check to disable Prev button at the beginning
         <Typography color="inherit" display={{ xs: "none", sm: "block" }}>
           Prev
         </Typography>
@@ -142,6 +143,7 @@ const PageNav = ({
         hoverColor={theme.palette.text.primary}
         hoverBgColor={theme.palette.primary.dark}
       >
+        //! should add boundary check to disable Next button at the end
         <Typography color="inherit" display={{ xs: "none", sm: "block" }}>
           Next
         </Typography>

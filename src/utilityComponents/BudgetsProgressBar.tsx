@@ -73,6 +73,8 @@ const BudgetsProgressBar = ({
         alignItems="center"
         sx={{ height: "43px" }}
       >
+        //! These Stacks are almost identical and could be extracted into a
+        separate component
         <Stack direction="row" gap="16px" flex={1}>
           <Box
             height="43px"

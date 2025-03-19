@@ -75,6 +75,7 @@ const AddEditCategoryModal = ({
     <ActionModal
       open={open}
       onClose={onClose}
+      //! template literal - `${categoryName ? "Edit" : "Add"} Category`
       heading={categoryName ? "Edit Category" : "Add Category"}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -82,6 +83,7 @@ const AddEditCategoryModal = ({
           <Controller
             name="name"
             control={control}
+            //! Avoid implicit any types
             render={({ field, fieldState: { error } }) => (
               <Stack position="relative">
                 <ModalTextField

@@ -37,6 +37,8 @@ const BudgetTransactionsModal = ({
       <List>
         {transactionsForCategory.map((transaction, index) => {
           return (
+            //! You can use a fragment (<> </>) here instead of a div to avoid adding an extra div to the DOM
+            //! date isn't a great key as there is no guarantee that it will be unique. If you have a unique id for each transaction, that would be a better key
             <div key={transaction.date}>
               <ListItem
                 sx={{
@@ -48,6 +50,10 @@ const BudgetTransactionsModal = ({
                   color: theme.palette.primary.light,
                 }}
               >
+                //! I have seen this Avater code repeated several times, you
+                could make it it's own component to avoid duplicate code. The
+                only thing that seems to changes sometimes is width and height
+                so those could be based off a prop
                 {/* Rounded Avatar with initials */}
                 <Avatar
                   sx={{
@@ -70,6 +76,8 @@ const BudgetTransactionsModal = ({
                   justifyContent="center"
                   alignItems="flex-end"
                 >
+                  //! as mentioned previously, extracting an is positive check
+                  and then using that for single line rendering would be cleaner
                   {transaction.amount >= 0 ? (
                     <Typography
                       fontSize="14px"
@@ -101,6 +109,9 @@ const BudgetTransactionsModal = ({
                   </Typography>
                 </Stack>
               </ListItem>
+              //! could also be checked as index !==
+              transactionsForCategory.length - 1. Bother are fine, I personally
+              think the !== is more readable
               {index < transactionsForCategory.length - 1 && (
                 <Divider
                   sx={{

@@ -53,6 +53,7 @@ const SettingsOptionGroup = ({
           }}
         >
           {options.map((option) => (
+            //! extract the grid into a separate component to separate concerns
             <Grid
               key={option.value}
               onClick={() => {

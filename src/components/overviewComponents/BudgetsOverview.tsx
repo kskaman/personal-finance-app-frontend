@@ -19,6 +19,17 @@ const BudgetsOverview = () => {
     monthlySpentByCategory: Record<string, number>;
   };
 
+  //! you are mapping over the budgets array twice to get the colorsArr and budgetCategories and then reducing budgetCategories into monthlySpent. You can do this in one reduce function
+  // const { colorsArr, monthlySpent } = budgets.reduce(
+  //   (acc, budget) => {
+  //     acc.colorsArr.push(budget.theme);
+  //     acc.monthlySpent[budget.category] =
+  //       monthlySpentByCategory[budget.category] || 0;
+  //     return acc;
+  //   },
+  //   { colorsArr: [] as string[], monthlySpent: {} as Record<string, number> }
+  // );
+
   const colorsArr = budgets.map((budget) => budget.theme);
 
   const budgetCategories = budgets.map((budget) => budget.category);

@@ -19,6 +19,9 @@ const Balance = ({ isParentSm }: { isParentSm: boolean }) => {
         justifyContent="flex-start"
         alignItems="center"
       >
+        //! These Stacks should be defined as a renderStack function to avoid
+        repetition. They all look the same minus the label and the data they
+        display
         <Stack
           flex={1}
           width="100%"
