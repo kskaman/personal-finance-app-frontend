@@ -8,6 +8,7 @@ import { PotsProvider } from "./PotsProvider";
 import CategoryMarkerProvider from "./CategoryMarkerProvider";
 import { SettingsProvider } from "./SettingsProvider";
 import { AuthContext } from "./AuthProvider";
+import LoadingIndicator from "../utilityComponents/LoadingIndicator";
 
 /**
  * Helper function to update rendered data
@@ -128,35 +129,10 @@ const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       </div>
     );
 
-  if (loading)
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100vw",
-          height: "100vh",
-        }}
-      >
-        Loading...
-      </div>
-    );
+  if (loading) return <LoadingIndicator />;
 
   if (!data) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100vw",
-          height: "100vh",
-        }}
-      >
-        Loading Data...
-      </div>
-    );
+    return <LoadingIndicator />;
   }
 
   return (
