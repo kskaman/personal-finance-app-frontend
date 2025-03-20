@@ -12,7 +12,9 @@ const LoadingIndicator = ({ size = 40, style = {} }: LoadingIndicatorProps) => {
     <Stack
       alignItems="center"
       justifyContent="center"
-      style={{ width: "100%", ...style }}
+      width="100vw"
+      height="100vh"
+      style={{ ...style }}
     >
       <CircularProgress size={size} />
     </Stack>

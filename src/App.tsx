@@ -5,11 +5,12 @@ import MainApp from "./MainApp";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthProvider";
 import DataProvider from "./context/DataProvider";
+import LoadingIndicator from "./utilityComponents/LoadingIndicator";
 
 const App = () => {
   const { user, loading } = useContext(AuthContext);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingIndicator />;
   return (
     <Routes>
       {/* Public route for login */}
