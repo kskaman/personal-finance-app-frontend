@@ -1,4 +1,3 @@
-// TabNavItem.tsx (unchanged from your snippet, except we confirm it’s imported in TabNavBar)
 import { Typography, Box, Stack, useTheme } from "@mui/material";
 import { NavLink } from "react-router";
 
