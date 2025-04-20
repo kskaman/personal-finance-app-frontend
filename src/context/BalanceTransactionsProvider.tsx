@@ -4,7 +4,7 @@ import {
   BalanceTransactionsDataContext,
   BalanceTransactionsActionContext,
 } from "./BalanceTransactionsContext.tsx";
-import { Balance, Transaction } from "../types/Data.ts.ts";
+import { Balance, Transaction } from "../types/Data.ts";
 
 interface Props {
   children: ReactNode;
@@ -23,10 +23,10 @@ const BalanceTransactionsProvider = ({
 
   const addTransaction = (newTx: Transaction) => {
     // function to add new transaction
-    setTransactionsState((prev) => [...prev, newTx]);
+    setTransactionsState((prev: Transaction[]) => [...prev, newTx]);
 
     // Update balance
-    setBalanceState((prev) => {
+    setBalanceState((prev: Balance) => {
       const newCurrent = prev.current + newTx.amount;
       const newIncome =
         newTx.amount >= 0 ? prev.income + newTx.amount : prev.income;
