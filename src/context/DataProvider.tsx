@@ -8,7 +8,7 @@ import { PotsProvider } from "./PotsProvider";
 import CategoryMarkerProvider from "./CategoryMarkerProvider";
 import { SettingsProvider } from "./SettingsProvider";
 import { AuthContext } from "./AuthProvider";
-import LoadingIndicator from "../utilityComponents/LoadingIndicator";
+import LoadingIndicator from "../ui/LoadingIndicator";
 
 /**
  * Helper function to update rendered data

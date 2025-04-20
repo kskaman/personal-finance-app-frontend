@@ -4,7 +4,7 @@ import {
   BalanceTransactionsDataContext,
   BalanceTransactionsActionContext,
 } from "./BalanceTransactionsContext.tsx";
-import { Balance, Transaction } from "../types/Data";
+import { Balance, Transaction } from "../types/Data.ts.ts";
 
 interface Props {
   children: ReactNode;
