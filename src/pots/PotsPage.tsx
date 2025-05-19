@@ -121,7 +121,7 @@ const PotsPage = () => {
           ? {
               name: potName,
               target: parseFloat(target),
-              total: 0,
+              total: pot.total,
               theme: markerTheme,
             }
           : pot
