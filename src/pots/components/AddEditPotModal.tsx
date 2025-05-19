@@ -52,7 +52,7 @@ const buildSchema = (usedPotNames: string[]) =>
     target: yup
       .string()
       .matches(
-        /^\d+(\.\d{0, 2})?$/,
+        /^\d+(\.\d{0,2})?$/,
         "Enter a valid number (up to 2 decimal places)."
       )
       .test(
