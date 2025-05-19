@@ -17,7 +17,7 @@ import DeleteModal from "../ui/DeleteModal";
 import useModal from "../customHooks/useModal";
 import AddEditBillModal, {
   BillFormValues,
-} from "../pots/components/AddEditBillModal";
+} from "./components/AddEditBillModal";
 import Button from "../ui/Button";
 import { v4 as uuidv4 } from "uuid";
 import { getRandomColor } from "../utils/utilityFunctions";
