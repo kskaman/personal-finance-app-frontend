@@ -117,7 +117,7 @@ const PotsPage = () => {
   }) => {
     setPots((prevPots) =>
       prevPots.map((pot) =>
-        pot.name === potName
+        pot.name.toLowerCase() === potName.toLowerCase()
           ? {
               name: potName,
               target: parseFloat(target),
@@ -137,7 +137,7 @@ const PotsPage = () => {
   ) => {
     setPots((prevPots) =>
       prevPots.map((pot) =>
-        pot.name === potName
+        pot.name.toLowerCase() === potName.toLowerCase()
           ? {
               ...pot,
               total: newTotal,
