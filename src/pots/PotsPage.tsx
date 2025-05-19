@@ -297,7 +297,8 @@ const PotsPage = () => {
             }
             mode={mode}
             potNamesUsed={potNamesUsed.filter(
-              (potName) => potName !== selectedPot?.name
+              (potName) =>
+                potName.toLowerCase() !== selectedPot?.name.toLowerCase()
             )}
             potName={selectedPot?.name}
             targetVal={selectedPot?.target}
