@@ -453,9 +453,12 @@ const TransactionsPage = () => {
     [transactions]
   );
 
-  {
-    /* Empty Page for no transactions */
-  }
+  const getBillDueDate = (id?: string) => {
+    const bill = recurringBills.find((bill) => bill.id === id);
+    return bill?.dueDate || "";
+  };
+
+  /* Empty Page for no transactions */
   if (filteredTx.length === 0) {
     return (
       <>
@@ -594,6 +597,9 @@ const TransactionsPage = () => {
               paymentDirection: selectedTnx.amount < 0 ? "paid" : "received",
               paymentType: selectedTnx.recurring ? "recurring" : "oneTime",
               recurringId: selectedTnx.recurringId || "",
+              dueDate: selectedTnx.recurring
+                ? getBillDueDate(selectedTnx?.recurringId)
+                : "",
             }}
           />
         )}
