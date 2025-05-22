@@ -42,6 +42,15 @@ interface FormValues {
   dueDate?: string;
 }
 
+//  Helper: keep only those bills that still have transactions
+const pruneUnusedRecurringBills = (
+  txns: Transaction[],
+  bills: RecurringBill[]
+): RecurringBill[] =>
+  bills.filter((bill) =>
+    txns.some((txn) => txn.recurring && txn.recurringId === bill.id)
+  );
+
 // Helper function: generate month options from earliest transaction date until current month
 const getMonthYearOptions = (transactions: Transaction[]): string[] => {
   if (transactions.length === 0) return [];
@@ -233,18 +242,15 @@ const TransactionsPage = () => {
     if (selectedTnx.recurring && selectedTnx.recurringId) {
       // Use the updated transactions list for related transactions.
       const relatedTxns = newTnxs.filter(
-        (txn) => txn.recurring && txn.recurringId === selectedTnx.recurringId
+        (txn) => txn.recurring && txn.recurringId !== selectedTnx.recurringId
       );
 
       let updatedRecurringBills;
       if (relatedTxns.length === 0) {
         // If no related transactions remain, clear the lastPaid date.
-        updatedRecurringBills = recurringBills.map((bill) => {
-          if (bill.id === selectedTnx.recurringId) {
-            return { ...bill, lastPaid: "" };
-          }
-          return bill;
-        });
+        updatedRecurringBills = recurringBills.filter(
+          (bill) => bill.id === selectedTnx.recurringId
+        );
       } else {
         // Find the transaction with the latest date.
         const latestTxn = relatedTxns.reduce((prev, current) =>
@@ -257,6 +263,7 @@ const TransactionsPage = () => {
           return bill;
         });
       }
+
       setRecurringBills(updatedRecurringBills);
     }
   };
@@ -345,7 +352,7 @@ const TransactionsPage = () => {
 
   // Function to edit a transaction.
   const handleEditTransaction = (formData: FormValues) => {
-    if (!selectedTnx) return; // safety check
+    if (selectedTnx === null || selectedTnx === undefined) return;
 
     const isoDate = convertDateToISOString(formData.date);
     // Determine new amount based on the updated form data
@@ -354,14 +361,14 @@ const TransactionsPage = () => {
         ? formData.paymentDirection === "paid"
           ? -parseFloat(formData.amount)
           : parseFloat(formData.amount)
-        : -parseFloat(formData.amount); // recurring is forced negative
+        : -parseFloat(formData.amount);
 
     // Calculate the difference from the original amount
     const diff = newAmount - selectedTnx.amount;
 
     // Update the transactions list
-    setTransactions((prevTxns: Transaction[]) =>
-      prevTxns.map((txn) => {
+    setTransactions((prevTxns: Transaction[]) => {
+      const updatedTxns = prevTxns.map((txn) => {
         if (txn.id !== selectedTnx.id) return txn;
         if (formData.paymentType === "oneTime") {
           return {
@@ -376,7 +383,7 @@ const TransactionsPage = () => {
           };
         } else {
           let recurringId = formData.recurringId;
-          let billTheme = getRandomColor();
+          let billTheme = txn.theme || getRandomColor();
 
           if (selectedTnx.recurring) {
             // If already recurring, update only the date.
@@ -404,16 +411,13 @@ const TransactionsPage = () => {
               recurringId = newBill.id;
               billTheme = newBill.theme;
             } else if (recurringId) {
-              const updatedBills: RecurringBill[] = recurringBills.map(
-                (bill) => {
-                  if (bill.id === recurringId) {
-                    billTheme = bill.theme;
-                    return { ...bill, lastPaid: isoDate };
-                  }
-                  return bill;
-                }
+              setRecurringBills((prevBills) =>
+                prevBills.map((bill) =>
+                  bill.id === recurringId
+                    ? { ...bill, lastPaid: isoDate }
+                    : bill
+                )
               );
-              setRecurringBills([...updatedBills]);
             }
             return {
               ...txn,
@@ -427,8 +431,14 @@ const TransactionsPage = () => {
             };
           }
         }
-      })
-    );
+      });
+
+      setRecurringBills((bills) =>
+        pruneUnusedRecurringBills(updatedTxns, bills)
+      );
+
+      return updatedTxns;
+    });
 
     // Update balance state using the difference between new and old amounts
     if (diff < 0) {
