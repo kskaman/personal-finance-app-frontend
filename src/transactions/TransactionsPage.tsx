@@ -242,14 +242,14 @@ const TransactionsPage = () => {
     if (selectedTnx.recurring && selectedTnx.recurringId) {
       // Use the updated transactions list for related transactions.
       const relatedTxns = newTnxs.filter(
-        (txn) => txn.recurring && txn.recurringId !== selectedTnx.recurringId
+        (txn) => txn.recurring && txn.recurringId === selectedTnx.recurringId
       );
 
       let updatedRecurringBills;
       if (relatedTxns.length === 0) {
         // If no related transactions remain, clear the lastPaid date.
         updatedRecurringBills = recurringBills.filter(
-          (bill) => bill.id === selectedTnx.recurringId
+          (bill) => bill.id !== selectedTnx.recurringId
         );
       } else {
         // Find the transaction with the latest date.
