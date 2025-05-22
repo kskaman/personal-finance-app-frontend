@@ -459,7 +459,7 @@ const TransactionsPage = () => {
   };
 
   /* Empty Page for no transactions */
-  if (filteredTx.length === 0) {
+  if (transactions.length === 0) {
     return (
       <>
         <EmptyStatePage
