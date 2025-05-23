@@ -99,7 +99,8 @@ const BillsOverview = () => {
                       : theme.palette.primary.main
                   }
                 >
-                  {`${currencySymbol}${formatNumber(summary.total)}`}
+                  {summary.count}(
+                  {`${currencySymbol}${formatNumber(summary.total)}`})
                 </Typography>
               </Stack>
             );
