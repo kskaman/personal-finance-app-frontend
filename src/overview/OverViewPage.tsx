@@ -13,9 +13,9 @@ import { useContext } from "react";
 import { BalanceTransactionsDataContext } from "../context/BalanceTransactionsContext";
 import { PotsDataContext } from "../context/PotsContext";
 import { BudgetsDataContext } from "../context/BudgetsContext";
-import { RecurringDataContext } from "../context/RecurringContext";
 import { useNavigate } from "react-router";
 import EmptyStatePage from "../ui/EmptyStatePage";
+import { SettingsContext } from "../context/SettingsContext";
 
 const OverViewPage = () => {
   const { containerRef, parentWidth } = useParentWidth();
@@ -30,7 +30,8 @@ const OverViewPage = () => {
   const { balance, transactions } = useContext(BalanceTransactionsDataContext);
   const { pots } = useContext(PotsDataContext);
   const { budgets } = useContext(BudgetsDataContext);
-  const { recurringBills } = useContext(RecurringDataContext);
+
+  const { displayedModules } = useContext(SettingsContext);
 
   // Decide if there is any data at all
   const hasNonZeroBalance =
@@ -39,10 +40,9 @@ const OverViewPage = () => {
   const hasTransactions = transactions.length > 0;
   const hasPots = pots.length > 0;
   const hasBudgets = budgets.length > 0;
-  const hasBills = recurringBills.length > 0;
 
   const hasAnyData =
-    hasNonZeroBalance || hasTransactions || hasPots || hasBudgets || hasBills;
+    hasNonZeroBalance || hasTransactions || hasPots || hasBudgets;
 
   // If absolutely everything is empty, show a single empty-state layout:
   if (!hasAnyData) {
@@ -88,16 +88,16 @@ const OverViewPage = () => {
                 gap="24px"
                 width={isParentLg ? "100%" : "50%"}
               >
-                {hasPots && <PotsOverview />}
-                {hasTransactions && <TransactionsOverview />}
+                {displayedModules.pots && hasPots && <PotsOverview />}
+                {<TransactionsOverview />}
               </Stack>
               <Stack
                 direction="column"
                 gap="24px"
                 width={isParentLg ? "100%" : "50%"}
               >
-                {hasBudgets && <BudgetsOverview />}
-                {hasBills && <BillsOverview />}
+                {displayedModules.budgets && hasBudgets && <BudgetsOverview />}
+                {displayedModules.recurringBills && <BillsOverview />}
               </Stack>
             </Stack>
           </Stack>
