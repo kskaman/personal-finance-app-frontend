@@ -2,6 +2,8 @@
 
 Personal Finance App is a **web application** designed to help users manage **budgets**, **savings**, **recurring bills**, and **transactions** efficiently. This repository contains **only the frontend** portion of the application, built using **React**, **React Router**, **React Hook Form**, **Yup**, **MUI**, **TypeScript**, and **Vite**. It provides an intuitive, responsive interface for effective personal finance tracking and management.
 
+The full stack version of this project is available at the repository - ![](https://github.com/kskaman/personal-finance-app-full-stack)
+
 ## Live Demo
 
 ![](https://personal-finance-app-frontend-dxv8-kskaman-gmailcoms-projects.vercel.app/login)
@@ -95,7 +97,3 @@ Below are some highlights of the interface and features:
 ## Contact
 
 For any questions, suggestions, or feedback, please open an issue or contact the project maintainer via GitHub.
-
-## Note
-
-This Personal Finance App backend is under development. Some features may evolve or expand over time. Stay tuned for updates and feel free to contribute!
