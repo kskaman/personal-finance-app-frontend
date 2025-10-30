@@ -6,7 +6,7 @@ The full stack version of this project is available at the repository - [https:/
 
 ## Live Demo
 
-[https://personal-finance-app-frontend-dxv8-kskaman-gmailcoms-projects.vercel.app/login](https://personal-finance-app-frontend-dxv8-kskaman-gmailcoms-projects.vercel.app/login)
+[Click here](https://personal-finance-app-frontend.vercel.app)
 
 ## Mentorship Acknowledgment
 
